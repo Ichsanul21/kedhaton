@@ -1,33 +1,313 @@
-    <!-- CSS Pannellum -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Tour - Smooth Version</title>
+    
+    <!-- Pannellum -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
     <style>
-        /* Ukuran container panorama harus didefinisikan */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            font-family: sans-serif;
+        }
+
         #panorama {
             width: 100%;
-            height: 500px; /* Atau sesuai kebutuhan */
+            height: 100%;
         }
+
+        /* ===================== */
+        /* 1. HOTSPOT STYLE (TANPA TRANSITION) */
+        /* ===================== */
+
+        /* -- Hotspot Info (Bulat) -- */
+        .hotspot-info {
+            width: 28px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #E63946; /* Merah */
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            
+            /* RAHASIA SUPAYA NGE-BUT: Pakai GPU, TANPA Transition */
+            will-change: transform;
+            transform: translateZ(0);
+        }
+        /* Hover hanya ubah warna, tanpa animasi */
+        .hotspot-info:hover {
+            background: #fff;
+        }
+        /* Ikon 'i' */
+        .hotspot-info::after {
+            content: 'i';
+            color: #E63946;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        /* -- Hotspot Navigasi (Panah) -- */
+        .hotspot-nav {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #1D3557; /* Biru Tua */
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            
+            /* RAHASIA SUPAYA NGE-BUT */
+            will-change: transform;
+            transform: translateZ(0);
+        }
+        .hotspot-nav:hover {
+            background: #fff;
+        }
+        /* Ikon Panah */
+        .hotspot-nav::after {
+            content: '➜';
+            font-size: 20px;
+            color: #1D3557;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        /* ===================== */
+        /* 2. TOOLTIP STYLE */
+        /* ===================== */
+        .custom-tooltip {
+            position: absolute;
+            bottom: 120%; /* Di atas hotspot */
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            max-width: 180px;
+            text-align: center;
+            line-height: 1.3;
+            
+            display: none; 
+            pointer-events: none; /* Biar gak menghalangi klik */
+            z-index: 100;
+            white-space: pre-line; /* Biar bisa enter */
+        }
+        
+        /* Panah tooltip */
+        .custom-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+        }
+
+        /* Class untuk munculkan */
+        .custom-tooltip.is-visible {
+            display: block;
+        }
+
     </style>
 </head>
-<body class="bg-gray-100">
+<body>
 
-    <div class="container mx-auto p-5">
-        <!-- Container untuk 360 -->
-        <div id="panorama"></div>
+    <div id="panorama"></div>
 
-    </div>
-
-    <!-- JS Pannellum -->
-    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
-    
     <script>
-        // Konfigurasi Pannellum
+        // ==========================================
+        // LOGIC TOOLTIP INTERAKTIF
+        // ==========================================
+
+        // 1. Fungsi untuk Info (Bisa Kunci)
+        function createInfoTooltip(hotSpotDiv, args) {
+            var tooltip = document.createElement('div');
+            tooltip.className = 'custom-tooltip';
+            tooltip.innerHTML = args.text;
+            hotSpotDiv.appendChild(tooltip);
+
+            var isPinned = false;
+
+            // Hover Masuk
+            hotSpotDiv.addEventListener('mouseenter', function() {
+                if (!isPinned) tooltip.classList.add('is-visible');
+            });
+
+            // Hover Keluar
+            hotSpotDiv.addEventListener('mouseleave', function() {
+                if (!isPinned) tooltip.classList.remove('is-visible');
+            });
+
+            // Klik (Kunci)
+            hotSpotDiv.addEventListener('mousedown', function(e) {
+                e.stopPropagation(); // Jangan trigger drag panorama
+                isPinned = true;
+                tooltip.classList.add('is-visible');
+            });
+        }
+
+        // 2. Fungsi untuk Navigasi (Hanya Hover)
+        function createNavTooltip(hotSpotDiv, args) {
+            var tooltip = document.createElement('div');
+            tooltip.className = 'custom-tooltip';
+            tooltip.innerHTML = args.text;
+            hotSpotDiv.appendChild(tooltip);
+
+            hotSpotDiv.addEventListener('mouseenter', function() {
+                tooltip.classList.add('is-visible');
+            });
+            hotSpotDiv.addEventListener('mouseleave', function() {
+                tooltip.classList.remove('is-visible');
+            });
+        }
+
+        // 3. Global Listener: Kalau user mulai drag panorama, RESET semua kunci
+        document.getElementById('panorama').addEventListener('mousedown', function() {
+            var tooltips = document.querySelectorAll('.custom-tooltip');
+            tooltips.forEach(function(t) {
+                t.classList.remove('is-visible');
+            });
+        });
+
+
+        // ==========================================
+        // KONFIGURASI PANNELLUM
+        // ==========================================
         pannellum.viewer('panorama', {
-            "type": "equirectangular",
-            "panorama": "https://kedhaton.alk-tech.my.id/1.jpeg", // Ganti URL gambar 360 kamu
-            "autoLoad": true,
-            "showControls": true
+            "default": {
+                "firstScene": "lobby",
+                "sceneFadeDuration": 1000,
+                "autoLoad": true,
+                "showControls": true,
+                "showFullscreenCtrl": true,
+                "showZoomCtrl": true
+            },
+
+            "scenes": {
+                
+                // --- SCENE 1: LOBBY ---
+                "lobby": {
+                    "title": "Lobby Utama",
+                    "type": "equirectangular",
+                    "panorama": "https://pannellum.org/images/alma.jpg",
+                    "hotSpots": [
+                        // Panah: Ke Meeting Room
+                        {
+                            "pitch": -2,
+                            "yaw": 170,
+                            "type": "scene",
+                            "sceneId": "meeting-room",
+                            "cssClass": "hotspot-nav",
+                            "createTooltipFunc": createNavTooltip,
+                            "createTooltipArgs": { text: "Ke Ruang Meeting" }
+                        },
+                        // Panah: Ke Pantry
+                        {
+                            "pitch": -5,
+                            "yaw": 5,
+                            "type": "scene",
+                            "sceneId": "pantry",
+                            "cssClass": "hotspot-nav",
+                            "createTooltipFunc": createNavTooltip,
+                            "createTooltipArgs": { text: "Ke Pantry" }
+                        },
+                        // Info: Resepsionis
+                        {
+                            "pitch": -8,
+                            "yaw": 60,
+                            "type": "info",
+                            "cssClass": "hotspot-info",
+                            "createTooltipFunc": createInfoTooltip,
+                            "createTooltipArgs": { text: "<b>Resepsionis</b>\nBuka Senin-Jumat, 08:00 - 17:00 WIB." }
+                        },
+                        // Info: Sofa
+                        {
+                            "pitch": -10,
+                            "yaw": 120,
+                            "type": "info",
+                            "cssClass": "hotspot-info",
+                            "createTooltipFunc": createInfoTooltip,
+                            "createTooltipArgs": { text: "Area tunggu tamu dengan sofa premium." }
+                        }
+                    ]
+                },
+
+                // --- SCENE 2: MEETING ROOM ---
+                "meeting-room": {
+                    "title": "Ruang Meeting",
+                    "type": "equirectangular",
+                    "panorama": "https://pannellum.org/images/from-tree.jpg",
+                    "hotSpots": [
+                        // Panah: Kembali ke Lobby
+                        {
+                            "pitch": 0,
+                            "yaw": 0,
+                            "type": "scene",
+                            "sceneId": "lobby",
+                            "cssClass": "hotspot-nav",
+                            "createTooltipFunc": createNavTooltip,
+                            "createTooltipArgs": { text: "Kembali ke Lobby" }
+                        },
+                        // Info: Proyektor
+                        {
+                            "pitch": -15,
+                            "yaw": 130,
+                            "type": "info",
+                            "cssClass": "hotspot-info",
+                            "createTooltipFunc": createInfoTooltip,
+                            "createTooltipArgs": { text: "Dilengkapi Proyektor 4K." }
+                        }
+                    ]
+                },
+
+                // --- SCENE 3: PANTRY ---
+                "pantry": {
+                    "title": "Pantry Area",
+                    "type": "equirectangular",
+                    "panorama": "https://pannellum.org/images/cerro-toco-0.jpg",
+                    "hotSpots": [
+                        // Panah: Kembali ke Lobby
+                        {
+                            "pitch": -3,
+                            "yaw": 180,
+                            "type": "scene",
+                            "sceneId": "lobby",
+                            "cssClass": "hotspot-nav",
+                            "createTooltipFunc": createNavTooltip,
+                            "createTooltipArgs": { text: "Kembali ke Lobby" }
+                        },
+                        // Info: Kopi
+                        {
+                            "pitch": -10,
+                            "yaw": 90,
+                            "type": "info",
+                            "cssClass": "hotspot-info",
+                            "createTooltipFunc": createInfoTooltip,
+                            "createTooltipArgs": { text: "Mesin Espresso Gratis." }
+                        }
+                    ]
+                }
+            }
         });
     </script>
-
 </body>
 </html>
