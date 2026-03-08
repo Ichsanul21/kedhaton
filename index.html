@@ -16,7 +16,20 @@
             --text-muted: #a1a1aa;
         }
 
-        @media (pointer: fine) { body { cursor: none; } }
+        /* 1. SEMBUNYIKAN CURSOR DEFAULT SECARA ABSOLUT DI DESKTOP */
+        @media (pointer: fine) { 
+            *, *::before, *::after { cursor: none !important; } 
+        }
+        
+        /* 2. SEMBUNYIKAN DEFAULT SCROLLBAR DI SEMUA BROWSER */
+        html, body {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        ::-webkit-scrollbar { 
+            display: none !important; /* Chrome, Safari and Opera */
+            width: 0px; background: transparent; 
+        }
         
         body {
             margin: 0; background-color: var(--darker); color: var(--text-main);
@@ -25,16 +38,39 @@
         }
 
         h1, h2, h3, h4, h5, h6, .font-space { font-family: 'Space Grotesk', sans-serif; }
-        ::-webkit-scrollbar { display: none; }
 
         /* CUSTOM CURSOR */
         .cursor-dot { position: fixed; top: 0; left: 0; width: 12px; height: 12px; background-color: var(--accent); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s; }
         .cursor-ring { position: fixed; top: 0; left: 0; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.5); border-radius: 50%; pointer-events: none; z-index: 99998; transform: translate(-50%, -50%); transition: transform 0.1s ease-out; }
-        a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 30px; height: 30px; background-color: rgba(255,69,0,0.5); }
+        a:hover ~ .cursor-dot, button:hover ~ .cursor-dot, .scroll-dot:hover ~ .cursor-dot { width: 30px; height: 30px; background-color: rgba(255,69,0,0.5); }
+
+        /* MATIKAN CUSTOM CURSOR DI TOUCHSCREEN */
+        @media (hover: none) and (pointer: coarse) {
+            .cursor-dot, .cursor-ring { display: none !important; visibility: hidden !important; }
+        }
 
         /* TEXTURES */
         .noise { position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: 0.03; background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
         
+        /* CUSTOM SCROLL NAVIGATION (DOTS) */
+        .scroll-nav { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 9990; display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: auto; }
+        /* Area klik dibesarkan (24px) agar mudah dihover, namun visual aslinya disembunyikan */
+        .scroll-dot { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; position: relative; }
+        /* Visual titik diubah super kecil (5px) via pseudo-element */
+        .scroll-dot::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.3); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        /* Efek nge-zoom memantul saat dihover */
+        .scroll-dot:hover::before { background-color: var(--accent); transform: scale(2.5); }
+        .scroll-dot.active::before { background-color: var(--accent); transform: scale(2.5); box-shadow: 0 0 10px rgba(255,69,0,0.8); }
+        
+        /* Posisi label sedikit digeser agar tidak menabrak titik yang membesar */
+        .scroll-label { position: absolute; right: 28px; top: 50%; transform: translateY(-50%) translateX(10px); color: white; font-family: 'Space Grotesk', sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; opacity: 0; pointer-events: none; transition: all 0.3s ease; white-space: nowrap; font-weight: bold; }
+        .scroll-dot:hover .scroll-label { opacity: 1; transform: translateY(-50%) translateX(0); }
+        
+        /* SEPARATOR DOTS */
+        .scroll-divider { width: 2px; height: 20px; background: rgba(255,255,255,0.1); border-radius: 2px; margin: 4px 0; }
+        .nav-section-title { font-size: 9px; color: rgba(255,255,255,0.3); font-family: 'Space Grotesk'; text-transform: uppercase; letter-spacing: 2px; writing-mode: vertical-rl; transform: rotate(180deg); margin: 5px 0; }
+
         /* IMMERSIVE MASTER */
         #cinematic-master { width: 100vw; height: 100vh; position: relative; overflow: hidden; background: var(--dark); perspective: 1200px; z-index: 10; }
         .c-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -109,10 +145,55 @@
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
+        /* ========================================================= */
+        /* RESPONSIVE OPTIMIZATIONS (Tablet & Mobile)                */
+        /* ========================================================= */
         @media (max-width: 1024px) {
-            .c-content { grid-template-columns: 1fr; gap: 2rem; padding-top: 10vh; }
+            .c-content { grid-template-columns: 1fr; gap: 2rem; padding-top: 5vh; }
             .visual-container { height: 40vh; }
-            .c-title { font-size: 3.5rem; }
+            .c-title { font-size: clamp(2.5rem, 8vw, 4rem); margin-bottom: 1rem; }
+            .c-desc { font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem; }
+        }
+
+        @media (max-width: 768px) {
+            /* Sembunyikan custom scroll nav di mobile supaya tidak memakan layar dan mengganggu swipe */
+            .scroll-nav { display: none !important; }
+
+            /* Immersive Texts & Elements */
+            .huge-text { font-size: clamp(3rem, 12vw, 5rem); }
+            .compass-svg { width: 60px; height: 60px; top: -30px; right: -15px; }
+            
+            /* Topo Scene */
+            .error-log { font-size: 0.65rem; padding: 3px 6px; }
+            .el-1 { top: 12%; left: 5%; } 
+            .el-2 { bottom: 25%; right: 5%; } 
+            .el-3 { top: 35%; right: 5%; }
+
+            /* Card 1 */
+            .visual-container { height: 35vh; }
+            .c1-img-1 { width: 85%; height: 65%; right: 0; top: 0; }
+            .c1-img-2 { width: 75%; height: 55%; left: 0; bottom: 0; }
+            .marquee-container { font-size: 1rem; bottom: 5%; width: 200vw; left: -50vw; }
+
+            /* Card 2 */
+            .c2-box { padding: 1rem; }
+            .c2-box-1 { width: 220px; top: 5%; left: 2%; }
+            .c2-box-2 { width: 240px; bottom: 5%; right: 2%; }
+            .c2-box .text-xl { font-size: 1.15rem; }
+            
+            /* Watermarks Background Adjustment */
+            .num-watermark { font-size: 45vw; left: -10%; }
+            .card-2 .num-watermark { right: -10%; }
+            
+            /* Spasi Tag */
+            .c-tag { font-size: 0.7rem; padding: 0.4rem 0.8rem; margin-bottom: 0.75rem; }
+        }
+
+        @media (max-width: 480px) {
+            .c2-box-1 { width: 180px; top: 2%; }
+            .c2-box-2 { width: 190px; bottom: 2%; }
+            .c2-box .text-sm { font-size: 0.75rem; }
+            .huge-text { font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -121,6 +202,51 @@
     <div class="noise"></div>
     <div class="cursor-dot" id="cursor-dot"></div>
     <div class="cursor-ring" id="cursor-ring"></div>
+
+    <!-- CUSTOM DOT SCROLL NAVIGATION (DIPISAH PROLOG & COMPRO) -->
+    <div class="scroll-nav" id="scroll-nav">
+        <div class="nav-section-title">PROLOGUE</div>
+        
+        <!-- Prologue Dots (Disinkronkan dengan persentase timeline) -->
+        <div class="scroll-dot prolog-dot active" data-progress="0">
+            <span class="scroll-label">Bab 1: Mimpi</span>
+        </div>
+        <div class="scroll-dot prolog-dot" data-progress="0.166">
+            <span class="scroll-label">Bab 2: Bencana</span>
+        </div>
+        <div class="scroll-dot prolog-dot" data-progress="0.416">
+            <span class="scroll-label">Kasus 01: Dev</span>
+        </div>
+        <div class="scroll-dot prolog-dot" data-progress="0.666">
+            <span class="scroll-label">Kasus 02: Privat</span>
+        </div>
+        <div class="scroll-dot prolog-dot" data-progress="0.916">
+            <span class="scroll-label">Solusi Master</span>
+        </div>
+
+        <div class="scroll-divider"></div>
+        <div class="nav-section-title">PROFILE</div>
+
+        <!-- Compro Dots (Disinkronkan dengan letak elemen) -->
+        <div class="scroll-dot compro-dot" data-target="#beranda">
+            <span class="scroll-label">Beranda</span>
+        </div>
+        <div class="scroll-dot compro-dot" data-target="#profil">
+            <span class="scroll-label">Profil</span>
+        </div>
+        <div class="scroll-dot compro-dot" data-target="#layanan">
+            <span class="scroll-label">Layanan</span>
+        </div>
+        <div class="scroll-dot compro-dot" data-target="#alur-kerja">
+            <span class="scroll-label">Metode</span>
+        </div>
+        <div class="scroll-dot compro-dot" data-target="#portofolio">
+            <span class="scroll-label">Portofolio</span>
+        </div>
+        <div class="scroll-dot compro-dot" data-target="#kontak">
+            <span class="scroll-label">Kontak</span>
+        </div>
+    </div>
 
     <div id="smooth-wrapper">
         <div id="smooth-content">
@@ -139,7 +265,7 @@
                             <svg class="compass-svg" viewBox="0 0 100 100" fill="none" stroke="white" stroke-width="1"><circle cx="50" cy="50" r="40"/><line x1="50" y1="0" x2="50" y2="100"/><line x1="0" y1="50" x2="100" y2="50"/><circle cx="50" cy="50" r="10" fill="var(--accent)"/></svg>
                             MIMPI YANG<br><span class="outline-text">SEMPURNA</span>
                         </h1>
-                        <div class="mt-8 text-xl md:text-2xl text-gray-200 max-w-2xl mx-auto font-light leading-relaxed">
+                        <div class="mt-8 text-base md:text-xl lg:text-2xl text-gray-200 max-w-2xl mx-auto font-light leading-relaxed">
                             <span class="slash-divider">//</span> Di atas kertas, desain properti Anda tampak tanpa cela. Namun, realita konstruksi tidak pernah semudah menggambar garis.
                         </div>
                     </div>
@@ -156,8 +282,8 @@
                     <div class="error-log el-2">EST. MARGIN LOSS: 45%</div>
                     <div class="error-log el-3">STRUCTURAL RISK DETECTED</div>
                     <div class="relative z-10 text-center max-w-4xl px-6 topo-text-wrap" id="topo-text-wrap">
-                        <h2 class="font-space text-5xl md:text-7xl font-bold mb-6 topo-title opacity-0 translate-y-10 text-white uppercase leading-none">SATU KESALAHAN,<br>BENCANA PANJANG.</h2>
-                        <p class="text-xl md:text-2xl text-gray-400 font-light topo-desc opacity-0 translate-y-10">Alam tidak menerima kompromi. Menyerahkan eksekusi pada pihak yang salah akan mengubah investasi miliaran menjadi mimpi buruk.</p>
+                        <h2 class="font-space text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 topo-title opacity-0 translate-y-10 text-white uppercase leading-none">SATU KESALAHAN,<br>BENCANA PANJANG.</h2>
+                        <p class="text-base sm:text-xl md:text-2xl text-gray-400 font-light topo-desc opacity-0 translate-y-10">Alam tidak menerima kompromi. Menyerahkan eksekusi pada pihak yang salah akan mengubah investasi miliaran menjadi mimpi buruk.</p>
                     </div>
                 </div>
 
@@ -207,8 +333,8 @@
                         <div class="arch-lines"></div>
                         <div class="c-content c3-content inner-3">
                             <div class="c-tag">SOLUSI // PT JAYA KEDHATON</div>
-                            <h2 class="c-title" style="font-size: clamp(3rem, 8vw, 8rem); margin-bottom: 2rem;">THE SPECIALIST.</h2>
-                            <p class="c-desc mx-auto" style="font-size: 1.15rem; max-w: 800px;">Kami hadir untuk menghentikan perjudian dalam proyek Anda. Sebagai spesialis rekayasa konstruksi, PT Jaya Kedhaton menerapkan metodologi presisi tinggi dan mitigasi risiko struktural sejak hari pertama. Kami mengambil alih kerumitan manajemen logistik, mengendalikan pembengkakan anggaran, dan memastikan eksekusi lapangan berjalan 100% sesuai <i>blueprint</i>. <br><strong class="text-white text-2xl mt-6 block tracking-widest">PRESISI ABSOLUT. NOL KESALAHAN.</strong></p>
+                            <h2 class="c-title" style="font-size: clamp(2.5rem, 8vw, 8rem); margin-bottom: 1.5rem md:margin-bottom: 2rem;">THE SPECIALIST.</h2>
+                            <p class="c-desc mx-auto" style="font-size: clamp(0.95rem, 2vw, 1.15rem); max-w: 800px;">Kami hadir untuk menghentikan perjudian dalam proyek Anda. Sebagai spesialis rekayasa konstruksi, PT Jaya Kedhaton menerapkan metodologi presisi tinggi dan mitigasi risiko struktural sejak hari pertama. Kami mengambil alih kerumitan manajemen logistik, mengendalikan pembengkakan anggaran, dan memastikan eksekusi lapangan berjalan 100% sesuai <i>blueprint</i>. <br><strong class="text-white text-lg md:text-2xl mt-4 md:mt-6 block tracking-widest">PRESISI ABSOLUT. NOL KESALAHAN.</strong></p>
                         </div>
                     </div>
                 </div>
@@ -219,10 +345,10 @@
             <!-- ========================================= -->
             <main id="compro-main">
                 
-                <!-- MORPHING NAVBAR WRAPPER (Pembatas Section -> Kapsul) -->
+                <!-- MORPHING NAVBAR WRAPPER -->
                 <div id="nav-wrapper" class="sticky top-0 z-[5000] flex justify-center w-full transition-all duration-700 ease-out">
-                    <nav id="main-nav" class="w-full bg-black/90 backdrop-blur-lg border-b border-white/10 px-10 py-5 flex items-center justify-between transition-all duration-700 ease-out">
-                        <div class="font-space font-bold text-white tracking-widest text-lg flex items-center gap-2 shrink-0">
+                    <nav id="main-nav" class="w-full bg-black/90 backdrop-blur-lg border-b border-white/10 px-6 md:px-10 py-4 md:py-5 flex items-center justify-between transition-all duration-700 ease-out">
+                        <div class="font-space font-bold text-white tracking-widest text-base md:text-lg flex items-center gap-2 shrink-0">
                             <span class="w-2 h-2 rounded-full bg-orange-500"></span> JK
                         </div>
                         <ul class="hidden md:flex items-center justify-center w-full gap-12 font-space text-sm text-gray-300 uppercase tracking-wider">
@@ -230,7 +356,8 @@
                             <li><a href="#layanan" class="hover:text-orange-500 transition-colors">Layanan</a></li>
                             <li><a href="#portofolio" class="hover:text-orange-500 transition-colors">Portofolio</a></li>
                         </ul>
-                        <a href="#kontak" class="bg-orange-500 text-black font-space font-bold px-6 py-3 rounded-full text-sm hover:bg-orange-400 transition-colors uppercase whitespace-nowrap shrink-0">Hubungi Kami</a>
+                        <!-- Tombol CTA disesuaikan ukuran di mobile agar tidak overflow -->
+                        <a href="#kontak" class="bg-orange-500 text-black font-space font-bold px-4 py-2 text-xs md:px-6 md:py-3 md:text-sm rounded-full hover:bg-orange-400 transition-colors uppercase whitespace-nowrap shrink-0">Hubungi Kami</a>
                     </nav>
                 </div>
 
@@ -241,37 +368,38 @@
                         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-var(--darker) to-var(--darker)"></div>
                     </div>
                     <div class="relative z-10 text-center max-w-5xl mx-auto pt-16">
-                        <div class="w-16 h-1 bg-orange-500 mx-auto mb-8 gs-hero-in"></div>
-                        <h1 class="font-space text-5xl md:text-7xl lg:text-8xl font-black uppercase leading-[0.9] text-white mb-8 gs-hero-in">
-                            Infrastruktur Kokoh,<br><span class="text-transparent" style="-webkit-text-stroke: 2px rgba(255,255,255,0.8);">Masa Depan Cemerlang</span>
+                        <div class="w-16 h-1 bg-orange-500 mx-auto mb-6 md:mb-8 gs-hero-in"></div>
+                        <!-- Ukuran Font Hero disesuaikan secara proporsional di Mobile -->
+                        <h1 class="font-space text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black uppercase leading-[1.1] md:leading-[0.9] text-white mb-6 md:mb-8 gs-hero-in">
+                            Infrastruktur Kokoh,<br><span class="text-transparent block mt-2 md:mt-0" style="-webkit-text-stroke: 2px rgba(255,255,255,0.8);">Masa Depan Cemerlang</span>
                         </h1>
-                        <p class="text-xl text-gray-400 font-light leading-relaxed max-w-4xl mx-auto gs-hero-in">
+                        <p class="text-base sm:text-lg md:text-xl text-gray-400 font-light leading-relaxed max-w-4xl mx-auto gs-hero-in">
                             Wujudkan visi pembangunan Anda bersama <strong class="text-white">PT Jaya Kedhaton</strong>. Spesialis konstruksi jalan, jembatan, dan infrastruktur perkebunan sawit dengan standar <strong>ISO 9001 & SMK3</strong>.
                         </p>
                     </div>
                 </section>
 
                 <!-- PROFIL PERUSAHAAN -->
-                <section class="py-24 px-6 border-t border-white/5 bg-[#080808] relative z-20" id="profil">
-                    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-                        <div class="gs-reveal">
-                            <h4 class="text-orange-500 font-space tracking-widest uppercase text-sm mb-4">// Identitas Korporat</h4>
-                            <h2 class="font-space text-4xl md:text-5xl font-bold uppercase mb-6 text-white">Fondasi Bisnis Anda.</h2>
-                            <p class="text-gray-400 text-lg leading-relaxed mb-8">
+                <section class="py-16 md:py-24 px-6 border-t border-white/5 bg-[#080808] relative z-20" id="profil">
+                    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                        <div class="gs-reveal order-2 lg:order-1">
+                            <h4 class="text-orange-500 font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Identitas Korporat</h4>
+                            <h2 class="font-space text-3xl sm:text-4xl md:text-5xl font-bold uppercase mb-6 text-white">Fondasi Bisnis Anda.</h2>
+                            <p class="text-gray-400 text-base md:text-lg leading-relaxed mb-8">
                                 Berakar di Samarinda, Kalimantan Timur, PT Jaya Kedhaton adalah entitas konstruksi berlisensi <strong>GAPEKSINDO</strong> yang mendedikasikan diri pada presisi rekayasa infrastruktur berat komersial dan industri.
                             </p>
-                            <div class="grid grid-cols-2 gap-8 border-t border-gray-800 pt-8">
+                            <div class="grid grid-cols-2 gap-6 md:gap-8 border-t border-gray-800 pt-8">
                                 <div>
-                                    <div class="text-4xl font-space font-black text-white mb-2">ISO 9001</div>
-                                    <div class="text-sm text-gray-500 uppercase tracking-wider">Quality Management</div>
+                                    <div class="text-3xl md:text-4xl font-space font-black text-white mb-2">ISO 9001</div>
+                                    <div class="text-xs md:text-sm text-gray-500 uppercase tracking-wider">Quality Management</div>
                                 </div>
                                 <div>
-                                    <div class="text-4xl font-space font-black text-white mb-2">SMK3</div>
-                                    <div class="text-sm text-gray-500 uppercase tracking-wider">Safety Excellence</div>
+                                    <div class="text-3xl md:text-4xl font-space font-black text-white mb-2">SMK3</div>
+                                    <div class="text-xs md:text-sm text-gray-500 uppercase tracking-wider">Safety Excellence</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="relative h-[500px] rounded-2xl overflow-hidden gs-reveal">
+                        <div class="relative h-[350px] md:h-[500px] rounded-2xl overflow-hidden gs-reveal order-1 lg:order-2">
                             <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover filter grayscale hover:grayscale-0 transition duration-700" alt="Heavy Machinery">
                             <div class="absolute inset-0 border-4 border-orange-500/20 rounded-2xl pointer-events-none scale-95"></div>
                         </div>
@@ -279,65 +407,65 @@
                 </section>
 
                 <!-- LAYANAN PERUSAHAAN -->
-                <section class="py-24 px-6 bg-var(--darker) relative z-20" id="layanan">
+                <section class="py-16 md:py-24 px-6 bg-var(--darker) relative z-20" id="layanan">
                     <div class="max-w-7xl mx-auto">
-                        <div class="text-center mb-20 gs-reveal">
-                            <h4 class="text-orange-500 font-space tracking-widest uppercase text-sm mb-4">// Kapabilitas Eksekusi</h4>
-                            <h2 class="font-space text-4xl md:text-6xl font-bold uppercase text-white">Layanan Spesialis.</h2>
+                        <div class="text-center mb-16 md:mb-20 gs-reveal">
+                            <h4 class="text-orange-500 font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Kapabilitas Eksekusi</h4>
+                            <h2 class="font-space text-3xl sm:text-4xl md:text-6xl font-bold uppercase text-white">Layanan Spesialis.</h2>
                         </div>
                         
-                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             <!-- Konstruksi Gedung -->
-                            <div class="c-card p-8 rounded-2xl gs-reveal">
-                                <div class="w-14 h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
-                                    <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
+                                <div class="w-12 h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
+                                    <svg class="w-6 h-6 md:w-7 md:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                                 </div>
-                                <h3 class="font-space text-xl font-bold text-white mb-3 uppercase">Konstruksi Gedung</h3>
+                                <h3 class="font-space text-lg md:text-xl font-bold text-white mb-3 uppercase">Konstruksi Gedung</h3>
                                 <p class="text-gray-400 leading-relaxed text-sm">Gedung hunian, perkantoran komersial, fasilitas pendidikan, dan infrastruktur bangunan publik terintegrasi.</p>
                             </div>
                             
                             <!-- Bangunan Sipil -->
-                            <div class="c-card p-8 rounded-2xl gs-reveal">
-                                <div class="w-14 h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
-                                    <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
+                            <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
+                                <div class="w-12 h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
+                                    <svg class="w-6 h-6 md:w-7 md:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
                                 </div>
-                                <h3 class="font-space text-xl font-bold text-white mb-3 uppercase">Bangunan Sipil</h3>
+                                <h3 class="font-space text-lg md:text-xl font-bold text-white mb-3 uppercase">Bangunan Sipil</h3>
                                 <p class="text-gray-400 leading-relaxed text-sm">Rekayasa struktural tinggi mencakup pembangunan jembatan, jalan layang (<i>flyover</i>), dan <i>underpass</i> perkotaan.</p>
                             </div>
                             
                             <!-- Instalasi MEP -->
-                            <div class="c-card p-8 rounded-2xl gs-reveal">
-                                <div class="w-14 h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
-                                    <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
+                                <div class="w-12 h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
+                                    <svg class="w-6 h-6 md:w-7 md:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                                 </div>
-                                <h3 class="font-space text-xl font-bold text-white mb-3 uppercase">Instalasi MEP</h3>
+                                <h3 class="font-space text-lg md:text-xl font-bold text-white mb-3 uppercase">Instalasi MEP</h3>
                                 <p class="text-gray-400 leading-relaxed text-sm">Pengembangan jaringan terpadu (Mechanical, Electrical, Plumbing), kelistrikan gedung, dan tata kelola suhu.</p>
                             </div>
 
                             <!-- Jalan Raya -->
-                            <div class="c-card p-8 rounded-2xl gs-reveal">
-                                <div class="w-14 h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
-                                    <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17l6-6-6-6"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"></path></svg>
+                            <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
+                                <div class="w-12 h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
+                                    <svg class="w-6 h-6 md:w-7 md:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17l6-6-6-6"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"></path></svg>
                                 </div>
-                                <h3 class="font-space text-xl font-bold text-white mb-3 uppercase">Jalan Raya</h3>
+                                <h3 class="font-space text-lg md:text-xl font-bold text-white mb-3 uppercase">Jalan Raya</h3>
                                 <p class="text-gray-400 leading-relaxed text-sm">Pembuatan dan pengaspalan infrastruktur jalan tol, jalan arteri provinsi, hingga akses vital kawasan pelabuhan.</p>
                             </div>
 
                             <!-- Perkebunan Sawit -->
-                            <div class="c-card p-8 rounded-2xl gs-reveal">
-                                <div class="w-14 h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
-                                    <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                            <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
+                                <div class="w-12 h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
+                                    <svg class="w-6 h-6 md:w-7 md:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                                 </div>
-                                <h3 class="font-space text-xl font-bold text-white mb-3 uppercase">Perkebunan Sawit</h3>
+                                <h3 class="font-space text-lg md:text-xl font-bold text-white mb-3 uppercase">Perkebunan Sawit</h3>
                                 <p class="text-gray-400 leading-relaxed text-sm">Spesialisasi pembukaan lahan (<i>land clearing</i>), pembuatan terasering, drainase, dan infrastruktur kawasan sawit.</p>
                             </div>
 
                             <!-- Sumber Daya Air -->
-                            <div class="c-card p-8 rounded-2xl gs-reveal">
-                                <div class="w-14 h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
-                                    <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2C8 6 4 11.5 4 16a8 8 0 0016 0c0-4.5-4-10-8-14z"></path></svg>
+                            <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
+                                <div class="w-12 h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
+                                    <svg class="w-6 h-6 md:w-7 md:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2C8 6 4 11.5 4 16a8 8 0 0016 0c0-4.5-4-10-8-14z"></path></svg>
                                 </div>
-                                <h3 class="font-space text-xl font-bold text-white mb-3 uppercase">Sumber Daya Air</h3>
+                                <h3 class="font-space text-lg md:text-xl font-bold text-white mb-3 uppercase">Sumber Daya Air</h3>
                                 <p class="text-gray-400 leading-relaxed text-sm">Manajemen tata air, instalasi perpipaan raksasa, stasiun pompa, serta pengolahan instalasi air minum bersih.</p>
                             </div>
                         </div>
@@ -345,31 +473,31 @@
                 </section>
 
                 <!-- ALUR KERJA -->
-                <section class="py-24 px-6 bg-[#080808] relative z-20" id="alur-kerja">
+                <section class="py-16 md:py-24 px-6 bg-[#080808] relative z-20" id="alur-kerja">
                     <div class="max-w-4xl mx-auto">
-                        <div class="mb-16 gs-reveal">
-                            <h4 class="text-orange-500 font-space tracking-widest uppercase text-sm mb-4">// Metodologi</h4>
-                            <h2 class="font-space text-4xl md:text-5xl font-bold uppercase text-white">Proses Kerja Absolut.</h2>
+                        <div class="mb-12 md:mb-16 gs-reveal">
+                            <h4 class="text-orange-500 font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Metodologi</h4>
+                            <h2 class="font-space text-3xl sm:text-4xl md:text-5xl font-bold uppercase text-white">Proses Kerja Absolut.</h2>
                         </div>
-                        <div class="ml-4 border-l border-gray-800">
-                            <div class="work-step mb-12 gs-reveal">
+                        <div class="ml-2 md:ml-4 border-l border-gray-800">
+                            <div class="work-step mb-10 md:mb-12 gs-reveal">
                                 <div class="step-dot"></div>
-                                <h3 class="font-space text-2xl font-bold text-white uppercase mb-2">01. Analisis Topografi & Mitigasi</h3>
+                                <h3 class="font-space text-xl md:text-2xl font-bold text-white uppercase mb-2">01. Analisis Topografi & Mitigasi</h3>
                                 <p class="text-gray-400 text-sm max-w-xl">Pemetaan area secara presisi tinggi untuk mengidentifikasi anomali tanah dan menghitung estimasi risiko sebelum garis pertama ditarik.</p>
                             </div>
-                            <div class="work-step mb-12 gs-reveal">
+                            <div class="work-step mb-10 md:mb-12 gs-reveal">
                                 <div class="step-dot"></div>
-                                <h3 class="font-space text-2xl font-bold text-white uppercase mb-2">02. Blueprint Rekayasa</h3>
+                                <h3 class="font-space text-xl md:text-2xl font-bold text-white uppercase mb-2">02. Blueprint Rekayasa</h3>
                                 <p class="text-gray-400 text-sm max-w-xl">Penyusunan desain teknis, struktur beton, dan perhitungan RAB (Rencana Anggaran Biaya) yang transparan dan efisien.</p>
                             </div>
-                            <div class="work-step mb-12 gs-reveal">
+                            <div class="work-step mb-10 md:mb-12 gs-reveal">
                                 <div class="step-dot"></div>
-                                <h3 class="font-space text-2xl font-bold text-white uppercase mb-2">03. Eksekusi Lapangan & K3</h3>
+                                <h3 class="font-space text-xl md:text-2xl font-bold text-white uppercase mb-2">03. Eksekusi Lapangan & K3</h3>
                                 <p class="text-gray-400 text-sm max-w-xl">Mobilisasi alat berat dan tenaga ahli dengan kepatuhan mutlak terhadap Sistem Manajemen Keselamatan dan Kesehatan Kerja (SMK3).</p>
                             </div>
                             <div class="work-step gs-reveal">
                                 <div class="step-dot"></div>
-                                <h3 class="font-space text-2xl font-bold text-white uppercase mb-2">04. Serah Terima & Quality Assurance</h3>
+                                <h3 class="font-space text-xl md:text-2xl font-bold text-white uppercase mb-2">04. Serah Terima & Quality Assurance</h3>
                                 <p class="text-gray-400 text-sm max-w-xl">Inspeksi akhir kualitas fisik, uji kelayakan, dan penyerahan proyek dengan sertifikasi garansi pekerjaan (ISO 9001 standard).</p>
                             </div>
                         </div>
@@ -377,12 +505,12 @@
                 </section>
 
                 <!-- PORTOFOLIO -->
-                <section class="py-24 px-6 bg-var(--darker) relative z-20" id="portofolio">
+                <section class="py-16 md:py-24 px-6 bg-var(--darker) relative z-20" id="portofolio">
                     <div class="max-w-7xl mx-auto">
-                        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 gs-reveal">
+                        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 gap-6 gs-reveal">
                             <div>
-                                <h4 class="text-orange-500 font-space tracking-widest uppercase text-sm mb-4">// Track Record B2B</h4>
-                                <h2 class="font-space text-4xl md:text-6xl font-bold uppercase text-white">Bukti Nyata.</h2>
+                                <h4 class="text-orange-500 font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Track Record B2B</h4>
+                                <h2 class="font-space text-3xl sm:text-4xl md:text-6xl font-bold uppercase text-white">Bukti Nyata.</h2>
                             </div>
                             <div class="text-gray-400 text-sm max-w-xs text-right hidden md:block">
                                 Kami mengeksekusi visi Anda menjadi beton dan baja yang berdiri kokoh menghadapi waktu.
@@ -391,21 +519,21 @@
                         <div class="grid md:grid-cols-2 gap-8">
                             <!-- Proyek 1 -->
                             <div class="port-card group gs-reveal">
-                                <div class="h-[400px] relative overflow-hidden">
+                                <div class="h-[300px] md:h-[400px] relative overflow-hidden">
                                     <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1000&auto=format&fit=crop" class="port-img w-full h-full object-cover filter grayscale hover:grayscale-0" alt="Hauling Road">
-                                    <div class="port-overlay absolute inset-0 flex flex-col justify-end p-8">
+                                    <div class="port-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                                         <div class="text-orange-500 font-space text-xs tracking-widest uppercase mb-2">Jalan Hauling Tambang</div>
-                                        <h3 class="text-2xl font-bold text-white font-space uppercase">PT Bayan Resources Tbk</h3>
+                                        <h3 class="text-xl md:text-2xl font-bold text-white font-space uppercase">PT Bayan Resources Tbk</h3>
                                     </div>
                                 </div>
                             </div>
                             <!-- Proyek 2 -->
                             <div class="port-card group gs-reveal mt-0 md:mt-16">
-                                <div class="h-[400px] relative overflow-hidden">
+                                <div class="h-[300px] md:h-[400px] relative overflow-hidden">
                                     <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1000&auto=format&fit=crop" class="port-img w-full h-full object-cover filter grayscale hover:grayscale-0" alt="Bridge Construction">
-                                    <div class="port-overlay absolute inset-0 flex flex-col justify-end p-8">
+                                    <div class="port-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                                         <div class="text-orange-500 font-space text-xs tracking-widest uppercase mb-2">Konstruksi Publik</div>
-                                        <h3 class="text-2xl font-bold text-white font-space uppercase">Jembatan Long Penjalin</h3>
+                                        <h3 class="text-xl md:text-2xl font-bold text-white font-space uppercase">Jembatan Long Penjalin</h3>
                                     </div>
                                 </div>
                             </div>
@@ -414,49 +542,49 @@
                 </section>
 
                 <!-- CONTACT FORM -->
-                <section class="py-32 px-6 bg-[#080808] relative z-20" id="kontak">
-                    <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-16">
+                <section class="py-20 md:py-32 px-6 bg-[#080808] relative z-20" id="kontak">
+                    <div class="max-w-5xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-16">
                         <div class="gs-reveal">
-                            <h2 class="font-space text-5xl md:text-7xl font-bold uppercase text-white mb-6">Mulai<br>Proyek Anda.</h2>
-                            <p class="text-gray-400 mb-12">Konsultasikan kebutuhan infrastruktur Anda. Tim *engineering* kami siap memberikan analisis awal dan estimasi rancangan.</p>
+                            <h2 class="font-space text-4xl sm:text-5xl md:text-7xl font-bold uppercase text-white mb-6">Mulai<br>Proyek Anda.</h2>
+                            <p class="text-gray-400 mb-10 md:mb-12 text-sm md:text-base">Konsultasikan kebutuhan infrastruktur Anda. Tim *engineering* kami siap memberikan analisis awal dan estimasi rancangan.</p>
                             
                             <div class="space-y-6">
                                 <div class="flex items-start gap-4">
                                     <svg class="w-6 h-6 text-orange-500 shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                     <div>
-                                        <div class="font-bold text-white font-space">Kantor Pusat</div>
-                                        <div class="text-gray-400 text-sm">Jl. AW Syahranie No. 36 A,<br>Samarinda 75123, Kalimantan Timur.</div>
+                                        <div class="font-bold text-white font-space text-sm md:text-base">Kantor Pusat</div>
+                                        <div class="text-gray-400 text-xs md:text-sm">Jl. AW Syahranie No. 36 A,<br>Samarinda 75123, Kalimantan Timur.</div>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-4">
                                     <svg class="w-6 h-6 text-orange-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                    <div class="text-gray-400 text-sm">corporate@jayakedhaton.co.id</div>
+                                    <div class="text-gray-400 text-xs md:text-sm">corporate@jayakedhaton.co.id</div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="bg-[#111] p-8 md:p-12 rounded-2xl border border-gray-800 gs-reveal">
-                            <form onsubmit="event.preventDefault();" class="space-y-8">
+                        <div class="bg-[#111] p-6 sm:p-8 md:p-12 rounded-2xl border border-gray-800 gs-reveal">
+                            <form onsubmit="event.preventDefault();" class="space-y-6 md:space-y-8">
                                 <div>
-                                    <label class="text-xs text-gray-500 font-space tracking-widest uppercase">Nama Perusahaan / Instansi</label>
-                                    <input type="text" class="input-b2b" placeholder="Contoh: PT Bangun Persada">
+                                    <label class="text-[10px] md:text-xs text-gray-500 font-space tracking-widest uppercase">Nama Perusahaan / Instansi</label>
+                                    <input type="text" class="input-b2b text-sm md:text-base" placeholder="Contoh: PT Bangun Persada">
                                 </div>
                                 <div>
-                                    <label class="text-xs text-gray-500 font-space tracking-widest uppercase">Email Representatif</label>
-                                    <input type="email" class="input-b2b" placeholder="email@perusahaan.com">
+                                    <label class="text-[10px] md:text-xs text-gray-500 font-space tracking-widest uppercase">Email Representatif</label>
+                                    <input type="email" class="input-b2b text-sm md:text-base" placeholder="email@perusahaan.com">
                                 </div>
                                 <div>
-                                    <label class="text-xs text-gray-500 font-space tracking-widest uppercase">Rincian Kebutuhan Proyek</label>
-                                    <textarea class="input-b2b min-h-[100px] resize-none" placeholder="Deskripsikan lokasi, jenis infrastruktur, dan timeline..."></textarea>
+                                    <label class="text-[10px] md:text-xs text-gray-500 font-space tracking-widest uppercase">Rincian Kebutuhan Proyek</label>
+                                    <textarea class="input-b2b text-sm md:text-base min-h-[100px] resize-none" placeholder="Deskripsikan lokasi, jenis infrastruktur, dan timeline..."></textarea>
                                 </div>
-                                <button class="w-full bg-white text-black font-space font-bold uppercase tracking-widest py-4 hover:bg-orange-500 hover:text-white transition-colors duration-300">Kirim Permintaan</button>
+                                <button class="w-full bg-white text-black font-space font-bold uppercase tracking-widest py-3 md:py-4 text-xs md:text-sm hover:bg-orange-500 hover:text-white transition-colors duration-300">Kirim Permintaan</button>
                             </form>
                         </div>
                     </div>
                 </section>
                 
                 <!-- FOOTER -->
-                <footer class="py-8 text-center text-gray-600 text-xs font-space uppercase tracking-widest border-t border-gray-900 bg-black relative z-20">
+                <footer class="py-6 md:py-8 text-center text-gray-600 text-[10px] md:text-xs font-space uppercase tracking-widest border-t border-gray-900 bg-black relative z-20">
                     &copy; 2026 PT JAYA KEDHATON. ALL RIGHTS RESERVED.
                 </footer>
 
@@ -470,9 +598,17 @@
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
 
     <script>
+        // =========================================================
+        // TOUCHSCREEN CURSOR KILLER (JS FALLBACK)
+        // =========================================================
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            document.getElementById('cursor-dot').style.display = 'none';
+            document.getElementById('cursor-ring').style.display = 'none';
+        }
+
         gsap.registerPlugin(ScrollTrigger);
 
-        // Custom Cursor
+        // Custom Cursor Tracker
         const cursorDot = document.getElementById("cursor-dot");
         const cursorRing = document.getElementById("cursor-ring");
         window.addEventListener("mousemove", (e) => {
@@ -561,35 +697,32 @@
         // 2. COMPRO LOGIC: NAVBAR MORPHING & HERO STOPPER
         // =========================================================
         
-        // A) Morphing Navbar Pembatas -> Kapsul
+        // A) Morphing Navbar
         ScrollTrigger.create({
             trigger: "#nav-wrapper",
-            start: "top top", // Begitu nav-wrapper menyentuh pucuk layar atas
+            start: "top top",
             onEnter: () => {
                 const nav = document.getElementById("main-nav");
-                // Lepas wujud Full Bar Pembatas
-                nav.classList.remove("w-full", "bg-black/90", "border-b", "rounded-none", "px-10", "py-5");
-                // Menjadi wujud Kapsul
-                nav.classList.add("w-[90%]", "max-w-6xl", "bg-[#0f0f0f]/80", "border", "rounded-full", "mt-6", "shadow-2xl", "px-12", "py-3");
+                nav.classList.remove("w-full", "bg-black/90", "border-b", "rounded-none", "px-6", "md:px-10", "py-4", "md:py-5");
+                nav.classList.add("w-[95%]", "md:w-[90%]", "max-w-6xl", "bg-[#0f0f0f]/80", "border", "rounded-full", "mt-4", "md:mt-6", "shadow-2xl", "px-6", "md:px-12", "py-3");
             },
             onLeaveBack: () => {
                 const nav = document.getElementById("main-nav");
-                // Kembali jadi wujud Full Bar Pembatas saat di-scroll naik
-                nav.classList.add("w-full", "bg-black/90", "border-b", "rounded-none", "px-10", "py-5");
-                nav.classList.remove("w-[90%]", "max-w-6xl", "bg-[#0f0f0f]/80", "border", "rounded-full", "mt-6", "shadow-2xl", "px-12", "py-6");
+                nav.classList.add("w-full", "bg-black/90", "border-b", "rounded-none", "px-6", "md:px-10", "py-4", "md:py-5");
+                nav.classList.remove("w-[95%]", "md:w-[90%]", "max-w-6xl", "bg-[#0f0f0f]/80", "border", "rounded-full", "mt-4", "md:mt-6", "shadow-2xl", "px-6", "md:px-12", "py-3");
             }
         });
 
         // B) Hero Compro Stopper (Pin)
         ScrollTrigger.create({
             trigger: "#beranda",
-            start: "top top", // Ngunci pas hero Compro di layar penuh
-            end: "+=1500",    // Ngunci/Stopper selama user men-scroll 1500px ke bawah
+            start: "top top", 
+            end: "+=1500",    
             pin: true,
-            pinSpacing: true  // Mendorong section di bawahnya agar tidak numpuk
+            pinSpacing: true  
         });
 
-        // Animasi teks masuk pada Hero Compro saat layar mengunci
+        // Animasi teks masuk pada Hero
         gsap.from(".gs-hero-in", {
             y: 60, opacity: 0, duration: 1.2, stagger: 0.2, ease: "power4.out",
             scrollTrigger: {
@@ -598,16 +731,13 @@
             }
         });
 
-        // C) Fade-Ups element Compro (Profil, Layanan, Portofolio)
+        // C) Fade-Ups element Compro
         const revealElements = gsap.utils.toArray('.gs-reveal');
         revealElements.forEach((elem) => {
             gsap.fromTo(elem, 
                 { y: 50, opacity: 0 }, 
                 {
-                    y: 0, 
-                    opacity: 1,
-                    duration: 1,
-                    ease: "power3.out",
+                    y: 0, opacity: 1, duration: 1, ease: "power3.out",
                     scrollTrigger: {
                         trigger: elem,
                         start: "top 85%",
@@ -615,6 +745,64 @@
                     }
                 }
             );
+        });
+
+
+        // =========================================================
+        // 3. DOT SCROLL NAVIGATION (TRACKER 2 BAGIAN: PROLOG & COMPRO)
+        // =========================================================
+        const allDots = document.querySelectorAll('.scroll-dot');
+        const prologDots = document.querySelectorAll('.prolog-dot');
+        const comproDots = document.querySelectorAll('.compro-dot');
+
+        function clearAllDots() {
+            allDots.forEach(d => d.classList.remove('active'));
+        }
+
+        // --- 3A. LOGIKA KLIK & UPDATE DOTS PROLOGUE (TIMELINE SCRUB) ---
+        prologDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const prog = parseFloat(dot.getAttribute('data-progress'));
+                const st = tlMaster.scrollTrigger;
+                // Kalkulasi scroll yang tepat di dalam section pinned
+                const targetScroll = st.start + (prog * (st.end - st.start));
+                lenis.scrollTo(targetScroll, { duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+            });
+        });
+
+        // Hook ke update timeline utama untuk menghidupkan Dot yang relevan sesuai chapter
+        tlMaster.eventCallback("onUpdate", function() {
+            // Hanya jalankan jika user sedang berada di zona Master Cinematic
+            if (!tlMaster.scrollTrigger.isActive) return;
+            
+            const prog = this.progress();
+            clearAllDots();
+            
+            if (prog < 0.1) prologDots[0].classList.add('active'); // Hero
+            else if (prog < 0.3) prologDots[1].classList.add('active'); // Topo
+            else if (prog < 0.55) prologDots[2].classList.add('active'); // Kasus 1
+            else if (prog < 0.8) prologDots[3].classList.add('active'); // Kasus 2
+            else prologDots[4].classList.add('active'); // Solusi Final
+        });
+
+        // --- 3B. LOGIKA KLIK & UPDATE DOTS COMPRO (NORMAL SCROLL) ---
+        comproDots.forEach(dot => {
+            const targetId = dot.getAttribute('data-target');
+            const targetElement = document.querySelector(targetId);
+
+            dot.addEventListener('click', () => {
+                lenis.scrollTo(targetId, { duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+            });
+
+            if (targetElement) {
+                ScrollTrigger.create({
+                    trigger: targetElement,
+                    start: "top 50%", 
+                    end: "bottom 50%", 
+                    onEnter: () => { clearAllDots(); dot.classList.add('active'); },
+                    onEnterBack: () => { clearAllDots(); dot.classList.add('active'); }
+                });
+            }
         });
 
     </script>
