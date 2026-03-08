@@ -16,20 +16,16 @@
             --text-muted: #a1a1aa;
         }
 
-        /* 1. SEMBUNYIKAN CURSOR DEFAULT SECARA ABSOLUT DI DESKTOP */
+        /* 1. SEMBUNYIKAN CURSOR DEFAULT DI DESKTOP */
         @media (pointer: fine) { 
             *, *::before, *::after { cursor: none !important; } 
         }
         
-        /* 2. SEMBUNYIKAN DEFAULT SCROLLBAR DI SEMUA BROWSER */
+        /* 2. SCROLLBAR & BASIC RESET */
         html, body {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none; scrollbar-width: none;
         }
-        ::-webkit-scrollbar { 
-            display: none !important; /* Chrome, Safari and Opera */
-            width: 0px; background: transparent; 
-        }
+        ::-webkit-scrollbar { display: none !important; width: 0px; background: transparent; }
         
         body {
             margin: 0; background-color: var(--darker); color: var(--text-main);
@@ -42,7 +38,6 @@
         /* CUSTOM CURSOR */
         .cursor-dot { position: fixed; top: 0; left: 0; width: 12px; height: 12px; background-color: var(--accent); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s; }
         .cursor-ring { position: fixed; top: 0; left: 0; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.5); border-radius: 50%; pointer-events: none; z-index: 99998; transform: translate(-50%, -50%); transition: transform 0.1s ease-out; }
-        a:hover ~ .cursor-dot, button:hover ~ .cursor-dot, .scroll-dot:hover ~ .cursor-dot { width: 30px; height: 30px; background-color: rgba(255,69,0,0.5); }
 
         /* MATIKAN CUSTOM CURSOR DI TOUCHSCREEN */
         @media (hover: none) and (pointer: coarse) {
@@ -54,25 +49,22 @@
         
         /* CUSTOM SCROLL NAVIGATION (DOTS) */
         .scroll-nav { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 9990; display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: auto; }
-        /* Area klik dibesarkan (24px) agar mudah dihover, namun visual aslinya disembunyikan */
         .scroll-dot { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; position: relative; }
-        /* Visual titik diubah super kecil (5px) via pseudo-element */
         .scroll-dot::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.3); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        
-        /* Efek nge-zoom memantul saat dihover */
         .scroll-dot:hover::before { background-color: var(--accent); transform: scale(2.5); }
         .scroll-dot.active::before { background-color: var(--accent); transform: scale(2.5); box-shadow: 0 0 10px rgba(255,69,0,0.8); }
-        
-        /* Posisi label sedikit digeser agar tidak menabrak titik yang membesar */
         .scroll-label { position: absolute; right: 28px; top: 50%; transform: translateY(-50%) translateX(10px); color: white; font-family: 'Space Grotesk', sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; opacity: 0; pointer-events: none; transition: all 0.3s ease; white-space: nowrap; font-weight: bold; }
         .scroll-dot:hover .scroll-label { opacity: 1; transform: translateY(-50%) translateX(0); }
-        
-        /* SEPARATOR DOTS */
         .scroll-divider { width: 2px; height: 20px; background: rgba(255,255,255,0.1); border-radius: 2px; margin: 4px 0; }
         .nav-section-title { font-size: 9px; color: rgba(255,255,255,0.3); font-family: 'Space Grotesk'; text-transform: uppercase; letter-spacing: 2px; writing-mode: vertical-rl; transform: rotate(180deg); margin: 5px 0; }
 
-        /* IMMERSIVE MASTER */
-        #cinematic-master { width: 100vw; height: 100vh; position: relative; overflow: hidden; background: var(--dark); perspective: 1200px; z-index: 10; }
+        /* IMMERSIVE MASTER - FIX MOBILE VIEWPORT */
+        #cinematic-master { 
+            width: 100vw; 
+            /* Menggunakan dvh (dynamic viewport height) agar tidak ketutup address bar di mobile */
+            height: 100dvh; 
+            position: relative; overflow: hidden; background: var(--dark); perspective: 1200px; z-index: 10; 
+        }
         .c-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 
         #scene-hero { z-index: 100; background: var(--dark); }
@@ -124,7 +116,7 @@
         .arch-lines::before { top: 0; bottom: 0; left: 50%; width: 1px; }
         .arch-lines::after { left: 0; right: 0; top: 50%; height: 1px; }
 
-        /* COMPRO SECTION SPECIFICS */
+        /* COMPRO SECTION */
         #compro-main { position: relative; z-index: 20; background: var(--darker); }
         
         .c-card { background: #0a0a0a; border: 1px solid #1a1a1a; transition: all 0.4s ease; }
@@ -146,7 +138,112 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* ========================================================= */
-        /* RESPONSIVE OPTIMIZATIONS (Tablet & Mobile)                */
+        /* MOBILE NAVBAR & BURGER MENU STYLES                        */
+        /* ========================================================= */
+        
+        /* Tombol Burger (Hanya muncul di mobile) */
+        .burger-btn {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 5100;
+        }
+        @media (max-width: 767px) {
+            .burger-btn { display: flex; }
+        }
+
+        .burger-line {
+            width: 24px;
+            height: 2px;
+            background: white;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .burger-line::before, .burger-line::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 2px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        .burger-line::before { transform: translateY(-8px); }
+        .burger-line::after { transform: translateY(8px); }
+
+        /* Animasi Burger jadi X */
+        .menu-open .burger-line { background: transparent; }
+        .menu-open .burger-line::before { transform: rotate(45deg); }
+        .menu-open .burger-line::after { transform: rotate(-45deg); }
+
+        /* Overlay Menu Mobile */
+        .mobile-nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.98);
+            z-index: 5050;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+        .menu-open .mobile-nav-overlay {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .mobile-nav-link {
+            font-family: 'Space Grotesk';
+            font-size: 2rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease, color 0.3s;
+        }
+        .menu-open .mobile-nav-link {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Stagger animation for links */
+        .menu-open .mobile-nav-link:nth-child(1) { transition-delay: 0.1s; }
+        .menu-open .mobile-nav-link:nth-child(2) { transition-delay: 0.15s; }
+        .menu-open .mobile-nav-link:nth-child(3) { transition-delay: 0.2s; }
+        .menu-open .mobile-nav-link:nth-child(4) { transition-delay: 0.25s; }
+        .menu-open .mobile-nav-link:nth-child(5) { transition-delay: 0.3s; }
+
+        .mobile-nav-link:hover { color: var(--accent); }
+        
+        /* Adjust CTA Button in Mobile Overlay */
+        .mobile-cta-btn {
+            margin-top: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease 0.35s, transform 0.4s ease 0.35s;
+        }
+        .menu-open .mobile-cta-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ========================================================= */
+        /* RESPONSIVE OPTIMIZATIONS                                  */
         /* ========================================================= */
         @media (max-width: 1024px) {
             .c-content { grid-template-columns: 1fr; gap: 2rem; padding-top: 5vh; }
@@ -156,7 +253,7 @@
         }
 
         @media (max-width: 768px) {
-            /* Sembunyikan custom scroll nav di mobile supaya tidak memakan layar dan mengganggu swipe */
+            /* Sembunyikan scroll nav dots di mobile */
             .scroll-nav { display: none !important; }
 
             /* Immersive Texts & Elements */
@@ -187,6 +284,10 @@
             
             /* Spasi Tag */
             .c-tag { font-size: 0.7rem; padding: 0.4rem 0.8rem; margin-bottom: 0.75rem; }
+
+            /* Fix Compro Main & Navbar Overlap */
+            /* Beri padding lebih besar di section Beranda mobile */
+            #beranda { padding-top: 6rem; } 
         }
 
         @media (max-width: 480px) {
@@ -203,57 +304,40 @@
     <div class="cursor-dot" id="cursor-dot"></div>
     <div class="cursor-ring" id="cursor-ring"></div>
 
-    <!-- CUSTOM DOT SCROLL NAVIGATION (DIPISAH PROLOG & COMPRO) -->
+    <!-- MOBILE NAV OVERLAY (Hidden by default) -->
+    <div class="mobile-nav-overlay" id="mobile-menu">
+        <a href="#profil" class="mobile-nav-link" onclick="closeMenu()">Profil</a>
+        <a href="#layanan" class="mobile-nav-link" onclick="closeMenu()">Layanan</a>
+        <a href="#portofolio" class="mobile-nav-link" onclick="closeMenu()">Portofolio</a>
+        <a href="#alur-kerja" class="mobile-nav-link" onclick="closeMenu()">Metode</a>
+        <a href="#kontak" class="mobile-nav-link" onclick="closeMenu()">Kontak</a>
+        <a href="#kontak" class="mobile-cta-btn bg-orange-500 text-black font-space font-bold px-8 py-4 text-sm rounded-full hover:bg-orange-400 transition-colors uppercase" onclick="closeMenu()">Hubungi Kami</a>
+    </div>
+
+    <!-- CUSTOM DOT SCROLL NAVIGATION -->
     <div class="scroll-nav" id="scroll-nav">
         <div class="nav-section-title">PROLOGUE</div>
-        
-        <!-- Prologue Dots (Disinkronkan dengan persentase timeline) -->
-        <div class="scroll-dot prolog-dot active" data-progress="0">
-            <span class="scroll-label">Bab 1: Mimpi</span>
-        </div>
-        <div class="scroll-dot prolog-dot" data-progress="0.166">
-            <span class="scroll-label">Bab 2: Bencana</span>
-        </div>
-        <div class="scroll-dot prolog-dot" data-progress="0.416">
-            <span class="scroll-label">Kasus 01: Dev</span>
-        </div>
-        <div class="scroll-dot prolog-dot" data-progress="0.666">
-            <span class="scroll-label">Kasus 02: Privat</span>
-        </div>
-        <div class="scroll-dot prolog-dot" data-progress="0.916">
-            <span class="scroll-label">Solusi Master</span>
-        </div>
+        <div class="scroll-dot prolog-dot active" data-progress="0"><span class="scroll-label">Bab 1: Mimpi</span></div>
+        <div class="scroll-dot prolog-dot" data-progress="0.166"><span class="scroll-label">Bab 2: Bencana</span></div>
+        <div class="scroll-dot prolog-dot" data-progress="0.416"><span class="scroll-label">Kasus 01: Dev</span></div>
+        <div class="scroll-dot prolog-dot" data-progress="0.666"><span class="scroll-label">Kasus 02: Privat</span></div>
+        <div class="scroll-dot prolog-dot" data-progress="0.916"><span class="scroll-label">Solusi Master</span></div>
 
         <div class="scroll-divider"></div>
         <div class="nav-section-title">PROFILE</div>
 
-        <!-- Compro Dots (Disinkronkan dengan letak elemen) -->
-        <div class="scroll-dot compro-dot" data-target="#beranda">
-            <span class="scroll-label">Beranda</span>
-        </div>
-        <div class="scroll-dot compro-dot" data-target="#profil">
-            <span class="scroll-label">Profil</span>
-        </div>
-        <div class="scroll-dot compro-dot" data-target="#layanan">
-            <span class="scroll-label">Layanan</span>
-        </div>
-        <div class="scroll-dot compro-dot" data-target="#alur-kerja">
-            <span class="scroll-label">Metode</span>
-        </div>
-        <div class="scroll-dot compro-dot" data-target="#portofolio">
-            <span class="scroll-label">Portofolio</span>
-        </div>
-        <div class="scroll-dot compro-dot" data-target="#kontak">
-            <span class="scroll-label">Kontak</span>
-        </div>
+        <div class="scroll-dot compro-dot" data-target="#beranda"><span class="scroll-label">Beranda</span></div>
+        <div class="scroll-dot compro-dot" data-target="#profil"><span class="scroll-label">Profil</span></div>
+        <div class="scroll-dot compro-dot" data-target="#layanan"><span class="scroll-label">Layanan</span></div>
+        <div class="scroll-dot compro-dot" data-target="#alur-kerja"><span class="scroll-label">Metode</span></div>
+        <div class="scroll-dot compro-dot" data-target="#portofolio"><span class="scroll-label">Portofolio</span></div>
+        <div class="scroll-dot compro-dot" data-target="#kontak"><span class="scroll-label">Kontak</span></div>
     </div>
 
     <div id="smooth-wrapper">
         <div id="smooth-content">
 
-            <!-- ========================================= -->
-            <!-- IMMERSIVE STORYTELLING MASTER             -->
-            <!-- ========================================= -->
+            <!-- IMMERSIVE STORYTELLING MASTER -->
             <div id="cinematic-master">
                 <!-- SCENE 1: HERO -->
                 <div class="c-layer" id="scene-hero">
@@ -340,9 +424,7 @@
                 </div>
             </div>
 
-            <!-- ========================================= -->
-            <!-- WEBSITE COMPANY PROFILE FULL              -->
-            <!-- ========================================= -->
+            <!-- WEBSITE COMPANY PROFILE FULL -->
             <main id="compro-main">
                 
                 <!-- MORPHING NAVBAR WRAPPER -->
@@ -351,17 +433,25 @@
                         <div class="font-space font-bold text-white tracking-widest text-base md:text-lg flex items-center gap-2 shrink-0">
                             <span class="w-2 h-2 rounded-full bg-orange-500"></span> JK
                         </div>
+                        
+                        <!-- Desktop Nav (Hidden on Mobile) -->
                         <ul class="hidden md:flex items-center justify-center w-full gap-12 font-space text-sm text-gray-300 uppercase tracking-wider">
                             <li><a href="#profil" class="hover:text-orange-500 transition-colors">Profil</a></li>
                             <li><a href="#layanan" class="hover:text-orange-500 transition-colors">Layanan</a></li>
                             <li><a href="#portofolio" class="hover:text-orange-500 transition-colors">Portofolio</a></li>
                         </ul>
-                        <!-- Tombol CTA disesuaikan ukuran di mobile agar tidak overflow -->
-                        <a href="#kontak" class="bg-orange-500 text-black font-space font-bold px-4 py-2 text-xs md:px-6 md:py-3 md:text-sm rounded-full hover:bg-orange-400 transition-colors uppercase whitespace-nowrap shrink-0">Hubungi Kami</a>
+                        
+                        <!-- Desktop CTA (Hidden on Mobile) -->
+                        <a href="#kontak" class="hidden md:block bg-orange-500 text-black font-space font-bold px-6 py-3 text-sm rounded-full hover:bg-orange-400 transition-colors uppercase whitespace-nowrap shrink-0">Hubungi Kami</a>
+
+                        <!-- Burger Button (Visible on Mobile) -->
+                        <button class="burger-btn" id="burger-btn" onclick="toggleMenu()" aria-label="Menu">
+                            <span class="burger-line"></span>
+                        </button>
                     </nav>
                 </div>
 
-                <!-- COMPRO HERO (DENGAN STOPPER/PIN) -->
+                <!-- COMPRO HERO -->
                 <section class="relative h-screen flex items-center justify-center px-6" id="beranda">
                     <div class="absolute inset-0 opacity-20">
                         <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover filter grayscale" alt="Construction background">
@@ -369,7 +459,6 @@
                     </div>
                     <div class="relative z-10 text-center max-w-5xl mx-auto pt-16">
                         <div class="w-16 h-1 bg-orange-500 mx-auto mb-6 md:mb-8 gs-hero-in"></div>
-                        <!-- Ukuran Font Hero disesuaikan secara proporsional di Mobile -->
                         <h1 class="font-space text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black uppercase leading-[1.1] md:leading-[0.9] text-white mb-6 md:mb-8 gs-hero-in">
                             Infrastruktur Kokoh,<br><span class="text-transparent block mt-2 md:mt-0" style="-webkit-text-stroke: 2px rgba(255,255,255,0.8);">Masa Depan Cemerlang</span>
                         </h1>
@@ -415,8 +504,8 @@
                         </div>
                         
                         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <!-- Konstruksi Gedung -->
-                            <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
+                            <!-- Cards here... (Sama seperti kode sebelumnya) -->
+                             <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
                                 <div class="w-12 h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
                                     <svg class="w-6 h-6 md:w-7 md:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                                 </div>
@@ -424,7 +513,6 @@
                                 <p class="text-gray-400 leading-relaxed text-sm">Gedung hunian, perkantoran komersial, fasilitas pendidikan, dan infrastruktur bangunan publik terintegrasi.</p>
                             </div>
                             
-                            <!-- Bangunan Sipil -->
                             <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
                                 <div class="w-12 h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
                                     <svg class="w-6 h-6 md:w-7 md:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
@@ -433,7 +521,6 @@
                                 <p class="text-gray-400 leading-relaxed text-sm">Rekayasa struktural tinggi mencakup pembangunan jembatan, jalan layang (<i>flyover</i>), dan <i>underpass</i> perkotaan.</p>
                             </div>
                             
-                            <!-- Instalasi MEP -->
                             <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
                                 <div class="w-12 h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
                                     <svg class="w-6 h-6 md:w-7 md:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -442,7 +529,6 @@
                                 <p class="text-gray-400 leading-relaxed text-sm">Pengembangan jaringan terpadu (Mechanical, Electrical, Plumbing), kelistrikan gedung, dan tata kelola suhu.</p>
                             </div>
 
-                            <!-- Jalan Raya -->
                             <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
                                 <div class="w-12 h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
                                     <svg class="w-6 h-6 md:w-7 md:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17l6-6-6-6"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"></path></svg>
@@ -451,7 +537,6 @@
                                 <p class="text-gray-400 leading-relaxed text-sm">Pembuatan dan pengaspalan infrastruktur jalan tol, jalan arteri provinsi, hingga akses vital kawasan pelabuhan.</p>
                             </div>
 
-                            <!-- Perkebunan Sawit -->
                             <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
                                 <div class="w-12 h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
                                     <svg class="w-6 h-6 md:w-7 md:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
@@ -460,7 +545,6 @@
                                 <p class="text-gray-400 leading-relaxed text-sm">Spesialisasi pembukaan lahan (<i>land clearing</i>), pembuatan terasering, drainase, dan infrastruktur kawasan sawit.</p>
                             </div>
 
-                            <!-- Sumber Daya Air -->
                             <div class="c-card p-6 md:p-8 rounded-2xl gs-reveal">
                                 <div class="w-12 h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6 border border-orange-500/20">
                                     <svg class="w-6 h-6 md:w-7 md:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2C8 6 4 11.5 4 16a8 8 0 0016 0c0-4.5-4-10-8-14z"></path></svg>
@@ -474,7 +558,8 @@
 
                 <!-- ALUR KERJA -->
                 <section class="py-16 md:py-24 px-6 bg-[#080808] relative z-20" id="alur-kerja">
-                    <div class="max-w-4xl mx-auto">
+                   <!-- Isi section sama seperti sebelumnya -->
+                   <div class="max-w-4xl mx-auto">
                         <div class="mb-12 md:mb-16 gs-reveal">
                             <h4 class="text-orange-500 font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Metodologi</h4>
                             <h2 class="font-space text-3xl sm:text-4xl md:text-5xl font-bold uppercase text-white">Proses Kerja Absolut.</h2>
@@ -506,18 +591,15 @@
 
                 <!-- PORTOFOLIO -->
                 <section class="py-16 md:py-24 px-6 bg-var(--darker) relative z-20" id="portofolio">
+                    <!-- Isi section sama seperti sebelumnya -->
                     <div class="max-w-7xl mx-auto">
                         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 gap-6 gs-reveal">
                             <div>
                                 <h4 class="text-orange-500 font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Track Record B2B</h4>
                                 <h2 class="font-space text-3xl sm:text-4xl md:text-6xl font-bold uppercase text-white">Bukti Nyata.</h2>
                             </div>
-                            <div class="text-gray-400 text-sm max-w-xs text-right hidden md:block">
-                                Kami mengeksekusi visi Anda menjadi beton dan baja yang berdiri kokoh menghadapi waktu.
-                            </div>
                         </div>
                         <div class="grid md:grid-cols-2 gap-8">
-                            <!-- Proyek 1 -->
                             <div class="port-card group gs-reveal">
                                 <div class="h-[300px] md:h-[400px] relative overflow-hidden">
                                     <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1000&auto=format&fit=crop" class="port-img w-full h-full object-cover filter grayscale hover:grayscale-0" alt="Hauling Road">
@@ -527,7 +609,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Proyek 2 -->
                             <div class="port-card group gs-reveal mt-0 md:mt-16">
                                 <div class="h-[300px] md:h-[400px] relative overflow-hidden">
                                     <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1000&auto=format&fit=crop" class="port-img w-full h-full object-cover filter grayscale hover:grayscale-0" alt="Bridge Construction">
@@ -543,6 +624,7 @@
 
                 <!-- CONTACT FORM -->
                 <section class="py-20 md:py-32 px-6 bg-[#080808] relative z-20" id="kontak">
+                    <!-- Isi section sama seperti sebelumnya -->
                     <div class="max-w-5xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-16">
                         <div class="gs-reveal">
                             <h2 class="font-space text-4xl sm:text-5xl md:text-7xl font-bold uppercase text-white mb-6">Mulai<br>Proyek Anda.</h2>
@@ -599,22 +681,44 @@
 
     <script>
         // =========================================================
-        // TOUCHSCREEN CURSOR KILLER (JS FALLBACK)
+        // MOBILE MENU FUNCTIONS
+        // =========================================================
+        function toggleMenu() {
+            document.body.classList.toggle('menu-open');
+            // Optional: Stop Lenis scroll when menu open
+            if(document.body.classList.contains('menu-open')) {
+                lenis.stop(); 
+            } else {
+                lenis.start();
+            }
+        }
+
+        function closeMenu() {
+            document.body.classList.remove('menu-open');
+            lenis.start();
+        }
+
+        // =========================================================
+        // TOUCHSCREEN CURSOR KILLER
         // =========================================================
         if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-            document.getElementById('cursor-dot').style.display = 'none';
-            document.getElementById('cursor-ring').style.display = 'none';
+            const dot = document.getElementById('cursor-dot');
+            const ring = document.getElementById('cursor-ring');
+            if(dot) dot.style.display = 'none';
+            if(ring) ring.style.display = 'none';
         }
 
         gsap.registerPlugin(ScrollTrigger);
 
-        // Custom Cursor Tracker
+        // Custom Cursor Tracker (Only on non-touch)
         const cursorDot = document.getElementById("cursor-dot");
         const cursorRing = document.getElementById("cursor-ring");
-        window.addEventListener("mousemove", (e) => {
-            gsap.to(cursorDot, { x: e.clientX, y: e.clientY, duration: 0 });
-            gsap.to(cursorRing, { x: e.clientX, y: e.clientY, duration: 0.15, ease: "power2.out" });
-        });
+        if(cursorDot && cursorRing) {
+            window.addEventListener("mousemove", (e) => {
+                gsap.to(cursorDot, { x: e.clientX, y: e.clientY, duration: 0 });
+                gsap.to(cursorRing, { x: e.clientX, y: e.clientY, duration: 0.15, ease: "power2.out" });
+            });
+        }
 
         // Smooth Scroll (Lenis)
         const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
@@ -628,7 +732,7 @@
 
 
         // =========================================================
-        // 1. TIMELINE IMMERSIVE STORY (STOPPER MUTLAK)
+        // 1. TIMELINE IMMERSIVE STORY
         // =========================================================
         let tlMaster = gsap.timeline({
             scrollTrigger: {
@@ -650,7 +754,7 @@
             }
         });
 
-        // Hero ke Topo
+        // Animations (Same as previous)
         tlMaster.to("#hero-text", { scale: 5, autoAlpha: 0, duration: 0.5 }, 0)
                 .to("#hero-img", { scale: 3, duration: 1 }, 0)
                 .to(".blueprint-grid", { scale: 1.5, autoAlpha: 0, duration: 0.8 }, 0)
@@ -659,9 +763,8 @@
                 .to(".topo-path", { strokeDashoffset: 0, duration: 0.6 }, 0.4)
                 .to(".error-log", { autoAlpha: 1, y: -10, stagger: 0.1, duration: 0.3 }, 0.6)
                 .to(".topo-title, .topo-desc", { autoAlpha: 1, y: 0, duration: 0.3, stagger: 0.1 }, 0.7);
-        tlMaster.to({}, { duration: 2 }, 1.0); // Stopper Topo
+        tlMaster.to({}, { duration: 2 }, 1.0); 
 
-        // Topo ke Fase 1
         tlMaster.to("#topo-text-wrap, .error-log", { autoAlpha: 0, y: -40, duration: 0.3 }, 3.0)
                 .to("#scene-topo", { autoAlpha: 0, scale: 0.9, duration: 0.5 }, 3.0)
                 .to("#scene-stack", { autoAlpha: 1, pointerEvents: "auto" }, 3.0)
@@ -670,9 +773,8 @@
                 .from(".c1-img-1", { y: 100, autoAlpha: 0, duration: 0.4, ease: "back.out(1.5)" }, 3.5)
                 .from(".c1-img-2", { y: -100, autoAlpha: 0, duration: 0.4, ease: "back.out(1.5)" }, 3.6)
                 .from(".marquee-container", { y: 100, autoAlpha: 0, duration: 0.4 }, 3.6);
-        tlMaster.to({}, { duration: 2 }, 4.0); // Stopper F1
+        tlMaster.to({}, { duration: 2 }, 4.0); 
 
-        // Fase 1 ke Fase 2
         tlMaster.to(".card-1", { scale: 0.85, autoAlpha: 0, filter: "blur(20px)", duration: 0.4 }, 6.0)
                 .to(".card-2", { autoAlpha: 1, clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 0.6, ease: "power3.inOut" }, 6.2)
                 .fromTo(".img-2", { scale: 1.4, x: 80 }, { scale: 1, x: 0, duration: 0.6, ease: "power3.inOut" }, 6.2)
@@ -680,9 +782,8 @@
                 .from(".c2-img", { scale: 0.8, autoAlpha: 0, duration: 0.4 }, 6.4)
                 .from(".c2-box-1", { scale: 0, rotation: -20, autoAlpha: 0, duration: 0.4, ease: "back.out(2)" }, 6.5)
                 .from(".c2-box-2", { scale: 0, rotation: 20, autoAlpha: 0, duration: 0.4, ease: "back.out(2)" }, 6.6);
-        tlMaster.to({}, { duration: 2 }, 7.0); // Stopper F2
+        tlMaster.to({}, { duration: 2 }, 7.0);
 
-        // Fase 2 ke Solusi
         tlMaster.to(".card-2", { scale: 1.5, autoAlpha: 0, filter: "blur(40px)", duration: 0.4 }, 9.0)
                 .to(".card-3", { autoAlpha: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.6, ease: "power4.inOut" }, 9.2)
                 .fromTo(".img-3", { scale: 0.5, rotation: -5 }, { scale: 1, rotation: 0, duration: 0.6, ease: "power3.inOut" }, 9.2)
@@ -690,26 +791,26 @@
                 .fromTo(".inner-3 .c-tag", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.3 }, 9.5)
                 .fromTo(".inner-3 .c-title", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.3 }, 9.6)
                 .fromTo(".inner-3 .c-desc", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.3 }, 9.7);
-        tlMaster.to({}, { duration: 2 }, 10.0); // Stopper Solusi Terakhir
+        tlMaster.to({}, { duration: 2 }, 10.0);
 
 
         // =========================================================
-        // 2. COMPRO LOGIC: NAVBAR MORPHING & HERO STOPPER
+        // 2. COMPRO LOGIC: NAVBAR & HERO STOPPER
         // =========================================================
         
-        // A) Morphing Navbar
+        // A) Morphing Navbar (Only logic for style change, burger handles menu)
         ScrollTrigger.create({
             trigger: "#nav-wrapper",
             start: "top top",
             onEnter: () => {
                 const nav = document.getElementById("main-nav");
                 nav.classList.remove("w-full", "bg-black/90", "border-b", "rounded-none", "px-6", "md:px-10", "py-4", "md:py-5");
-                nav.classList.add("w-[95%]", "md:w-[90%]", "max-w-6xl", "bg-[#0f0f0f]/80", "border", "rounded-full", "mt-4", "md:mt-6", "shadow-2xl", "px-6", "md:px-12", "py-3");
+                nav.classList.add("w-[95%]", "md:w-[90%]", "max-w-6xl", "bg-[#0f0f0f]/80", "border", "border-white/10", "rounded-full", "mt-4", "md:mt-6", "shadow-2xl", "px-6", "md:px-12", "py-3");
             },
             onLeaveBack: () => {
                 const nav = document.getElementById("main-nav");
                 nav.classList.add("w-full", "bg-black/90", "border-b", "rounded-none", "px-6", "md:px-10", "py-4", "md:py-5");
-                nav.classList.remove("w-[95%]", "md:w-[90%]", "max-w-6xl", "bg-[#0f0f0f]/80", "border", "rounded-full", "mt-4", "md:mt-6", "shadow-2xl", "px-6", "md:px-12", "py-3");
+                nav.classList.remove("w-[95%]", "md:w-[90%]", "max-w-6xl", "bg-[#0f0f0f]/80", "border", "border-white/10", "rounded-full", "mt-4", "md:mt-6", "shadow-2xl", "px-6", "md:px-12", "py-3");
             }
         });
 
@@ -749,7 +850,7 @@
 
 
         // =========================================================
-        // 3. DOT SCROLL NAVIGATION (TRACKER 2 BAGIAN: PROLOG & COMPRO)
+        // 3. DOT SCROLL NAVIGATION
         // =========================================================
         const allDots = document.querySelectorAll('.scroll-dot');
         const prologDots = document.querySelectorAll('.prolog-dot');
@@ -759,33 +860,29 @@
             allDots.forEach(d => d.classList.remove('active'));
         }
 
-        // --- 3A. LOGIKA KLIK & UPDATE DOTS PROLOGUE (TIMELINE SCRUB) ---
+        // Prolog Dots Logic
         prologDots.forEach(dot => {
             dot.addEventListener('click', () => {
                 const prog = parseFloat(dot.getAttribute('data-progress'));
                 const st = tlMaster.scrollTrigger;
-                // Kalkulasi scroll yang tepat di dalam section pinned
                 const targetScroll = st.start + (prog * (st.end - st.start));
                 lenis.scrollTo(targetScroll, { duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
             });
         });
 
-        // Hook ke update timeline utama untuk menghidupkan Dot yang relevan sesuai chapter
         tlMaster.eventCallback("onUpdate", function() {
-            // Hanya jalankan jika user sedang berada di zona Master Cinematic
             if (!tlMaster.scrollTrigger.isActive) return;
-            
             const prog = this.progress();
             clearAllDots();
             
-            if (prog < 0.1) prologDots[0].classList.add('active'); // Hero
-            else if (prog < 0.3) prologDots[1].classList.add('active'); // Topo
-            else if (prog < 0.55) prologDots[2].classList.add('active'); // Kasus 1
-            else if (prog < 0.8) prologDots[3].classList.add('active'); // Kasus 2
-            else prologDots[4].classList.add('active'); // Solusi Final
+            if (prog < 0.1) prologDots[0].classList.add('active');
+            else if (prog < 0.3) prologDots[1].classList.add('active');
+            else if (prog < 0.55) prologDots[2].classList.add('active');
+            else if (prog < 0.8) prologDots[3].classList.add('active');
+            else prologDots[4].classList.add('active');
         });
 
-        // --- 3B. LOGIKA KLIK & UPDATE DOTS COMPRO (NORMAL SCROLL) ---
+        // Compro Dots Logic
         comproDots.forEach(dot => {
             const targetId = dot.getAttribute('data-target');
             const targetElement = document.querySelector(targetId);
