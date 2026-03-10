@@ -60,10 +60,10 @@
             *, *::before, *::after { cursor: none !important; } 
         }
         
-        /* SCROLLBAR & BASIC RESET + FIX STICKY OVERFLOW (Tanpa Snap CSS) */
+        /* SCROLLBAR & BASIC RESET + FIX STICKY OVERFLOW */
         html, body {
             -ms-overflow-style: none; scrollbar-width: none;
-            overflow-x: clip; /* PENTING: Menggunakan clip agar sticky berfungsi sempurna */
+            overflow-x: clip; 
         }
         ::-webkit-scrollbar { display: none !important; width: 0px; background: transparent; }
 
@@ -80,7 +80,7 @@
         
         /* CUSTOM SCROLL NAVIGATION (DOTS) */
         .scroll-nav { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 9990; display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: auto; }
-        .scroll-dot { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .scroll-dot { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; }
         .scroll-dot::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background-color: var(--nav-dot); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .scroll-dot:hover::before { background-color: var(--accent); transform: scale(2.5); }
         .scroll-dot.active::before { background-color: var(--accent); transform: scale(2.5); box-shadow: 0 0 10px rgba(255,69,0,0.5); }
@@ -91,20 +91,74 @@
         .scroll-divider { width: 1.5px; height: 16px; background: var(--nav-dot); border-radius: 2px; margin: 4px 0; }
         .nav-section-title { font-size: 7px; color: var(--nav-dot); font-family: 'Space Grotesk'; text-transform: uppercase; letter-spacing: 2px; writing-mode: vertical-rl; transform: rotate(180deg); margin: 5px 0; }
 
+        /* =======================================================
+           ANIMASI DINAMIS BACKGROUND (GRID & BLOBS)
+           ======================================================= */
+        @keyframes panGrid {
+            0% { background-position: 0px 0px; }
+            100% { background-position: 40px 40px; } 
+        }
+        .global-grid, .blueprint-grid {
+            animation: panGrid 15s linear infinite;
+        }
+
+        @keyframes blobBounce {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .blob-1 { animation: blobBounce 20s infinite ease-in-out; }
+        .blob-2 { animation: blobBounce 25s infinite ease-in-out reverse; }
+        .blob-3 { animation: blobBounce 22s infinite ease-in-out 2s; }
+
+        /* =======================================================
+           ANIMASI MENGAMBANG UNTUK ELEMEN PROLOGUE
+           ======================================================= */
+        @keyframes floatSubtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        .hover-float { animation: floatSubtle 6s ease-in-out infinite; }
+        .hover-float-delay { animation: floatSubtle 7s ease-in-out infinite 2s; }
+
+        /* =======================================================
+           REVEAL ANIMATION NATIVE (CSS + Intersection Observer) 
+           ======================================================= */
+        .gs-reveal, .gs-hero-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity, transform;
+        }
+        .gs-reveal.is-revealed, .gs-hero-in.is-revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #hero-content .gs-hero-in:nth-child(1) { transition-delay: 0.1s; }
+        #hero-content .gs-hero-in:nth-child(2) { transition-delay: 0.3s; }
+        #hero-content .gs-hero-in:nth-child(3) { transition-delay: 0.5s; }
+
+        @keyframes floatUp { 0% { opacity: 0; transform: translateY(100px) scale(1); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        .huge-text-anim { animation: floatUp 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards; }
+
+        @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .marquee-move { animation: marqueeScroll 10s linear infinite; will-change: transform; }
+
         /* IMMERSIVE MASTER - FLAWLESS VIEWPORT */
-        #cinematic-master { width: 100vw; height: 100dvh; position: relative; overflow: hidden; perspective: 1200px; z-index: 10; }
         .c-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 
-        #scene-hero { z-index: 100; }
+        #scene-hero { z-index: 100; transform-origin: center; }
         #scene-topo { z-index: 200; clip-path: circle(0% at 50% 50%); visibility: hidden; opacity: 0; }
         #scene-stack { z-index: 300; pointer-events: none; visibility: hidden; opacity: 0; }
 
-        .blueprint-grid { position: absolute; inset: 0; z-index: 1; pointer-events: none; background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px); background-size: 40px 40px; transition: background-image 0.5s; }
-        .hero-img { position: absolute; inset: -10%; background: url('https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2500&auto=format&fit=crop') center/cover; z-index: 1; filter: grayscale(100%) opacity(0.15); will-change: transform; transition: filter 0.5s; }
+        .blueprint-grid { position: absolute; inset: 0; z-index: 1; pointer-events: none; background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px); background-size: 40px 40px; }
+        .hero-img { position: absolute; inset: -10%; background: url('https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2500&auto=format&fit=crop') center/cover; z-index: 1; filter: grayscale(100%) opacity(0.15); will-change: transform, filter; }
         .dark .hero-img { filter: grayscale(100%) opacity(0.3); }
         
-        .hero-text-container { position: relative; z-index: 10; text-align: center; will-change: opacity, transform; width: 100%; padding: 0 5vw; }
-        .huge-text { font-size: clamp(2.5rem, 6vw, 6rem); font-weight: 900; line-height: 0.9; text-transform: uppercase; letter-spacing: -0.02em; position: relative; display: inline-block; }
+        .hero-text-container { position: relative; z-index: 10; text-align: center; width: 100%; padding: 0 5vw; will-change: transform, opacity; }
+        .huge-text { font-size: clamp(2.5rem, 6vw, 6rem); font-weight: 900; line-height: 0.9; text-transform: uppercase; letter-spacing: -0.02em; position: relative; display: inline-block; opacity: 0; }
         .compass-svg { position: absolute; top: -20px; right: -30px; width: 45px; height: 45px; opacity: 0.6; animation: spin 20s linear infinite; pointer-events: none; }
         .outline-text { color: transparent; -webkit-text-stroke: 2px var(--stroke-color); transition: -webkit-text-stroke 0.5s; }
         
@@ -112,12 +166,12 @@
         .dark .topo-svg { opacity: 0.3; }
         .topo-path { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 2000; stroke-dashoffset: 2000; }
         
-        .error-log { position: absolute; font-family: 'Space Grotesk'; font-size: 0.75rem; color: var(--accent); border: 1px solid var(--accent); padding: 4px 8px; background: rgba(255,69,0,0.05); opacity: 0; backdrop-filter: blur(4px); }
+        .error-log { position: absolute; font-family: 'Space Grotesk'; font-size: 0.75rem; color: var(--accent); border: 1px solid var(--accent); padding: 4px 8px; background: rgba(255,69,0,0.05); opacity: 0; backdrop-filter: blur(4px); will-change: transform, opacity; }
         .el-1 { top: 20%; left: 15%; } .el-2 { bottom: 30%; right: 20%; } .el-3 { top: 40%; right: 10%; }
 
-        .stack-card { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; opacity: 0; visibility: hidden; pointer-events: none; will-change: clip-path, transform, opacity; }
-        .card-2 { clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%); } .card-3 { clip-path: inset(50% 50% 50% 50%); }
-        .c-bg { position: absolute; inset: -10%; background-size: cover; background-position: center; z-index: 1; filter: grayscale(80%) opacity(0.4); transform: scale(1.1); will-change: transform; }
+        .stack-card { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; opacity: 0; visibility: hidden; pointer-events: none; will-change: clip-path, transform, opacity, filter; }
+        .card-2 { clip-path: inset(0 100% 0 0); } .card-3 { clip-path: inset(50%); }
+        .c-bg { position: absolute; inset: -10%; background-size: cover; background-position: center; z-index: 1; filter: grayscale(80%) opacity(0.4); transform: scale(1.1); }
         .dark .c-bg { filter: grayscale(50%) opacity(0.3) brightness(0.6); }
         .c-bg-1 { background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2000&auto=format&fit=crop'); }
         .c-bg-2 { background-image: url('https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2000&auto=format&fit=crop'); }
@@ -133,22 +187,21 @@
         .visual-container { position: relative; height: 50vh; width: 100%; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
         .c1-img { position: absolute; box-shadow: 0 20px 40px rgba(0,0,0,0.2); will-change: transform, opacity; }
         .dark .c1-img { box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
-        .c1-img-1 { width: 55%; height: 50%; background: url('https://images.unsplash.com/photo-1541888086925-920a0bd03c39?q=80&w=800&auto=format&fit=crop') center/cover; transform: rotate(-5deg); z-index: 2; top: 15%; right: 15%; border: 3px solid white; }
+        .c1-img-1 { width: 55%; height: 50%; background: url('https://images.unsplash.com/photo-1497465689543-5940d3cede89?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover; transform: rotate(-5deg); z-index: 2; top: 15%; right: 15%; border: 3px solid white; opacity: 0; }
         .dark .c1-img-1 { border-color: #1e293b; }
-        .c1-img-2 { width: 50%; height: 45%; background: url('https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop') center/cover; transform: rotate(8deg); z-index: 1; bottom: 15%; left: 10%; filter: grayscale(100%); border: 3px solid white; }
+        .c1-img-2 { width: 50%; height: 45%; background: url('https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop') center/cover; transform: rotate(8deg); z-index: 1; bottom: 15%; left: 10%; filter: grayscale(100%); border: 3px solid white; opacity: 0; }
         .dark .c1-img-2 { border-color: #1e293b; }
-        .marquee-container { position: absolute; bottom: 10%; width: 150vw; left: -25vw; background: var(--accent); color: white; font-family: 'Space Grotesk'; font-weight: bold; font-size: 1.25rem; padding: 8px 0; transform: rotate(-3deg); z-index: 10; overflow: hidden; display: flex; white-space: nowrap; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .marquee-container { position: absolute; bottom: 15%; width: 150vw; left: -25vw; background: var(--accent); color: white; font-family: 'Space Grotesk'; font-weight: bold; font-size: 1.25rem; padding: 12px 0; transform: rotate(-3deg); z-index: 20; overflow: hidden; display: flex; white-space: nowrap; box-shadow: 0 10px 30px rgba(0,0,0,0.3); opacity: 0; pointer-events: none; }
         .marquee-inner { display: flex; gap: 2rem; will-change: transform; }
 
-        .c2-box { position: absolute; backdrop-filter: blur(16px); padding: 1.5rem; border-radius: 12px; z-index: 3; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .c2-box { position: absolute; backdrop-filter: blur(16px); padding: 1.5rem; border-radius: 12px; z-index: 3; box-shadow: 0 20px 40px rgba(0,0,0,0.1); opacity: 0; }
         .dark .c2-box { box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
         .c2-box-1 { top: 25%; left: 15%; width: 220px; border-left: 4px solid var(--accent); }
         .c2-box-2 { bottom: 25%; right: 15%; width: 260px; transform: rotate(5deg); }
-        .c2-img { width: 80%; height: 70%; background: url('https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=800&auto=format&fit=crop') center/cover; position: absolute; z-index: 1; filter: grayscale(100%) contrast(1.2); opacity: 0.8; }
-        .dark .c2-img { opacity: 0.5; }
+        .c2-img { width: 80%; height: 70%; background: url('https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=800&auto=format&fit=crop') center/cover; position: absolute; z-index: 1; filter: grayscale(100%) contrast(1.2); opacity: 0; }
 
         .c3-content { grid-template-columns: 1fr !important; text-align: center; justify-items: center; } 
-        .arch-lines { position: absolute; inset: 10%; border: 1px solid var(--grid-color); z-index: 1; pointer-events: none; transition: border-color 0.5s; }
+        .arch-lines { position: absolute; inset: 10%; border: 1px solid var(--grid-color); z-index: 1; pointer-events: none; opacity: 0; transition: border-color 0.5s; }
         .arch-lines::before, .arch-lines::after { content: ''; position: absolute; background: var(--grid-color); transition: background-color 0.5s; }
         .arch-lines::before { top: 0; bottom: 0; left: 50%; width: 1px; }
         .arch-lines::after { left: 0; right: 0; top: 50%; height: 1px; }
@@ -172,13 +225,16 @@
         /* MOBILE MENU & RESPONSIVE */
         .burger-btn { display: none; flex-direction: column; justify-content: center; align-items: center; width: 40px; height: 40px; background: transparent; border: none; cursor: pointer; z-index: 5100; }
         @media (max-width: 768px) { .burger-btn { display: flex; } }
-        .burger-line { width: 24px; height: 2px; transition: all 0.3s ease; position: relative; }
-        .burger-line::before, .burger-line::after { content: ''; position: absolute; width: 24px; height: 2px; transition: all 0.3s ease; left: 0;}
+        .burger-line { width: 24px; height: 2px; background-color: currentColor; transition: all 0.3s ease; position: relative; }
+        .burger-line::before, .burger-line::after { content: ''; position: absolute; width: 24px; height: 2px; background-color: currentColor; transition: all 0.3s ease; left: 0;}
         .burger-line::before { transform: translateY(-8px); }
         .burger-line::after { transform: translateY(8px); }
-        .menu-open .burger-line { background: transparent !important; }
+        .menu-open .burger-line { background-color: transparent !important; }
         .menu-open .burger-line::before { transform: rotate(45deg); }
         .menu-open .burger-line::after { transform: rotate(-45deg); }
+
+        /* NYITOTT MENÜ ESETÉN A NAVIGÁCIÓS SÁV HÁTTERÉNEK ELREJTÉSE */
+        .menu-open #main-nav { background-color: transparent !important; backdrop-filter: none !important; border-color: transparent !important; box-shadow: none !important; }
 
         .mobile-nav-overlay { position: fixed; inset: 0; z-index: 5050; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem; opacity: 0; visibility: hidden; transition: all 0.4s ease; pointer-events: none; }
         .menu-open .mobile-nav-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
@@ -202,7 +258,7 @@
             .el-1 { top: 12%; left: 5%; } .el-2 { bottom: 25%; right: 5%; } .el-3 { top: 35%; right: 5%; }
             .c1-img-1 { width: 75%; height: 60%; right: 5%; top: 5%; }
             .c1-img-2 { width: 65%; height: 50%; left: 5%; bottom: 5%; }
-            .marquee-container { font-size: 0.9rem; bottom: 5%; }
+            .marquee-container { font-size: 0.9rem; bottom: 8%; }
             .c2-box { padding: 1rem; } .c2-box-1 { width: 190px; top: 10%; left: 5%; } .c2-box-2 { width: 210px; bottom: 10%; right: 5%; }
             #beranda { padding-top: 6rem; } 
         }
@@ -210,7 +266,7 @@
 </head>
 <body class="text-slate-900 dark:text-white transition-colors duration-700 antialiased selection:bg-accent selection:text-white bg-transparent">
 
-    <!-- FLOATING THEME TOGGLE (ALWAYS VISIBLE SEJAK AWAL) -->
+    <!-- FLOATING THEME TOGGLE -->
     <button id="theme-toggle" class="fixed bottom-6 left-6 md:bottom-8 md:left-8 z-[6000] p-3 md:p-3.5 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl hover:scale-110 transition-all duration-300" aria-label="Toggle Theme">
         <!-- Sun (muncul saat dark) -->
         <svg class="hidden dark:block w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -220,9 +276,10 @@
 
     <!-- GLOBAL FIXED BACKGROUND DENGAN GRADIENT & PATTERN -->
     <div class="fixed inset-0 z-[-1] bg-slate-50 dark:bg-[#050810] transition-colors duration-700 pointer-events-none">
-        <div class="absolute inset-0 bg-[linear-gradient(to_right,var(--grid-color)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-color)_1px,transparent_1px)] bg-[size:32px_32px]"></div>
-        <div class="absolute top-[-15%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-accent/10 dark:bg-accent/15 blur-[120px]"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[150px]"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,var(--grid-color)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-color)_1px,transparent_1px)] bg-[size:40px_40px] global-grid"></div>
+        <div class="absolute top-[-15%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-accent/10 dark:bg-accent/15 blur-[120px] blob-1"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[150px] blob-2"></div>
+        <div class="absolute top-[20%] right-[10%] w-[40vw] h-[40vw] rounded-full bg-emerald-500/5 dark:bg-emerald-500/10 blur-[150px] blob-3"></div>
     </div>
 
     <div class="noise"></div>
@@ -242,10 +299,10 @@
     <div class="scroll-nav hidden md:flex" id="scroll-nav">
         <div class="nav-section-title text-slate-400 dark:text-slate-500">PROLOGUE</div>
         <div class="scroll-dot prolog-dot active" data-progress="0"><span class="scroll-label text-slate-900 dark:text-white">Bab 1: Mimpi</span></div>
-        <div class="scroll-dot prolog-dot" data-progress="0.166"><span class="scroll-label text-slate-900 dark:text-white">Bab 2: Bencana</span></div>
-        <div class="scroll-dot prolog-dot" data-progress="0.416"><span class="scroll-label text-slate-900 dark:text-white">Kasus 01: Dev</span></div>
-        <div class="scroll-dot prolog-dot" data-progress="0.666"><span class="scroll-label text-slate-900 dark:text-white">Kasus 02: Privat</span></div>
-        <div class="scroll-dot prolog-dot" data-progress="0.916"><span class="scroll-label text-slate-900 dark:text-white">Solusi Master</span></div>
+        <div class="scroll-dot prolog-dot" data-progress="0.25"><span class="scroll-label text-slate-900 dark:text-white">Bab 2: Bencana</span></div>
+        <div class="scroll-dot prolog-dot" data-progress="0.50"><span class="scroll-label text-slate-900 dark:text-white">Kasus 01: Dev</span></div>
+        <div class="scroll-dot prolog-dot" data-progress="0.75"><span class="scroll-label text-slate-900 dark:text-white">Kasus 02: Privat</span></div>
+        <div class="scroll-dot prolog-dot" data-progress="0.95"><span class="scroll-label text-slate-900 dark:text-white">Solusi Master</span></div>
 
         <div class="scroll-divider"></div>
         <div class="nav-section-title text-slate-400 dark:text-slate-500">PROFILE</div>
@@ -258,14 +315,13 @@
         <div class="scroll-dot compro-dot" data-target="#kontak"><span class="scroll-label text-slate-900 dark:text-white">Kontak</span></div>
     </div>
 
-    <!-- NAVBAR FIXED DIATAS (Sembunyi di awal) -->
-    <div id="nav-wrapper" class="fixed top-0 w-full z-[5000] flex justify-center transition-all duration-700 ease-out -translate-y-full opacity-0 pointer-events-none">
+    <!-- RÖGZÍTETT NAVIGÁCIÓS SÁV FENT -->
+    <div id="nav-wrapper" class="fixed top-0 w-full z-[5100] flex justify-center transition-all duration-700 ease-out -translate-y-full opacity-0 pointer-events-none">
         <nav id="main-nav" class="w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 md:px-10 py-4 flex items-center justify-between transition-all duration-700 ease-out">
             <div class="font-space font-bold tracking-widest text-base md:text-lg flex items-center gap-2 shrink-0">
                 <span class="w-2 h-2 rounded-full bg-accent"></span> JK
             </div>
             
-            <!-- Desktop Nav -->
             <ul class="hidden md:flex items-center justify-center w-full gap-10 font-space text-sm text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                 <li><a href="#profil" class="hover:text-accent transition-colors">Profil</a></li>
                 <li><a href="#layanan" class="hover:text-accent transition-colors">Layanan</a></li>
@@ -273,12 +329,9 @@
             </ul>
             
             <div class="flex items-center gap-4 shrink-0">
-                <!-- Desktop CTA -->
                 <a href="#kontak" class="hidden md:block bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-space font-bold px-6 py-2.5 text-xs rounded-full hover:bg-accent dark:hover:bg-accent hover:text-white transition-colors uppercase whitespace-nowrap">Hubungi Kami</a>
-
-                <!-- Burger Button -->
-                <button class="burger-btn" id="burger-btn" onclick="toggleMenu()" aria-label="Menu">
-                    <span class="burger-line bg-slate-900 dark:bg-white"></span>
+                <button class="burger-btn text-slate-900 dark:text-white" id="burger-btn" onclick="toggleMenu()" aria-label="Menu">
+                    <span class="burger-line"></span>
                 </button>
             </div>
         </nav>
@@ -287,94 +340,120 @@
     <div id="smooth-wrapper">
         <div id="smooth-content">
 
-            <!-- IMMERSIVE STORYTELLING MASTER -->
-            <div id="cinematic-master" class="bg-slate-100 dark:bg-slate-950 transition-colors duration-700">
-                <!-- SCENE 1: HERO -->
-                <div class="c-layer" id="scene-hero">
-                    <div class="blueprint-grid"></div>
-                    <div class="hero-img" id="hero-img"></div>
-                    <div class="absolute inset-0 bg-white/40 dark:bg-slate-950/60 z-[2] transition-colors duration-700"></div>
-                    <div class="hero-text-container" id="hero-text">
-                        <h1 class="huge-text text-slate-900 dark:text-white">
-                            <svg class="compass-svg stroke-slate-400 dark:stroke-slate-600" viewBox="0 0 100 100" fill="none" stroke-width="1"><circle cx="50" cy="50" r="40"/><line x1="50" y1="0" x2="50" y2="100"/><line x1="0" y1="50" x2="100" y2="50"/><circle cx="50" cy="50" r="10" fill="var(--accent)" stroke="none"/></svg>
-                            MIMPI YANG<br><span class="outline-text">SEMPURNA</span>
-                        </h1>
-                        <div class="mt-8 text-base md:text-xl lg:text-2xl text-slate-700 dark:text-slate-300 max-w-2xl mx-auto font-light leading-relaxed">
-                            <span class="text-accent font-bold mr-2">//</span> Di atas kertas, desain properti Anda tampak tanpa cela. Namun, realita konstruksi tidak pernah semudah menggambar garis.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SCENE 2: TOPO -->
-                <div class="c-layer bg-slate-100 dark:bg-slate-950 transition-colors duration-700" id="scene-topo">
-                    <div class="blueprint-grid"></div>
-                    <svg class="topo-svg" viewBox="0 0 1000 500" preserveAspectRatio="none">
-                        <path class="topo-path" d="M-100,250 Q100,100 300,250 T700,100 T1100,250" /><path class="topo-path" d="M-100,300 Q150,150 350,300 T750,150 T1100,300" stroke-opacity="0.5"/><path class="topo-path" d="M-100,350 Q200,200 400,350 T800,200 T1100,350" stroke-opacity="0.2"/>
-                        <circle cx="300" cy="250" r="5" fill="var(--accent)" opacity="0.8"/><circle cx="700" cy="100" r="5" fill="var(--accent)" opacity="0.8"/>
-                    </svg>
-                    <div class="error-log el-1">COORD: X-892 // Y-112<br>WARNING: SOIL INSTABILITY</div>
-                    <div class="error-log el-2">EST. MARGIN LOSS: 45%</div>
-                    <div class="error-log el-3">STRUCTURAL RISK DETECTED</div>
-                    <div class="relative z-10 text-center max-w-4xl px-6 topo-text-wrap" id="topo-text-wrap">
-                        <h2 class="font-space text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 topo-title opacity-0 translate-y-10 text-slate-900 dark:text-white uppercase leading-none">SATU KESALAHAN,<br>BENCANA PANJANG.</h2>
-                        <p class="text-base sm:text-xl md:text-2xl text-slate-600 dark:text-slate-400 font-light topo-desc opacity-0 translate-y-10">Alam tidak menerima kompromi. Menyerahkan eksekusi pada pihak yang salah akan mengubah investasi miliaran menjadi mimpi buruk.</p>
-                    </div>
-                </div>
-
-                <!-- SCENE 3: STACK CARDS -->
-                <div class="c-layer" id="scene-stack">
-                    <!-- FASE 1 -->
-                    <div class="stack-card card-1" style="z-index: 1;">
-                        <div class="c-bg c-bg-1 img-1"></div>
-                        <div class="absolute inset-0 bg-slate-100/90 dark:bg-slate-900/90 z-[2] transition-colors duration-700"></div>
-                        <div class="num-watermark">01</div>
-                        <div class="c-content">
-                            <div class="c-text inner-1-text">
-                                <div class="c-tag">KASUS 01 // DEVELOPER PROPERTI</div>
-                                <h2 class="c-title text-slate-900 dark:text-white">BLUNDER<br><span class="outline-text">MASIF.</span></h2>
-                                <p class="c-desc text-slate-600 dark:text-slate-400">Terburu-buru mengejar target KPR, mengabaikan rekayasa topografi presisi. Hasilnya? Jalan kawasan amblas, drainase gagal total, dan ratusan unit terendam banjir. <strong class="text-slate-900 dark:text-white">Reputasi hancur dalam semalam.</strong></p>
-                            </div>
-                            <div class="visual-container inner-1-vis">
-                                <div class="c1-img c1-img-2 border-white dark:border-slate-800"></div><div class="c1-img c1-img-1 border-white dark:border-slate-800"></div>
-                                <div class="marquee-container"><div class="marquee-inner marquee-move"><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span></div></div>
+            <!-- ==========================================================
+                 WRAPPER IMMERSIVE DENGAN NATIVE STICKY
+                 ========================================================== -->
+            <div id="cinematic-wrapper" class="relative w-full h-[600vh] transition-colors duration-700"> <!-- Removed bg color, now global grid shines through -->
+                
+                <div id="cinematic-master" class="sticky top-0 w-full h-[100dvh] overflow-hidden perspective-[1200px]">
+                    <!-- SCENE 1: HERO -->
+                    <div class="c-layer" id="scene-hero">
+                        <div class="blueprint-grid" id="bp-grid"></div>
+                        <div class="hero-img" id="hero-img"></div>
+                        <div class="absolute inset-0 bg-white/40 dark:bg-slate-950/60 z-[2] transition-colors duration-700"></div>
+                        <div class="hero-text-container" id="hero-text">
+                            <div> <!-- Penambahan div wrapper agar bisa melayang/float secara CSS -->
+                                <h1 class="huge-text huge-text-anim text-slate-900 dark:text-white">
+                                    <svg class="compass-svg stroke-slate-400 dark:stroke-slate-600" viewBox="0 0 100 100" fill="none" stroke-width="1"><circle cx="50" cy="50" r="40"/><line x1="50" y1="0" x2="50" y2="100"/><line x1="0" y1="50" x2="100" y2="50"/><circle cx="50" cy="50" r="10" fill="var(--accent)" stroke="none"/></svg>
+                                    MIMPI YANG<br><span class="outline-text">SEMPURNA</span>
+                                </h1>
+                                <div class="mt-8 text-base md:text-xl lg:text-2xl text-slate-700 dark:text-slate-300 max-w-2xl mx-auto font-light leading-relaxed">
+                                    <span class="text-accent font-bold mr-2">//</span> Di atas kertas, desain properti Anda tampak tanpa cela. Namun, realita konstruksi tidak pernah semudah menggambar garis.
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- FASE 2 -->
-                    <div class="stack-card card-2" style="z-index: 2;">
-                        <div class="c-bg c-bg-2 img-2"></div>
-                        <div class="absolute inset-0 bg-slate-100/90 dark:bg-slate-900/90 z-[2] transition-colors duration-700"></div>
-                        <div class="num-watermark" style="left: auto; right: -5%;">02</div>
-                        <div class="c-content">
-                            <div class="visual-container inner-2-vis order-2 lg:order-1">
-                                <div class="c2-img border border-slate-200 dark:border-slate-800 rounded-xl"></div>
-                                <div class="c2-box c2-box-1 bg-white/80 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800"><div class="text-xs text-slate-500 dark:text-slate-400 font-space mb-2">STATUS UPDATE</div><div class="text-xl font-bold text-accent">PROJECT STALLED</div><div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Contractor absconded. Structural cracks detected.</div></div>
-                                <div class="c2-box c2-box-2 bg-white/80 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800"><div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-2 mb-2"><span class="text-slate-500 dark:text-slate-400 text-sm">INITIAL BUDGET</span><span class="text-slate-900 dark:text-white font-space">RP 2.5 M</span></div><div class="flex justify-between"><span class="text-accent font-bold text-sm">REVISED COST</span><span class="text-accent font-space font-bold">+ 300%</span></div></div>
-                            </div>
-                            <div class="c-text inner-2-text order-1 lg:order-2">
-                                <div class="c-tag">KASUS 02 // HUNIAN PRIBADI</div>
-                                <h2 class="c-title text-slate-900 dark:text-white">MIMPI BURUK<br><span class="outline-text">PRIVAT.</span></h2>
-                                <p class="c-desc text-slate-600 dark:text-slate-400">Tergiur janji manis kontraktor "asal murah". Realitanya: Anggaran membengkak tanpa kendali, jadwal molor berbulan-bulan, bangunan mangkrak, dan fondasi retak yang mengancam keselamatan nyawa keluarga.</p>
+                    <!-- SCENE 2: TOPO -->
+                    <div class="c-layer transition-colors duration-700" id="scene-topo"> <!-- Removed bg color -->
+                        <div class="blueprint-grid"></div>
+                        <svg class="topo-svg hover-float" viewBox="0 0 1000 500" preserveAspectRatio="none">
+                            <path class="topo-path" d="M-100,250 Q100,100 300,250 T700,100 T1100,250" /><path class="topo-path" d="M-100,300 Q150,150 350,300 T750,150 T1100,300" stroke-opacity="0.5"/><path class="topo-path" d="M-100,350 Q200,200 400,350 T800,200 T1100,350" stroke-opacity="0.2"/>
+                            <circle cx="300" cy="250" r="5" fill="var(--accent)" opacity="0.8"/><circle cx="700" cy="100" r="5" fill="var(--accent)" opacity="0.8"/>
+                        </svg>
+                        <div class="error-log el-1">COORD: X-892 // Y-112<br>WARNING: SOIL INSTABILITY</div>
+                        <div class="error-log el-2">EST. MARGIN LOSS: 45%</div>
+                        <div class="error-log el-3">STRUCTURAL RISK DETECTED</div>
+                        <div class="relative z-10 text-center max-w-4xl px-6 topo-text-wrap" id="topo-text-wrap">
+                            <div>
+                                <h2 class="font-space text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 topo-title text-slate-900 dark:text-white uppercase leading-none">SATU KESALAHAN,<br>BENCANA PANJANG.</h2>
+                                <p class="text-base sm:text-xl md:text-2xl text-slate-600 dark:text-slate-400 font-light topo-desc">Alam tidak menerima kompromi. Menyerahkan eksekusi pada pihak yang salah akan mengubah investasi miliaran menjadi mimpi buruk.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- FASE 3 (SOLUSI) -->
-                    <div class="stack-card card-3" style="z-index: 3;">
-                        <div class="c-bg c-bg-3 img-3"></div>
-                        <div class="absolute inset-0 bg-slate-50/95 dark:bg-slate-950/95 z-[2] transition-colors duration-700"></div>
-                        <div class="arch-lines"></div>
-                        <div class="c-content c3-content inner-3">
-                            <div class="c-tag bg-white/50 dark:bg-black/50">SOLUSI // PT JAYA KEDHATON</div>
-                            <h2 class="c-title text-slate-900 dark:text-white" style="font-size: clamp(2.5rem, 8vw, 8rem); margin-bottom: 1.5rem md:margin-bottom: 2rem;">THE SPECIALIST.</h2>
-                            <p class="c-desc mx-auto text-slate-700 dark:text-slate-300" style="font-size: clamp(0.95rem, 2vw, 1.15rem); max-w: 800px;">Kami hadir untuk menghentikan perjudian dalam proyek Anda. Sebagai spesialis rekayasa konstruksi, PT Jaya Kedhaton menerapkan metodologi presisi tinggi dan mitigasi risiko struktural sejak hari pertama. Kami mengambil alih kerumitan manajemen logistik, mengendalikan pembengkakan anggaran, dan memastikan eksekusi lapangan berjalan 100% sesuai <i>blueprint</i>. <br><strong class="text-slate-900 dark:text-white text-lg md:text-2xl mt-4 md:mt-6 block tracking-widest">PRESISI ABSOLUT. NOL KESALAHAN.</strong></p>
+                    <!-- SCENE 3: STACK CARDS -->
+                    <div class="c-layer" id="scene-stack">
+                        <!-- FASE 1 -->
+                        <div class="stack-card card-1" style="z-index: 1;">
+                            <div class="c-bg c-bg-1 img-1"></div>
+                            <div class="absolute inset-0 bg-slate-100/90 dark:bg-slate-900/90 z-[2] transition-colors duration-700"></div>
+                            <div class="num-watermark">01</div>
+                            
+                            <!-- MARQUEE FULL WIDTH DIPINDAH KE LUAR CONTAINER -->
+                            <div class="marquee-container"><div class="marquee-inner marquee-move"><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span></div></div>
+
+                            <div class="c-content">
+                                <div class="c-text inner-1-text">
+                                    <div>
+                                        <div class="c-tag">KASUS 01 // DEVELOPER PROPERTI</div>
+                                        <h2 class="c-title text-slate-900 dark:text-white">BLUNDER<br><span class="outline-text">MASIF.</span></h2>
+                                        <p class="c-desc text-slate-600 dark:text-slate-400">Terburu-buru mengejar target KPR, mengabaikan rekayasa topografi presisi. Hasilnya? Jalan kawasan amblas, drainase gagal total, dan ratusan unit terendam banjir. <strong class="text-slate-900 dark:text-white">Reputasi hancur dalam semalam.</strong></p>
+                                    </div>
+                                </div>
+                                <div class="visual-container inner-1-vis">
+                                    <div class="c1-img c1-img-2 border-white dark:border-slate-800"></div><div class="c1-img c1-img-1 border-white dark:border-slate-800"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FASE 2 -->
+                        <div class="stack-card card-2" style="z-index: 2;">
+                            <div class="c-bg c-bg-2 img-2"></div>
+                            <div class="absolute inset-0 bg-slate-100/90 dark:bg-slate-900/90 z-[2] transition-colors duration-700"></div>
+                            <div class="num-watermark" style="left: auto; right: -5%;">02</div>
+                            <div class="c-content">
+                                <div class="visual-container inner-2-vis order-2 lg:order-1">
+                                    <div class="c2-img border border-slate-200 dark:border-slate-800 rounded-xl"></div>
+                                    <div class="c2-box c2-box-1 bg-white/80 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800">
+                                        <div>
+                                            <div class="text-xs text-slate-500 dark:text-slate-400 font-space mb-2">STATUS UPDATE</div><div class="text-xl font-bold text-accent">PROJECT STALLED</div><div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Contractor absconded. Structural cracks detected.</div>
+                                        </div>
+                                    </div>
+                                    <div class="c2-box c2-box-2 bg-white/80 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800">
+                                        <div>
+                                            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-2 mb-2"><span class="text-slate-500 dark:text-slate-400 text-sm">INITIAL BUDGET</span><span class="text-slate-900 dark:text-white font-space">RP 2.5 M</span></div><div class="flex justify-between"><span class="text-accent font-bold text-sm">REVISED COST</span><span class="text-accent font-space font-bold">+ 300%</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="c-text inner-2-text order-1 lg:order-2">
+                                    <div>
+                                        <div class="c-tag">KASUS 02 // HUNIAN PRIBADI</div>
+                                        <h2 class="c-title text-slate-900 dark:text-white">MIMPI BURUK<br><span class="outline-text">PRIVAT.</span></h2>
+                                        <p class="c-desc text-slate-600 dark:text-slate-400">Tergiur janji manis kontraktor "asal murah". Realitanya: Anggaran membengkak tanpa kendali, jadwal molor berbulan-bulan, bangunan mangkrak, dan fondasi retak yang mengancam keselamatan nyawa keluarga.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FASE 3 (SOLUSI) -->
+                        <div class="stack-card card-3" style="z-index: 3;">
+                            <div class="c-bg c-bg-3 img-3"></div>
+                            <div class="absolute inset-0 bg-slate-50/95 dark:bg-slate-950/95 z-[2] transition-colors duration-700"></div>
+                            <div class="arch-lines"></div>
+                            <div class="c-content c3-content inner-3">
+                                <div>
+                                    <div class="c-tag bg-white/50 dark:bg-black/50">SOLUSI // PT JAYA KEDHATON</div>
+                                    <h2 class="c-title text-slate-900 dark:text-white" style="font-size: clamp(2.5rem, 8vw, 8rem); margin-bottom: 1.5rem md:margin-bottom: 2rem;">THE SPECIALIST.</h2>
+                                    <p class="c-desc mx-auto text-slate-700 dark:text-slate-300" style="font-size: clamp(0.95rem, 2vw, 1.15rem); max-w: 800px;">Kami hadir untuk menghentikan perjudian dalam proyek Anda. Sebagai spesialis rekayasa konstruksi, PT Jaya Kedhaton menerapkan metodologi presisi tinggi dan mitigasi risiko struktural sejak hari pertama. Kami mengambil alih kerumitan manajemen logistik, mengendalikan pembengkakan anggaran, dan memastikan eksekusi lapangan berjalan 100% sesuai <i>blueprint</i>. <br><strong class="text-slate-900 dark:text-white text-lg md:text-2xl mt-4 md:mt-6 block tracking-widest">PRESISI ABSOLUT. NOL KESALAHAN.</strong></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- WEBSITE COMPANY PROFILE FULL (TANPA SNAP) -->
+            <!-- WEBSITE COMPANY PROFILE FULL -->
             <main id="compro-main" class="relative z-20 transition-colors duration-700 bg-transparent">
 
                 <!-- COMPRO HERO (PARALLAX SCRUB) -->
@@ -422,13 +501,13 @@
                     </div>
                 </section>
 
-                <!-- LAYANAN PERUSAHAAN (STICKY BERFUNGSI SEMPURNA SEKARANG) -->
+                <!-- LAYANAN PERUSAHAAN -->
                 <section class="py-20 md:py-32 px-6 relative z-20 transition-colors duration-700 bg-transparent" id="layanan">
                     <div class="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-12 lg:gap-20 items-stretch">
                         
                         <!-- Kiri: Track (Jalur) untuk Elemen Sticky -->
                         <div class="lg:w-1/3 relative">
-                            <!-- Elemen yang Menempel (Sticky) dipisah dari gs-reveal agar tidak dirusak -->
+                            <!-- Elemen yang Menempel (Sticky) -->
                             <div class="lg:sticky lg:top-32 pt-2">
                                 <div class="gs-reveal">
                                     <h4 class="text-accent font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Kapabilitas Eksekusi</h4>
@@ -442,7 +521,7 @@
                         <div class="lg:w-2/3 grid sm:grid-cols-2 gap-6 pb-4">
                             <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
                                 <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
-                                    <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                    <svg class="w-7 h-7 text-accent hover-float" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                                 </div>
                                 <h3 class="font-space text-xl font-bold mb-3 uppercase">Konstruksi Gedung</h3>
                                 <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Gedung hunian, perkantoran komersial, fasilitas pendidikan, dan infrastruktur bangunan publik terintegrasi dengan material premium.</p>
@@ -450,7 +529,7 @@
                             
                             <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
                                 <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
-                                    <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
+                                    <svg class="w-7 h-7 text-accent hover-float-delay" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
                                 </div>
                                 <h3 class="font-space text-xl font-bold mb-3 uppercase">Bangunan Sipil</h3>
                                 <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Rekayasa struktural tinggi mencakup pembangunan jembatan, jalan layang (<i>flyover</i>), dan <i>underpass</i> perkotaan yang tahan gempa.</p>
@@ -458,7 +537,7 @@
                             
                             <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
                                 <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
-                                    <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    <svg class="w-7 h-7 text-accent hover-float" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                                 </div>
                                 <h3 class="font-space text-xl font-bold mb-3 uppercase">Instalasi MEP</h3>
                                 <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Pengembangan jaringan terpadu (Mechanical, Electrical, Plumbing), kelistrikan tingkat gedung, dan tata kelola suhu industri.</p>
@@ -466,7 +545,7 @@
 
                             <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
                                 <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
-                                    <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17l6-6-6-6"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"></path></svg>
+                                    <svg class="w-7 h-7 text-accent hover-float-delay" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17l6-6-6-6"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"></path></svg>
                                 </div>
                                 <h3 class="font-space text-xl font-bold mb-3 uppercase">Jalan Raya</h3>
                                 <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Pembuatan dan pengaspalan infrastruktur jalan tol, jalan arteri provinsi, hingga akses vital kawasan pelabuhan dengan aspal mutu tinggi.</p>
@@ -474,7 +553,7 @@
 
                             <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
                                 <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
-                                    <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                                    <svg class="w-7 h-7 text-accent hover-float" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                                 </div>
                                 <h3 class="font-space text-xl font-bold mb-3 uppercase">Perkebunan Sawit</h3>
                                 <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Spesialisasi pembukaan lahan (<i>land clearing</i>), pembuatan terasering, drainase, dan infrastruktur hauling kawasan sawit.</p>
@@ -482,7 +561,7 @@
 
                             <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
                                 <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
-                                    <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2C8 6 4 11.5 4 16a8 8 0 0016 0c0-4.5-4-10-8-14z"></path></svg>
+                                    <svg class="w-7 h-7 text-accent hover-float-delay" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2C8 6 4 11.5 4 16a8 8 0 0016 0c0-4.5-4-10-8-14z"></path></svg>
                                 </div>
                                 <h3 class="font-space text-xl font-bold mb-3 uppercase">Sumber Daya Air</h3>
                                 <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Manajemen tata air, instalasi perpipaan raksasa, stasiun pompa, serta pengolahan instalasi air minum bersih untuk tata kota.</p>
@@ -493,34 +572,44 @@
 
                 <!-- ALUR KERJA -->
                 <section class="py-20 md:py-32 px-6 border-t border-slate-200/50 dark:border-white/5 relative z-20 transition-colors duration-700 bg-transparent" id="alur-kerja">
-                   <div class="max-w-4xl mx-auto">
-                        <div class="mb-16 md:mb-24 text-center gs-reveal">
-                            <h4 class="text-accent font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Metodologi</h4>
-                            <h2 class="font-space text-3xl sm:text-4xl md:text-5xl font-bold uppercase">Proses Kerja Absolut.</h2>
-                        </div>
+                    <div class="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-12 lg:gap-20 items-stretch">
                         
-                        <div class="ml-4 md:ml-8 relative">
-                            <div class="work-step mb-16 gs-reveal">
-                                <div class="step-dot bg-slate-50 dark:bg-[#050810]"></div>
-                                <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">01. Analisis Topografi & Mitigasi</h3>
-                                <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">Pemetaan area secara presisi tinggi untuk mengidentifikasi anomali tanah dan menghitung estimasi risiko sebelum garis pertama ditarik.</p>
-                            </div>
-                            <div class="work-step mb-16 gs-reveal">
-                                <div class="step-dot bg-slate-50 dark:bg-[#050810]"></div>
-                                <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">02. Blueprint Rekayasa</h3>
-                                <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">Penyusunan desain teknis, struktur beton, dan perhitungan RAB (Rencana Anggaran Biaya) yang transparan dan efisien.</p>
-                            </div>
-                            <div class="work-step mb-16 gs-reveal">
-                                <div class="step-dot bg-slate-50 dark:bg-[#050810]"></div>
-                                <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">03. Eksekusi Lapangan & K3</h3>
-                                <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">Mobilisasi alat berat dan tenaga ahli dengan kepatuhan mutlak terhadap Sistem Manajemen Keselamatan dan Kesehatan Kerja (SMK3).</p>
-                            </div>
-                            <div class="work-step gs-reveal">
-                                <div class="step-dot bg-slate-50 dark:bg-[#050810]"></div>
-                                <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">04. Serah Terima & QA</h3>
-                                <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">Inspeksi akhir kualitas fisik, uji kelayakan, dan penyerahan proyek dengan sertifikasi garansi pekerjaan (ISO 9001 standard).</p>
+                        <!-- KIRI: Langkah Kerja (Scroll) -->
+                        <div class="lg:w-2/3 order-2 lg:order-1 relative pb-4">
+                            <div class="ml-4 md:ml-8 relative">
+                                <div class="work-step mb-16 gs-reveal">
+                                    <div class="step-dot bg-slate-50 dark:bg-[#050810]"></div>
+                                    <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">01. Analisis Topografi & Mitigasi</h3>
+                                    <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">Pemetaan area secara presisi tinggi untuk mengidentifikasi anomali tanah dan menghitung estimasi risiko sebelum garis pertama ditarik.</p>
+                                </div>
+                                <div class="work-step mb-16 gs-reveal">
+                                    <div class="step-dot bg-slate-50 dark:bg-[#050810]"></div>
+                                    <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">02. Blueprint Rekayasa</h3>
+                                    <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">Penyusunan desain teknis, struktur beton, dan perhitungan RAB (Rencana Anggaran Biaya) yang transparan dan efisien.</p>
+                                </div>
+                                <div class="work-step mb-16 gs-reveal">
+                                    <div class="step-dot bg-slate-50 dark:bg-[#050810]"></div>
+                                    <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">03. Eksekusi Lapangan & K3</h3>
+                                    <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">Mobilisasi alat berat dan tenaga ahli dengan kepatuhan mutlak terhadap Sistem Manajemen Keselamatan dan Kesehatan Kerja (SMK3).</p>
+                                </div>
+                                <div class="work-step gs-reveal">
+                                    <div class="step-dot bg-slate-50 dark:bg-[#050810]"></div>
+                                    <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">04. Serah Terima & QA</h3>
+                                    <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">Inspeksi akhir kualitas fisik, uji kelayakan, dan penyerahan proyek dengan sertifikasi garansi pekerjaan (ISO 9001 standard).</p>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- KANAN: Teks Sticky -->
+                        <div class="lg:w-1/3 order-1 lg:order-2 relative">
+                            <div class="lg:sticky lg:top-32 pt-2">
+                                <div class="gs-reveal">
+                                    <h4 class="text-accent font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Metodologi</h4>
+                                    <h2 class="font-space text-4xl sm:text-5xl md:text-6xl font-bold uppercase leading-tight hover-float">Proses Kerja Absolut.</h2>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </section>
 
@@ -570,7 +659,7 @@
                             
                             <div class="space-y-8">
                                 <div class="flex items-start gap-5">
-                                    <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-800 shadow-sm">
+                                    <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-800 shadow-sm hover-float-delay">
                                         <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                     </div>
                                     <div>
@@ -579,7 +668,7 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-5">
-                                    <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-800 shadow-sm">
+                                    <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-800 shadow-sm hover-float">
                                         <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                                     </div>
                                     <div class="text-slate-600 dark:text-slate-400 text-sm">corporate@jayakedhaton.co.id</div>
@@ -617,8 +706,7 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- HANYA MENGGUNAKAN LENIS SAJA (TANPA GSAP & SCROLLTRIGGER) -->
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
 
     <script>
@@ -649,7 +737,7 @@
         }
 
         // =========================================================
-        // TOUCHSCREEN CURSOR KILLER & TRACKER
+        // TOUCHSCREEN CURSOR KILLER & TRACKER (VANILLA JS)
         // =========================================================
         const isTouch = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
         const cursorDot = document.getElementById("cursor-dot");
@@ -659,225 +747,283 @@
             if(cursorDot) cursorDot.style.display = 'none';
             if(cursorRing) cursorRing.style.display = 'none';
         } else {
-            gsap.set(cursorDot, {xPercent: -50, yPercent: -50});
-            gsap.set(cursorRing, {xPercent: -50, yPercent: -50});
+            let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+            let ringX = mouseX, ringY = mouseY;
+
             window.addEventListener("mousemove", (e) => {
-                gsap.to(cursorDot, { x: e.clientX, y: e.clientY, duration: 0 });
-                gsap.to(cursorRing, { x: e.clientX, y: e.clientY, duration: 0.15, ease: "power2.out" });
+                mouseX = e.clientX; mouseY = e.clientY;
+                cursorDot.style.transform = `translate(calc(-50% + ${mouseX}px), calc(-50% + ${mouseY}px))`;
             });
+
+            // Smooth interpolation for ring
+            function renderCursor() {
+                ringX += (mouseX - ringX) * 0.15;
+                ringY += (mouseY - ringY) * 0.15;
+                cursorRing.style.transform = `translate(calc(-50% + ${ringX}px), calc(-50% + ${ringY}px))`;
+                requestAnimationFrame(renderCursor);
+            }
+            requestAnimationFrame(renderCursor);
         }
 
         // =========================================================
-        // SMOOTH SCROLL (LENIS) - FLAWLESS CONFIG
+        // INIT LENIS SMOOTH SCROLL
         // =========================================================
-        gsap.registerPlugin(ScrollTrigger);
-        
         const lenis = new Lenis({ 
-            duration: 0.8, // Responsif & natural native scroll
+            duration: 0.8,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             smoothTouch: false 
         });
-        lenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((time) => { lenis.raf(time * 1000) });
-        gsap.ticker.lagSmoothing(0);
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
 
         // =========================================================
-        // 1. TIMELINE IMMERSIVE STORY (PROLOGUE)
-        // PENERAPAN GSAP NATIVE SNAP TO LABELS (STOP PER SECTION)
-        // =========================================================
-        gsap.from(".huge-text", { y: 100, opacity: 0, duration: 1.5, ease: "power4.out", delay: 0.2 });
-        gsap.to(".marquee-move", { xPercent: -50, repeat: -1, duration: 10, ease: "none" });
-
-        let tlMaster = gsap.timeline({
-            scrollTrigger: {
-                trigger: "#cinematic-master",
-                start: "top top",
-                end: "+=6000", // Cukup nyaman tanpa overscroll panjang
-                scrub: true, 
-                pin: true,
-                // INI RAHASIANYA: Menarik layar otomatis ke setiap frame label!
-                snap: {
-                    snapTo: "labels",
-                    duration: { min: 0.2, max: 0.6 },
-                    delay: 0.1,
-                    ease: "power3.out"
-                }
-            }
-        });
-
-        // SECTION 1: HERO
-        tlMaster.addLabel("hero", 0);
-        tlMaster.to("#hero-text", { scale: 5, autoAlpha: 0, duration: 0.5 }, 0)
-                .to("#hero-img", { scale: 3, filter: "blur(10px)", duration: 1 }, 0)
-                .to(".blueprint-grid", { scale: 1.5, autoAlpha: 0, duration: 0.8 }, 0)
-                .to("#scene-topo", { autoAlpha: 1, clipPath: "circle(150% at 50% 50%)", duration: 0.8 }, 0.2)
-                .to("#scene-hero", { autoAlpha: 0, display: "none" }, 1.0)
-                .to(".topo-path", { strokeDashoffset: 0, duration: 0.6 }, 0.4)
-                .to(".error-log", { autoAlpha: 1, y: -10, stagger: 0.1, duration: 0.3 }, 0.6)
-                .to(".topo-title, .topo-desc", { autoAlpha: 1, y: 0, duration: 0.3, stagger: 0.1 }, 0.7);
-                
-        // SECTION 2: TOPO (STOP KE-2)
-        tlMaster.addLabel("topo", 1.5);
-        tlMaster.to({}, { duration: 1 }, 1.5); 
-
-        tlMaster.to("#topo-text-wrap, .error-log", { autoAlpha: 0, y: -40, duration: 0.3 }, 2.5)
-                .to("#scene-topo", { autoAlpha: 0, scale: 0.9, duration: 0.5 }, 2.5)
-                .to("#scene-stack", { autoAlpha: 1, pointerEvents: "auto" }, 2.5)
-                .to(".card-1", { autoAlpha: 1, scale: 1, y: 0, duration: 0.6, ease: "power3.out" }, 2.7)
-                .from(".inner-1-text", { x: -50, autoAlpha: 0, duration: 0.4 }, 2.9)
-                .from(".c1-img-1", { y: 100, autoAlpha: 0, duration: 0.4, ease: "back.out(1.5)" }, 3.0)
-                .from(".c1-img-2", { y: -100, autoAlpha: 0, duration: 0.4, ease: "back.out(1.5)" }, 3.1)
-                .from(".marquee-container", { y: 100, autoAlpha: 0, duration: 0.4 }, 3.1);
-                
-        // SECTION 3: FASE 1 (STOP KE-3)
-        tlMaster.addLabel("phase1", 4.0);
-        tlMaster.to({}, { duration: 1 }, 4.0); 
-
-        tlMaster.to(".card-1", { scale: 0.85, autoAlpha: 0, filter: "blur(20px)", duration: 0.4 }, 5.0)
-                .to(".card-2", { autoAlpha: 1, clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 0.6, ease: "power3.inOut" }, 5.2)
-                .fromTo(".img-2", { scale: 1.4, x: 80 }, { scale: 1, x: 0, duration: 0.6, ease: "power3.inOut" }, 5.2)
-                .from(".inner-2-text", { x: 50, autoAlpha: 0, duration: 0.4 }, 5.4)
-                .from(".c2-img", { scale: 0.8, autoAlpha: 0, duration: 0.4 }, 5.4)
-                .from(".c2-box-1", { scale: 0, rotation: -20, autoAlpha: 0, duration: 0.4, ease: "back.out(2)" }, 5.5)
-                .from(".c2-box-2", { scale: 0, rotation: 20, autoAlpha: 0, duration: 0.4, ease: "back.out(2)" }, 5.6);
-                
-        // SECTION 4: FASE 2 (STOP KE-4)
-        tlMaster.addLabel("phase2", 6.5);
-        tlMaster.to({}, { duration: 1 }, 6.5); 
-
-        tlMaster.to(".card-2", { scale: 1.5, autoAlpha: 0, filter: "blur(40px)", duration: 0.4 }, 7.5)
-                .to(".card-3", { autoAlpha: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.6, ease: "power4.inOut" }, 7.7)
-                .fromTo(".img-3", { scale: 0.5, rotation: -5 }, { scale: 1, rotation: 0, duration: 0.6, ease: "power3.inOut" }, 7.7)
-                .from(".arch-lines", { autoAlpha: 0, scale: 1.2, duration: 0.6 }, 7.9)
-                .fromTo(".inner-3 .c-tag", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.3 }, 8.0)
-                .fromTo(".inner-3 .c-title", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.3 }, 8.1)
-                .fromTo(".inner-3 .c-desc", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.3 }, 8.2);
-        
-        // SECTION 5: FASE 3/SOLUSI (STOP KE-5)
-        tlMaster.addLabel("phase3", 9.0);
-        tlMaster.to({}, { duration: 1.0 }, 9.0);
-
-
-        // =========================================================
-        // 2. COMPRO LOGIC & ANIMATIONS
+        // MURNI VANILLA JS SCROLL ANIMATION (PENGGANTI GSAP)
         // =========================================================
         
-        // Tampilkan Navbar saat masuk area Compro
-        ScrollTrigger.create({
-            trigger: "#compro-main",
-            start: "top 80%", 
-            onEnter: () => {
-                const navWrap = document.getElementById("nav-wrapper");
-                navWrap.classList.remove("-translate-y-full", "opacity-0", "pointer-events-none");
-            },
-            onLeaveBack: () => {
-                const navWrap = document.getElementById("nav-wrapper");
-                navWrap.classList.add("-translate-y-full", "opacity-0", "pointer-events-none");
-            }
-        });
+        // CACHE DOM ELEMENTS AGAR TIDAK BERAT
+        const DOM = {
+            wrapper: document.getElementById('cinematic-wrapper'),
+            nav: document.getElementById('main-nav'),
+            navWrap: document.getElementById('nav-wrapper'),
+            heroBg: document.querySelector('.hero-compro-bg'),
+            heroText: document.getElementById('hero-text'),
+            heroImg: document.getElementById('hero-img'),
+            bpGrid: document.getElementById('bp-grid'),
+            sceneTopo: document.getElementById('scene-topo'),
+            topoPaths: document.querySelectorAll('.topo-path'),
+            errorLogs: document.querySelectorAll('.error-log'),
+            topoTextWrap: document.getElementById('topo-text-wrap'),
+            sceneStack: document.getElementById('scene-stack'),
+            card1: document.querySelector('.card-1'),
+            inner1Text: document.querySelector('.inner-1-text'),
+            c1Img1: document.querySelector('.c1-img-1'),
+            c1Img2: document.querySelector('.c1-img-2'),
+            marquee: document.querySelector('.marquee-container'),
+            card2: document.querySelector('.card-2'),
+            img2: document.querySelector('.img-2'),
+            inner2Text: document.querySelector('.inner-2-text'),
+            c2Img: document.querySelector('.c2-img'),
+            c2Box1: document.querySelector('.c2-box-1'),
+            c2Box2: document.querySelector('.c2-box-2'),
+            card3: document.querySelector('.card-3'),
+            img3: document.querySelector('.img-3'),
+            archLines: document.querySelector('.arch-lines'),
+            tag3: document.querySelector('.inner-3 .c-tag'),
+            title3: document.querySelector('.inner-3 .c-title'),
+            desc3: document.querySelector('.inner-3 .c-desc')
+        };
 
-        // Morphing Navbar 
-        ScrollTrigger.create({
-            trigger: "#beranda",
-            start: "top top",
-            end: "bottom top",
-            scrub: true, 
-            onUpdate: (self) => {
-                const nav = document.getElementById("main-nav");
-                const wrapper = document.getElementById("nav-wrapper");
-                if (self.progress > 0.05) {
-                    nav.classList.remove("w-full", "border-white/5");
-                    nav.classList.add("w-[95%]", "md:w-[90%]", "max-w-6xl", "rounded-full", "shadow-xl");
-                    wrapper.classList.add("pt-4", "md:pt-6");
-                } else {
-                    nav.classList.add("w-full", "border-white/5");
-                    nav.classList.remove("w-[95%]", "md:w-[90%]", "max-w-6xl", "rounded-full", "shadow-xl");
-                    wrapper.classList.remove("pt-4", "md:pt-6");
-                }
-            }
-        });
-
-        // Hero Compro Stopper
-        ScrollTrigger.create({
-            trigger: "#beranda",
-            start: "top top", 
-            end: "+=600",
-            pin: true,
-            pinSpacing: true  
-        });
-
-        // Animasi Teks Hero
-        gsap.from(".gs-hero-in", {
-            y: 60, opacity: 0, duration: 1.2, stagger: 0.2, ease: "power4.out",
-            scrollTrigger: {
-                trigger: "#beranda",
-                start: "top 60%"
-            }
-        });
-
-        // Fade-Ups element Compro (DIPERCEPAT EKSTREM AGAR LEBIH RESPONSIVE)
-        const revealElements = gsap.utils.toArray('.gs-reveal');
-        revealElements.forEach((elem) => {
-            gsap.fromTo(elem, 
-                { y: 40, opacity: 0 }, 
-                {
-                    y: 0, opacity: 1, duration: 0.4, ease: "power2.out", 
-                    scrollTrigger: {
-                        trigger: elem,
-                        start: "top 90%",
-                        toggleActions: "play none none reverse"
-                    }
-                }
-            );
-        });
-
-        // =========================================================
-        // 3. DOT SCROLL NAVIGATION TRACKING
-        // =========================================================
         const allDots = document.querySelectorAll('.scroll-dot');
         const prologDots = document.querySelectorAll('.prolog-dot');
         const comproDots = document.querySelectorAll('.compro-dot');
 
         function clearAllDots() { allDots.forEach(d => d.classList.remove('active')); }
 
-        // Prologue Navigation
+        // FUNGSI MATEMATIKA UNTUK MENGHITUNG PERGERAKAN DARI 0 - 10
+        function I(val, tMin, tMax, vMin, vMax) {
+            if (val <= tMin) return vMin;
+            if (val >= tMax) return vMax;
+            return vMin + (vMax - vMin) * ((val - tMin) / (tMax - tMin));
+        }
+
+        // FUNGSI UTAMA TIMELINE MASTER
+        function updateImmersiveTimeline(e) {
+            const scrollY = e.scroll || window.scrollY;
+            const maxPrologScroll = DOM.wrapper.offsetHeight - window.innerHeight;
+
+            // --- MORPHING NAVBAR (HANYA MUNCUL SAAT MASUK COMPRO) ---
+            if (scrollY > maxPrologScroll - 50) {
+                DOM.navWrap.classList.remove("-translate-y-full", "opacity-0", "pointer-events-none");
+                DOM.nav.classList.remove("w-full", "border-white/5");
+                DOM.nav.classList.add("w-[95%]", "md:w-[90%]", "max-w-6xl", "rounded-full", "shadow-xl");
+                DOM.navWrap.classList.add("pt-4", "md:pt-6");
+            } else {
+                DOM.navWrap.classList.add("-translate-y-full", "opacity-0", "pointer-events-none");
+                DOM.nav.classList.add("w-full", "border-white/5");
+                DOM.nav.classList.remove("w-[95%]", "md:w-[90%]", "max-w-6xl", "rounded-full", "shadow-xl");
+                DOM.navWrap.classList.remove("pt-4", "md:pt-6");
+            }
+
+            // --- PARALLAX HERO COMPRO ---
+            if (DOM.heroBg) {
+                // Background akan sedikit turun seiring scroll
+                DOM.heroBg.style.transform = `translateY(${scrollY * 0.25}px)`;
+            }
+
+            // --- PERHITUNGAN PROGRESS IMMERSIVE (0 -> 10) ---
+            const rect = DOM.wrapper.getBoundingClientRect();
+            const maxScroll = DOM.wrapper.offsetHeight - window.innerHeight;
+            let p = (-rect.top) / maxScroll;
+            p = Math.max(0, Math.min(1, p)); // Clamp progress 0 to 1
+            let t = p * 10; // Rentangkan range dari 0 sampai 10 agar mudah di-mapping
+            const isDark = document.documentElement.classList.contains('dark');
+
+            // ANIMASI HERO LAYER
+            if(DOM.heroText) {
+                DOM.heroText.style.transform = `scale(${I(t, 0, 0.5, 1, 5)})`;
+                DOM.heroText.style.opacity = I(t, 0, 0.5, 1, 0);
+                DOM.heroImg.style.transform = `scale(${I(t, 0, 1.0, 1, 3)})`;
+                DOM.heroImg.style.filter = `blur(${I(t, 0, 1.0, 0, 10)}px) grayscale(100%) opacity(${isDark ? 0.3 : 0.15})`;
+                DOM.bpGrid.style.transform = `scale(${I(t, 0, 0.8, 1, 1.5)})`;
+                DOM.bpGrid.style.opacity = I(t, 0, 0.8, 1, 0);
+            }
+
+            // ANIMASI TOPO LAYER
+            if(DOM.sceneTopo) {
+                DOM.sceneTopo.style.visibility = (t >= 0.2 && t < 2.8) ? 'visible' : 'hidden';
+                DOM.sceneTopo.style.opacity = I(t, 0.2, 0.8, 0, 1) * I(t, 2.5, 2.8, 1, 0);
+                DOM.sceneTopo.style.clipPath = `circle(${I(t, 0.2, 0.8, 0, 150)}% at 50% 50%)`;
+                DOM.sceneTopo.style.transform = `scale(${I(t, 2.5, 2.8, 1, 0.9)})`;
+                
+                DOM.topoPaths.forEach(path => {
+                    path.style.strokeDashoffset = I(t, 0.4, 1.0, 2000, 0);
+                });
+                
+                DOM.errorLogs.forEach((el, i) => {
+                    const start = 0.6 + (i * 0.1);
+                    el.style.opacity = I(t, start, start+0.3, 0, 1) * I(t, 2.5, 2.8, 1, 0);
+                    el.style.transform = `translateY(${I(t, start, start+0.3, 0, -10) + I(t, 2.5, 2.8, 0, -30)}px)`;
+                });
+
+                DOM.topoTextWrap.style.opacity = I(t, 0.7, 1.0, 0, 1) * I(t, 2.5, 2.8, 1, 0);
+                DOM.topoTextWrap.style.transform = `translateY(${I(t, 0.7, 1.0, 40, 0) + I(t, 2.5, 2.8, 0, -40)}px)`;
+            }
+
+            // ANIMASI KARTU TUMPUK (STACK LAYER)
+            if(DOM.sceneStack) {
+                DOM.sceneStack.style.visibility = t >= 2.5 ? 'visible' : 'hidden';
+                DOM.sceneStack.style.opacity = I(t, 2.5, 2.7, 0, 1);
+                DOM.sceneStack.style.pointerEvents = t >= 2.5 ? 'auto' : 'none';
+
+                // Kartu 1 (Dev)
+                DOM.card1.style.visibility = (t >= 2.5 && t < 5.4) ? 'visible' : 'hidden';
+                DOM.card1.style.opacity = I(t, 2.7, 3.3, 0, 1) * I(t, 5.0, 5.4, 1, 0);
+                DOM.card1.style.transform = `scale(${I(t, 2.7, 3.3, 1.1, 1) * I(t, 5.0, 5.4, 1, 0.85)})`;
+                DOM.card1.style.filter = `blur(${I(t, 5.0, 5.4, 0, 20)}px)`;
+                
+                DOM.inner1Text.style.opacity = I(t, 2.9, 3.3, 0, 1);
+                DOM.inner1Text.style.transform = `translateX(${I(t, 2.9, 3.3, -50, 0)}px)`;
+                DOM.c1Img1.style.opacity = I(t, 3.0, 3.4, 0, 1);
+                DOM.c1Img1.style.transform = `translateY(${I(t, 3.0, 3.4, 100, 0)}px) rotate(-5deg)`;
+                DOM.c1Img2.style.opacity = I(t, 3.1, 3.5, 0, 1);
+                DOM.c1Img2.style.transform = `translateY(${I(t, 3.1, 3.5, -100, 0)}px) rotate(8deg)`;
+                DOM.marquee.style.opacity = I(t, 3.1, 3.5, 0, 1);
+                DOM.marquee.style.transform = `translateY(${I(t, 3.1, 3.5, 100, 0)}px) rotate(-3deg)`;
+
+                // Kartu 2 (Privat)
+                DOM.card2.style.visibility = (t >= 5.0 && t < 7.9) ? 'visible' : 'hidden';
+                DOM.card2.style.opacity = I(t, 5.2, 5.8, 0, 1) * I(t, 7.5, 7.9, 1, 0);
+                DOM.card2.style.clipPath = `inset(0 ${I(t, 5.2, 5.8, 100, 0)}% 0 0)`;
+                DOM.card2.style.transform = `scale(${I(t, 7.5, 7.9, 1, 1.5)})`;
+                DOM.card2.style.filter = `blur(${I(t, 7.5, 7.9, 0, 40)}px)`;
+
+                DOM.img2.style.transform = `scale(${I(t, 5.2, 5.8, 1.4, 1)}) translateX(${I(t, 5.2, 5.8, 80, 0)}px)`;
+                DOM.inner2Text.style.opacity = I(t, 5.4, 5.8, 0, 1);
+                DOM.inner2Text.style.transform = `translateX(${I(t, 5.4, 5.8, 50, 0)}px)`;
+                DOM.c2Img.style.opacity = I(t, 5.4, 5.8, 0, 1);
+                DOM.c2Img.style.transform = `scale(${I(t, 5.4, 5.8, 0.8, 1)})`;
+                DOM.c2Box1.style.opacity = I(t, 5.5, 5.9, 0, 1);
+                DOM.c2Box1.style.transform = `scale(${I(t, 5.5, 5.9, 0, 1)}) rotate(${I(t, 5.5, 5.9, -20, 0)}deg)`;
+                DOM.c2Box2.style.opacity = I(t, 5.6, 6.0, 0, 1);
+                DOM.c2Box2.style.transform = `scale(${I(t, 5.6, 6.0, 0, 1)}) rotate(${I(t, 5.6, 6.0, 20, 5)}deg)`;
+
+                // Kartu 3 (Solusi)
+                DOM.card3.style.visibility = t >= 7.5 ? 'visible' : 'hidden';
+                DOM.card3.style.opacity = I(t, 7.7, 8.3, 0, 1);
+                DOM.card3.style.clipPath = `inset(${I(t, 7.7, 8.3, 50, 0)}%)`;
+                DOM.img3.style.transform = `scale(${I(t, 7.7, 8.3, 0.5, 1)}) rotate(${I(t, 7.7, 8.3, -5, 0)}deg)`;
+                DOM.archLines.style.opacity = I(t, 7.9, 8.5, 0, 1);
+                DOM.archLines.style.transform = `scale(${I(t, 7.9, 8.5, 1.2, 1)})`;
+                
+                DOM.tag3.style.opacity = I(t, 8.0, 8.3, 0, 1);
+                DOM.tag3.style.transform = `translateY(${I(t, 8.0, 8.3, 50, 0)}px)`;
+                DOM.title3.style.opacity = I(t, 8.1, 8.4, 0, 1);
+                DOM.title3.style.transform = `translateY(${I(t, 8.1, 8.4, 50, 0)}px)`;
+                DOM.desc3.style.opacity = I(t, 8.2, 8.5, 0, 1);
+                DOM.desc3.style.transform = `translateY(${I(t, 8.2, 8.5, 50, 0)}px)`;
+            }
+
+            // DOTS HIGHLIGHT LOGIC UNTUK PROLOGUE
+            if (p < 0.99) { // Jika masih di dalam section prologue
+                clearAllDots();
+                if (p < 0.15) prologDots[0].classList.add('active'); 
+                else if (p < 0.40) prologDots[1].classList.add('active'); 
+                else if (p < 0.65) prologDots[2].classList.add('active'); 
+                else if (p < 0.90) prologDots[3].classList.add('active'); 
+                else prologDots[4].classList.add('active'); 
+            }
+        }
+
+        // Jalankan timeline function saat Lenis scroll aktif
+        lenis.on('scroll', updateImmersiveTimeline);
+        updateImmersiveTimeline({scroll: window.scrollY}); // init pertama
+
+
+        // =========================================================
+        // PENGGANTI GSAP SCROLLTRIGGER (UNTUK EFEK REVEAL COMPRO)
+        // =========================================================
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-revealed');
+                    revealObserver.unobserve(entry.target); // Hanya muncul 1 kali
+                }
+            });
+        }, { rootMargin: "0px 0px -100px 0px", threshold: 0.1 });
+
+        document.querySelectorAll('.gs-reveal, .gs-hero-in').forEach(el => {
+            revealObserver.observe(el);
+        });
+
+
+        // =========================================================
+        // DOT NAVIGATION COMPRO (INTERSECTION OBSERVER)
+        // =========================================================
+        const sections = ['#beranda', '#profil', '#layanan', '#alur-kerja', '#portofolio', '#kontak'];
+        
+        const comproObserver = new IntersectionObserver((entries) => {
+            // Hanya aktifkan logika ini jika sedang berada melewati prologue
+            const scrollY = window.scrollY;
+            const maxPrologScroll = DOM.wrapper.offsetHeight - window.innerHeight;
+
+            if(scrollY >= maxPrologScroll - 100) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        clearAllDots();
+                        const activeDot = Array.from(comproDots).find(d => d.getAttribute('data-target') === `#${entry.target.id}`);
+                        if (activeDot) activeDot.classList.add('active');
+                    }
+                });
+            }
+        }, { rootMargin: "-50% 0px -50% 0px" });
+
+        sections.forEach(id => {
+            const sectionEl = document.querySelector(id);
+            if (sectionEl) comproObserver.observe(sectionEl);
+        });
+
+
+        // =========================================================
+        // KLIK PADA DOTS UNTUK LENIS SCROLLTO
+        // =========================================================
         prologDots.forEach(dot => {
             dot.addEventListener('click', () => {
                 const prog = parseFloat(dot.getAttribute('data-progress'));
-                const st = tlMaster.scrollTrigger;
-                const targetScroll = st.start + (prog * (st.end - st.start));
-                lenis.scrollTo(targetScroll, { duration: 1.5 });
+                const maxScroll = DOM.wrapper.offsetHeight - window.innerHeight;
+                const targetY = DOM.wrapper.offsetTop + (prog * maxScroll);
+                lenis.scrollTo(targetY, { duration: 1.5 });
             });
         });
 
-        tlMaster.eventCallback("onUpdate", function() {
-            if (!tlMaster.scrollTrigger.isActive) return;
-            const prog = this.progress();
-            clearAllDots();
-            if (prog < 0.15) prologDots[0].classList.add('active'); // Hero
-            else if (prog < 0.4) prologDots[1].classList.add('active'); // Topo
-            else if (prog < 0.65) prologDots[2].classList.add('active'); // Phase 1
-            else if (prog < 0.9) prologDots[3].classList.add('active'); // Phase 2
-            else prologDots[4].classList.add('active'); // Phase 3
-        });
-
-        // Compro Navigation
         comproDots.forEach(dot => {
-            const targetId = dot.getAttribute('data-target');
-            const targetElement = document.querySelector(targetId);
-
             dot.addEventListener('click', () => {
+                const targetId = dot.getAttribute('data-target');
                 lenis.scrollTo(targetId, { duration: 1.5 });
             });
-
-            if (targetElement) {
-                ScrollTrigger.create({
-                    trigger: targetElement,
-                    start: "top 50%", end: "bottom 50%",
-                    onEnter: () => { clearAllDots(); dot.classList.add('active'); },
-                    onEnterBack: () => { clearAllDots(); dot.classList.add('active'); }
-                });
-            }
         });
 
     </script>
