@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PT Jaya Kedhaton - Premium B2B Construction</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;700;900&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+
     <script>
         // Konfigurasi Tailwind untuk Dark Mode & Warna Custom
         tailwind.config = {
@@ -42,244 +45,1029 @@
     <style>
         :root {
             --accent: #ff4500;
-            --stroke-color: #0f172a; 
+            --stroke-color: #0f172a;
             --grid-color: rgba(15, 23, 42, 0.04);
             --nav-dot: rgba(15, 23, 42, 0.2);
             --noise-opacity: 0.04;
         }
 
         .dark {
-            --stroke-color: #ffffff; 
+            --stroke-color: #ffffff;
             --grid-color: rgba(255, 255, 255, 0.03);
             --nav-dot: rgba(255, 255, 255, 0.3);
             --noise-opacity: 0.02;
         }
 
         /* SEMBUNYIKAN CURSOR DEFAULT DI DESKTOP */
-        @media (pointer: fine) { 
-            *, *::before, *::after { cursor: none !important; } 
+        @media (pointer: fine) {
+
+            *,
+            *::before,
+            *::after {
+                cursor: none !important;
+            }
         }
-        
+
         /* SCROLLBAR & BASIC RESET + FIX STICKY OVERFLOW */
-        html, body {
-            -ms-overflow-style: none; scrollbar-width: none;
-            overflow-x: clip; 
+        html,
+        body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            overflow-x: clip;
         }
-        ::-webkit-scrollbar { display: none !important; width: 0px; background: transparent; }
+
+        ::-webkit-scrollbar {
+            display: none !important;
+            width: 0px;
+            background: transparent;
+        }
 
         /* CUSTOM CURSOR */
-        .cursor-dot { position: fixed; top: 0; left: 0; width: 10px; height: 10px; background-color: var(--accent); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s; }
-        .cursor-ring { position: fixed; top: 0; left: 0; width: 36px; height: 36px; border: 1.5px solid var(--accent); border-radius: 50%; pointer-events: none; z-index: 99998; transform: translate(-50%, -50%); transition: transform 0.1s ease-out, background-color 0.3s; mix-blend-mode: difference; }
+        .cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .cursor-ring {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 36px;
+            height: 36px;
+            border: 1.5px solid var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out, background-color 0.3s;
+            mix-blend-mode: difference;
+        }
 
         @media (hover: none) and (pointer: coarse) {
-            .cursor-dot, .cursor-ring { display: none !important; visibility: hidden !important; }
+
+            .cursor-dot,
+            .cursor-ring {
+                display: none !important;
+                visibility: hidden !important;
+            }
         }
 
         /* TEXTURES NOISE OVERLAY */
-        .noise { position: fixed; inset: 0; z-index: 9999; pointer-events: none; background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); transition: opacity 0.5s; opacity: var(--noise-opacity); }
-        
+        .noise {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            transition: opacity 0.5s;
+            opacity: var(--noise-opacity);
+        }
+
         /* CUSTOM SCROLL NAVIGATION (DOTS) */
-        .scroll-nav { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 9990; display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: auto; }
-        .scroll-dot { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; }
-        .scroll-dot::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background-color: var(--nav-dot); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .scroll-dot:hover::before { background-color: var(--accent); transform: scale(2.5); }
-        .scroll-dot.active::before { background-color: var(--accent); transform: scale(2.5); box-shadow: 0 0 10px rgba(255,69,0,0.5); }
-        
+        .scroll-nav {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 9990;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            pointer-events: auto;
+        }
+
+        .scroll-dot {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .scroll-dot::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: var(--nav-dot);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .scroll-dot:hover::before {
+            background-color: var(--accent);
+            transform: scale(2.5);
+        }
+
+        .scroll-dot.active::before {
+            background-color: var(--accent);
+            transform: scale(2.5);
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+        }
+
         /* PENYESUAIAN UKURAN FONT DOTS NAV */
-        .scroll-label { position: absolute; right: 24px; top: 50%; transform: translateY(-50%) translateX(10px); font-family: 'Space Grotesk', sans-serif; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; opacity: 0; pointer-events: none; transition: all 0.3s ease; white-space: nowrap; font-weight: bold; }
-        .scroll-dot:hover .scroll-label { opacity: 1; transform: translateY(-50%) translateX(0); }
-        .scroll-divider { width: 1.5px; height: 16px; background: var(--nav-dot); border-radius: 2px; margin: 4px 0; }
-        .nav-section-title { font-size: 7px; color: var(--nav-dot); font-family: 'Space Grotesk'; text-transform: uppercase; letter-spacing: 2px; writing-mode: vertical-rl; transform: rotate(180deg); margin: 5px 0; }
+        .scroll-label {
+            position: absolute;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%) translateX(10px);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-weight: bold;
+        }
+
+        .scroll-dot:hover .scroll-label {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+        }
+
+        .scroll-divider {
+            width: 1.5px;
+            height: 16px;
+            background: var(--nav-dot);
+            border-radius: 2px;
+            margin: 4px 0;
+        }
+
+        .nav-section-title {
+            font-size: 7px;
+            color: var(--nav-dot);
+            font-family: 'Space Grotesk';
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            margin: 5px 0;
+        }
 
         /* =======================================================
            ANIMASI DINAMIS BACKGROUND (GRID & BLOBS)
            ======================================================= */
         @keyframes panGrid {
-            0% { background-position: 0px 0px; }
-            100% { background-position: 40px 40px; } 
+            0% {
+                background-position: 0px 0px;
+            }
+
+            100% {
+                background-position: 40px 40px;
+            }
         }
-        .global-grid, .blueprint-grid {
+
+        .global-grid,
+        .blueprint-grid {
             animation: panGrid 15s linear infinite;
         }
 
         @keyframes blobBounce {
-            0% { transform: translate(0px, 0px) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-            100% { transform: translate(0px, 0px) scale(1); }
+            0% {
+                transform: translate(0px, 0px) scale(1);
+            }
+
+            33% {
+                transform: translate(30px, -50px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+
+            100% {
+                transform: translate(0px, 0px) scale(1);
+            }
         }
-        .blob-1 { animation: blobBounce 20s infinite ease-in-out; }
-        .blob-2 { animation: blobBounce 25s infinite ease-in-out reverse; }
-        .blob-3 { animation: blobBounce 22s infinite ease-in-out 2s; }
+
+        .blob-1 {
+            animation: blobBounce 20s infinite ease-in-out;
+        }
+
+        .blob-2 {
+            animation: blobBounce 25s infinite ease-in-out reverse;
+        }
+
+        .blob-3 {
+            animation: blobBounce 22s infinite ease-in-out 2s;
+        }
 
         /* =======================================================
            ANIMASI MENGAMBANG UNTUK ELEMEN PROLOGUE
            ======================================================= */
         @keyframes floatSubtle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
         }
-        .hover-float { animation: floatSubtle 6s ease-in-out infinite; }
-        .hover-float-delay { animation: floatSubtle 7s ease-in-out infinite 2s; }
+
+        .hover-float {
+            animation: floatSubtle 6s ease-in-out infinite;
+        }
+
+        .hover-float-delay {
+            animation: floatSubtle 7s ease-in-out infinite 2s;
+        }
 
         /* =======================================================
            REVEAL ANIMATION NATIVE (CSS + Intersection Observer) 
            ======================================================= */
-        .gs-reveal, .gs-hero-in {
+        .gs-reveal,
+        .gs-hero-in {
             opacity: 0;
             transform: translateY(40px);
             transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
             will-change: opacity, transform;
         }
-        .gs-reveal.is-revealed, .gs-hero-in.is-revealed {
+
+        .gs-reveal.is-revealed,
+        .gs-hero-in.is-revealed {
             opacity: 1;
             transform: translateY(0);
         }
 
-        #hero-content .gs-hero-in:nth-child(1) { transition-delay: 0.1s; }
-        #hero-content .gs-hero-in:nth-child(2) { transition-delay: 0.3s; }
-        #hero-content .gs-hero-in:nth-child(3) { transition-delay: 0.5s; }
+        #hero-content .gs-hero-in:nth-child(1) {
+            transition-delay: 0.1s;
+        }
 
-        @keyframes floatUp { 0% { opacity: 0; transform: translateY(100px) scale(1); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
-        .huge-text-anim { animation: floatUp 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards; }
+        #hero-content .gs-hero-in:nth-child(2) {
+            transition-delay: 0.3s;
+        }
 
-        @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .marquee-move { animation: marqueeScroll 10s linear infinite; will-change: transform; }
+        #hero-content .gs-hero-in:nth-child(3) {
+            transition-delay: 0.5s;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(100px) scale(1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .huge-text-anim {
+            animation: floatUp 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+        }
+
+        @keyframes marqueeScroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .marquee-move {
+            animation: marqueeScroll 10s linear infinite;
+            will-change: transform;
+        }
 
         /* IMMERSIVE MASTER - FLAWLESS VIEWPORT */
-        .c-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .c-layer {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
 
-        #scene-hero { z-index: 100; transform-origin: center; }
-        #scene-topo { z-index: 200; clip-path: circle(0% at 50% 50%); visibility: hidden; opacity: 0; }
-        #scene-stack { z-index: 300; pointer-events: none; visibility: hidden; opacity: 0; }
+        #scene-hero {
+            z-index: 100;
+            transform-origin: center;
+        }
 
-        .blueprint-grid { position: absolute; inset: 0; z-index: 1; pointer-events: none; background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px); background-size: 40px 40px; }
-        .hero-img { position: absolute; inset: -10%; background: url('https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2500&auto=format&fit=crop') center/cover; z-index: 1; filter: grayscale(100%) opacity(0.15); will-change: transform, filter; }
-        .dark .hero-img { filter: grayscale(100%) opacity(0.3); }
-        
-        .hero-text-container { position: relative; z-index: 10; text-align: center; width: 100%; padding: 0 5vw; will-change: transform, opacity; }
-        .huge-text { font-size: clamp(2.5rem, 6vw, 6rem); font-weight: 900; line-height: 0.9; text-transform: uppercase; letter-spacing: -0.02em; position: relative; display: inline-block; opacity: 0; }
-        .compass-svg { position: absolute; top: -20px; right: -30px; width: 45px; height: 45px; opacity: 0.6; animation: spin 20s linear infinite; pointer-events: none; }
-        .outline-text { color: transparent; -webkit-text-stroke: 2px var(--stroke-color); transition: -webkit-text-stroke 0.5s; }
-        
-        .topo-svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.15; }
-        .dark .topo-svg { opacity: 0.3; }
-        .topo-path { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 2000; stroke-dashoffset: 2000; }
-        
-        .error-log { position: absolute; font-family: 'Space Grotesk'; font-size: 0.75rem; color: var(--accent); border: 1px solid var(--accent); padding: 4px 8px; background: rgba(255,69,0,0.05); opacity: 0; backdrop-filter: blur(4px); will-change: transform, opacity; }
-        .el-1 { top: 20%; left: 15%; } .el-2 { bottom: 30%; right: 20%; } .el-3 { top: 40%; right: 10%; }
+        #scene-topo {
+            z-index: 200;
+            clip-path: circle(0% at 50% 50%);
+            visibility: hidden;
+            opacity: 0;
+        }
 
-        .stack-card { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; opacity: 0; visibility: hidden; pointer-events: none; will-change: clip-path, transform, opacity, filter; }
-        .card-2 { clip-path: inset(0 100% 0 0); } .card-3 { clip-path: inset(50%); }
-        .c-bg { position: absolute; inset: -10%; background-size: cover; background-position: center; z-index: 1; filter: grayscale(80%) opacity(0.4); transform: scale(1.1); }
-        .dark .c-bg { filter: grayscale(50%) opacity(0.3) brightness(0.6); }
-        .c-bg-1 { background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2000&auto=format&fit=crop'); }
-        .c-bg-2 { background-image: url('https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2000&auto=format&fit=crop'); }
-        .c-bg-3 { background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop'); filter: grayscale(100%) opacity(0.8); }
-        
-        .c-content { position: relative; z-index: 2; width: 100%; max-w: 1400px; padding: 0 5vw; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; height: 100%; }
-        .c-tag { display: inline-block; padding: 0.5rem 1rem; border: 1px solid var(--accent); color: var(--accent); font-family: 'Space Grotesk'; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; border-radius: 50px; margin-bottom: 1rem; backdrop-filter: blur(4px); }
-        .c-title { font-family: 'Space Grotesk'; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 900; line-height: 1.1; text-transform: uppercase; margin-bottom: 1rem; }
-        .c-desc { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; max-w: 480px; }
-        
-        .num-watermark { position: absolute; font-family: 'Space Grotesk'; font-size: 18vw; font-weight: 900; color: transparent; -webkit-text-stroke: 1px var(--grid-color); line-height: 1; top: 50%; transform: translateY(-50%); z-index: 0; pointer-events: none; white-space: nowrap; left: -2%; transition: -webkit-text-stroke 0.5s; }
+        #scene-stack {
+            z-index: 300;
+            pointer-events: none;
+            visibility: hidden;
+            opacity: 0;
+        }
 
-        .visual-container { position: relative; height: 50vh; width: 100%; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
-        .c1-img { position: absolute; box-shadow: 0 20px 40px rgba(0,0,0,0.2); will-change: transform, opacity; }
-        .dark .c1-img { box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
-        .c1-img-1 { width: 55%; height: 50%; background: url('https://images.unsplash.com/photo-1497465689543-5940d3cede89?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover; transform: rotate(-5deg); z-index: 2; top: 15%; right: 15%; border: 3px solid white; opacity: 0; }
-        .dark .c1-img-1 { border-color: #1e293b; }
-        .c1-img-2 { width: 50%; height: 45%; background: url('https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop') center/cover; transform: rotate(8deg); z-index: 1; bottom: 15%; left: 10%; filter: grayscale(100%); border: 3px solid white; opacity: 0; }
-        .dark .c1-img-2 { border-color: #1e293b; }
-        .marquee-container { position: absolute; bottom: 15%; width: 150vw; left: -25vw; background: var(--accent); color: white; font-family: 'Space Grotesk'; font-weight: bold; font-size: 1.25rem; padding: 12px 0; transform: rotate(-3deg); z-index: 20; overflow: hidden; display: flex; white-space: nowrap; box-shadow: 0 10px 30px rgba(0,0,0,0.3); opacity: 0; pointer-events: none; }
-        .marquee-inner { display: flex; gap: 2rem; will-change: transform; }
+        .blueprint-grid {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
 
-        .c2-box { position: absolute; backdrop-filter: blur(16px); padding: 1.5rem; border-radius: 12px; z-index: 3; box-shadow: 0 20px 40px rgba(0,0,0,0.1); opacity: 0; }
-        .dark .c2-box { box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        .c2-box-1 { top: 25%; left: 15%; width: 220px; border-left: 4px solid var(--accent); }
-        .c2-box-2 { bottom: 25%; right: 15%; width: 260px; transform: rotate(5deg); }
-        .c2-img { width: 80%; height: 70%; background: url('https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=800&auto=format&fit=crop') center/cover; position: absolute; z-index: 1; filter: grayscale(100%) contrast(1.2); opacity: 0; }
+        .hero-img {
+            position: absolute;
+            inset: -10%;
+            background: url('https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2500&auto=format&fit=crop') center/cover;
+            z-index: 1;
+            filter: grayscale(100%) opacity(0.15);
+            will-change: transform, filter;
+        }
 
-        .c3-content { grid-template-columns: 1fr !important; text-align: center; justify-items: center; } 
-        .arch-lines { position: absolute; inset: 10%; border: 1px solid var(--grid-color); z-index: 1; pointer-events: none; opacity: 0; transition: border-color 0.5s; }
-        .arch-lines::before, .arch-lines::after { content: ''; position: absolute; background: var(--grid-color); transition: background-color 0.5s; }
-        .arch-lines::before { top: 0; bottom: 0; left: 50%; width: 1px; }
-        .arch-lines::after { left: 0; right: 0; top: 50%; height: 1px; }
+        .dark .hero-img {
+            filter: grayscale(100%) opacity(0.3);
+        }
+
+        .hero-text-container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+            padding: 0 5vw;
+            will-change: transform, opacity;
+        }
+
+        .huge-text {
+            font-size: clamp(2.5rem, 6vw, 6rem);
+            font-weight: 900;
+            line-height: 0.9;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            position: relative;
+            display: inline-block;
+            opacity: 0;
+        }
+
+        .compass-svg {
+            position: absolute;
+            top: -20px;
+            right: -30px;
+            width: 45px;
+            height: 45px;
+            opacity: 0.6;
+            animation: spin 20s linear infinite;
+            pointer-events: none;
+        }
+
+        .outline-text {
+            color: transparent;
+            -webkit-text-stroke: 2px var(--stroke-color);
+            transition: -webkit-text-stroke 0.5s;
+        }
+
+        .topo-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+        }
+
+        .dark .topo-svg {
+            opacity: 0.3;
+        }
+
+        .topo-path {
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 1.5;
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+        }
+
+        .error-log {
+            position: absolute;
+            font-family: 'Space Grotesk';
+            font-size: 0.75rem;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 4px 8px;
+            background: rgba(255, 69, 0, 0.05);
+            opacity: 0;
+            backdrop-filter: blur(4px);
+            will-change: transform, opacity;
+        }
+
+        .el-1 {
+            top: 20%;
+            left: 15%;
+        }
+
+        .el-2 {
+            bottom: 30%;
+            right: 20%;
+        }
+
+        .el-3 {
+            top: 40%;
+            right: 10%;
+        }
+
+        .stack-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            will-change: clip-path, transform, opacity, filter;
+        }
+
+        .card-2 {
+            clip-path: inset(0 100% 0 0);
+        }
+
+        .card-3 {
+            clip-path: inset(50%);
+        }
+
+        .c-bg {
+            position: absolute;
+            inset: -10%;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+            filter: grayscale(80%) opacity(0.4);
+            transform: scale(1.1);
+        }
+
+        .dark .c-bg {
+            filter: grayscale(50%) opacity(0.3) brightness(0.6);
+        }
+
+        .c-bg-1 {
+            background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2000&auto=format&fit=crop');
+        }
+
+        .c-bg-2 {
+            background-image: url('https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2000&auto=format&fit=crop');
+        }
+
+        .c-bg-3 {
+            background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop');
+            filter: grayscale(100%) opacity(0.8);
+        }
+
+        .c-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-w: 1400px;
+            padding: 0 5vw;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            height: 100%;
+        }
+
+        .c-tag {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-family: 'Space Grotesk';
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 50px;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .c-title {
+            font-family: 'Space Grotesk';
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .c-desc {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            max-w: 480px;
+        }
+
+        .num-watermark {
+            position: absolute;
+            font-family: 'Space Grotesk';
+            font-size: 18vw;
+            font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 1px var(--grid-color);
+            line-height: 1;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 0;
+            pointer-events: none;
+            white-space: nowrap;
+            left: -2%;
+            transition: -webkit-text-stroke 0.5s;
+        }
+
+        .visual-container {
+            position: relative;
+            height: 50vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        .c1-img {
+            position: absolute;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            will-change: transform, opacity;
+        }
+
+        .dark .c1-img {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .c1-img-1 {
+            width: 55%;
+            height: 50%;
+            background: url('https://images.unsplash.com/photo-1497465689543-5940d3cede89?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover;
+            transform: rotate(-5deg);
+            z-index: 2;
+            top: 15%;
+            right: 15%;
+            border: 3px solid white;
+            opacity: 0;
+        }
+
+        .dark .c1-img-1 {
+            border-color: #1e293b;
+        }
+
+        .c1-img-2 {
+            width: 50%;
+            height: 45%;
+            background: url('https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop') center/cover;
+            transform: rotate(8deg);
+            z-index: 1;
+            bottom: 15%;
+            left: 10%;
+            filter: grayscale(100%);
+            border: 3px solid white;
+            opacity: 0;
+        }
+
+        .dark .c1-img-2 {
+            border-color: #1e293b;
+        }
+
+        .marquee-container {
+            position: absolute;
+            bottom: 15%;
+            width: 150vw;
+            left: -25vw;
+            background: var(--accent);
+            color: white;
+            font-family: 'Space Grotesk';
+            font-weight: bold;
+            font-size: 1.25rem;
+            padding: 12px 0;
+            transform: rotate(-3deg);
+            z-index: 20;
+            overflow: hidden;
+            display: flex;
+            white-space: nowrap;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .marquee-inner {
+            display: flex;
+            gap: 2rem;
+            will-change: transform;
+        }
+
+        .c2-box {
+            position: absolute;
+            backdrop-filter: blur(16px);
+            padding: 1.5rem;
+            border-radius: 12px;
+            z-index: 3;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+        }
+
+        .dark .c2-box {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .c2-box-1 {
+            top: 25%;
+            left: 15%;
+            width: 220px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .c2-box-2 {
+            bottom: 25%;
+            right: 15%;
+            width: 260px;
+            transform: rotate(5deg);
+        }
+
+        .c2-img {
+            width: 80%;
+            height: 70%;
+            background: url('https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=800&auto=format&fit=crop') center/cover;
+            position: absolute;
+            z-index: 1;
+            filter: grayscale(100%) contrast(1.2);
+            opacity: 0;
+        }
+
+        .c3-content {
+            grid-template-columns: 1fr !important;
+            text-align: center;
+            justify-items: center;
+        }
+
+        .arch-lines {
+            position: absolute;
+            inset: 10%;
+            border: 1px solid var(--grid-color);
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            transition: border-color 0.5s;
+        }
+
+        .arch-lines::before,
+        .arch-lines::after {
+            content: '';
+            position: absolute;
+            background: var(--grid-color);
+            transition: background-color 0.5s;
+        }
+
+        .arch-lines::before {
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 1px;
+        }
+
+        .arch-lines::after {
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+        }
 
         /* COMPRO SECTION */
-        .work-step { position: relative; padding-left: 3rem; }
-        .work-step::before { content: ''; position: absolute; left: 0; top: 0; bottom: -2rem; width: 2px; background: var(--grid-color); }
-        .work-step:last-child::before { display: none; }
-        .step-dot { position: absolute; left: -0.35rem; top: 0.2rem; width: 1.2rem; height: 1.2rem; border-radius: 50%; border: 2px solid var(--accent); transition: background-color 0.3s, box-shadow 0.3s; }
-        .step-dot.active { background-color: var(--accent); box-shadow: 0 0 15px rgba(255,69,0,0.5); }
+        .work-step {
+            position: relative;
+            padding-left: 3rem;
+        }
 
-        .port-card { overflow: hidden; position: relative; border-radius: 16px; transform-origin: center; will-change: transform; }
-        .port-img { transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; }
-        .port-card:hover .port-img { transform: scale(1.05); }
-        
-        .input-b2b { width: 100%; background: transparent; padding: 1rem 0; transition: border-color 0.3s, color 0.3s; font-family: 'Space Grotesk', sans-serif; }
-        .input-b2b:focus { outline: none; border-color: var(--accent); }
+        .work-step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: -2rem;
+            width: 2px;
+            background: var(--grid-color);
+        }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .work-step:last-child::before {
+            display: none;
+        }
+
+        .step-dot {
+            position: absolute;
+            left: -0.35rem;
+            top: 0.2rem;
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .step-dot.active {
+            background-color: var(--accent);
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.5);
+        }
+
+        .port-card {
+            overflow: hidden;
+            position: relative;
+            border-radius: 16px;
+            transform-origin: center;
+            will-change: transform;
+        }
+
+        .port-img {
+            transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+        }
+
+        .port-card:hover .port-img {
+            transform: scale(1.05);
+        }
+
+        .input-b2b {
+            width: 100%;
+            background: transparent;
+            padding: 1rem 0;
+            transition: border-color 0.3s, color 0.3s;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .input-b2b:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
         /* MOBILE MENU & RESPONSIVE */
-        .burger-btn { display: none; flex-direction: column; justify-content: center; align-items: center; width: 40px; height: 40px; background: transparent; border: none; cursor: pointer; z-index: 5100; }
-        @media (max-width: 768px) { .burger-btn { display: flex; } }
-        .burger-line { width: 24px; height: 2px; background-color: currentColor; transition: all 0.3s ease; position: relative; }
-        .burger-line::before, .burger-line::after { content: ''; position: absolute; width: 24px; height: 2px; background-color: currentColor; transition: all 0.3s ease; left: 0;}
-        .burger-line::before { transform: translateY(-8px); }
-        .burger-line::after { transform: translateY(8px); }
-        .menu-open .burger-line { background-color: transparent !important; }
-        .menu-open .burger-line::before { transform: rotate(45deg); }
-        .menu-open .burger-line::after { transform: rotate(-45deg); }
-
-        /* NYITOTT MENÜ ESETÉN A NAVIGÁCIÓS SÁV HÁTTERÉNEK ELREJTÉSE */
-        .menu-open #main-nav { background-color: transparent !important; backdrop-filter: none !important; border-color: transparent !important; box-shadow: none !important; }
-
-        .mobile-nav-overlay { position: fixed; inset: 0; z-index: 5050; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem; opacity: 0; visibility: hidden; transition: all 0.4s ease; pointer-events: none; }
-        .menu-open .mobile-nav-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
-        .mobile-nav-link { font-family: 'Space Grotesk'; font-size: 2rem; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; opacity: 0; transform: translateY(20px); transition: all 0.4s ease; }
-        .menu-open .mobile-nav-link { opacity: 1; transform: translateY(0); }
-        .menu-open .mobile-nav-link:nth-child(1) { transition-delay: 0.1s; }
-        .menu-open .mobile-nav-link:nth-child(2) { transition-delay: 0.15s; }
-        .menu-open .mobile-nav-link:nth-child(3) { transition-delay: 0.2s; }
-        .menu-open .mobile-nav-link:nth-child(4) { transition-delay: 0.25s; }
-
-        @media (max-width: 1024px) {
-            .c-content { grid-template-columns: 1fr; gap: 2rem; padding-top: 5vh; }
-            .visual-container { height: 35vh; }
-            .c-title { font-size: clamp(2rem, 7vw, 3.5rem); margin-bottom: 1rem; }
+        .burger-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 5100;
         }
 
         @media (max-width: 768px) {
-            .scroll-nav { display: none !important; }
-            .huge-text { font-size: clamp(2rem, 8vw, 3.5rem); }
-            .compass-svg { width: 30px; height: 30px; top: -15px; right: -15px; }
-            .el-1 { top: 12%; left: 5%; } .el-2 { bottom: 25%; right: 5%; } .el-3 { top: 35%; right: 5%; }
-            .c1-img-1 { width: 75%; height: 60%; right: 5%; top: 5%; }
-            .c1-img-2 { width: 65%; height: 50%; left: 5%; bottom: 5%; }
-            .marquee-container { font-size: 0.9rem; bottom: 8%; }
-            .c2-box { padding: 1rem; } .c2-box-1 { width: 190px; top: 10%; left: 5%; } .c2-box-2 { width: 210px; bottom: 10%; right: 5%; }
-            #beranda { padding-top: 6rem; } 
+            .burger-btn {
+                display: flex;
+            }
+        }
+
+        .burger-line {
+            width: 24px;
+            height: 2px;
+            background-color: currentColor;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .burger-line::before,
+        .burger-line::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 2px;
+            background-color: currentColor;
+            transition: all 0.3s ease;
+            left: 0;
+        }
+
+        .burger-line::before {
+            transform: translateY(-8px);
+        }
+
+        .burger-line::after {
+            transform: translateY(8px);
+        }
+
+        .menu-open .burger-line {
+            background-color: transparent !important;
+        }
+
+        .menu-open .burger-line::before {
+            transform: rotate(45deg);
+        }
+
+        .menu-open .burger-line::after {
+            transform: rotate(-45deg);
+        }
+
+        /* NYITOTT MENÜ ESETÉN A NAVIGÁCIÓS SÁV HÁTTERÉNEK ELREJTÉSE */
+        .menu-open #main-nav {
+            background-color: transparent !important;
+            backdrop-filter: none !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .mobile-nav-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 5050;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+
+        .menu-open .mobile-nav-overlay {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .mobile-nav-link {
+            font-family: 'Space Grotesk';
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .menu-open .mobile-nav-link {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .menu-open .mobile-nav-link:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .menu-open .mobile-nav-link:nth-child(2) {
+            transition-delay: 0.15s;
+        }
+
+        .menu-open .mobile-nav-link:nth-child(3) {
+            transition-delay: 0.2s;
+        }
+
+        .menu-open .mobile-nav-link:nth-child(4) {
+            transition-delay: 0.25s;
+        }
+
+        @media (max-width: 1024px) {
+            .c-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding-top: 5vh;
+            }
+
+            .visual-container {
+                height: 35vh;
+            }
+
+            .c-title {
+                font-size: clamp(2rem, 7vw, 3.5rem);
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .scroll-nav {
+                display: none !important;
+            }
+
+            .huge-text {
+                font-size: clamp(2rem, 8vw, 3.5rem);
+            }
+
+            .compass-svg {
+                width: 30px;
+                height: 30px;
+                top: -15px;
+                right: -15px;
+            }
+
+            .el-1 {
+                top: 12%;
+                left: 5%;
+            }
+
+            .el-2 {
+                bottom: 25%;
+                right: 5%;
+            }
+
+            .el-3 {
+                top: 35%;
+                right: 5%;
+            }
+
+            .c1-img-1 {
+                width: 75%;
+                height: 60%;
+                right: 5%;
+                top: 5%;
+            }
+
+            .c1-img-2 {
+                width: 65%;
+                height: 50%;
+                left: 5%;
+                bottom: 5%;
+            }
+
+            .marquee-container {
+                font-size: 0.9rem;
+                bottom: 8%;
+            }
+
+            .c2-box {
+                padding: 1rem;
+            }
+
+            .c2-box-1 {
+                width: 190px;
+                top: 10%;
+                left: 5%;
+            }
+
+            .c2-box-2 {
+                width: 210px;
+                bottom: 10%;
+                right: 5%;
+            }
+
+            #beranda {
+                padding-top: 6rem;
+            }
         }
     </style>
 </head>
-<body class="text-slate-900 dark:text-white transition-colors duration-700 antialiased selection:bg-accent selection:text-white bg-transparent">
+
+<body
+    class="text-slate-900 dark:text-white transition-colors duration-700 antialiased selection:bg-accent selection:text-white bg-transparent">
 
     <!-- FLOATING THEME TOGGLE -->
-    <button id="theme-toggle" class="fixed bottom-6 left-6 md:bottom-8 md:left-8 z-[6000] p-3 md:p-3.5 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl hover:scale-110 transition-all duration-300" aria-label="Toggle Theme">
+    <button id="theme-toggle"
+        class="fixed bottom-6 left-6 md:bottom-8 md:left-8 z-[6000] p-3 md:p-3.5 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl hover:scale-110 transition-all duration-300"
+        aria-label="Toggle Theme">
         <!-- Sun (muncul saat dark) -->
-        <svg class="hidden dark:block w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+        <svg class="hidden dark:block w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
         <!-- Moon (muncul saat light) -->
-        <svg class="block dark:hidden w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        <svg class="block dark:hidden w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
     </button>
 
     <!-- GLOBAL FIXED BACKGROUND DENGAN GRADIENT & PATTERN -->
     <div class="fixed inset-0 z-[-1] bg-slate-50 dark:bg-[#050810] transition-colors duration-700 pointer-events-none">
-        <div class="absolute inset-0 bg-[linear-gradient(to_right,var(--grid-color)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-color)_1px,transparent_1px)] bg-[size:40px_40px] global-grid"></div>
-        <div class="absolute top-[-15%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-accent/10 dark:bg-accent/15 blur-[120px] blob-1"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[150px] blob-2"></div>
-        <div class="absolute top-[20%] right-[10%] w-[40vw] h-[40vw] rounded-full bg-emerald-500/5 dark:bg-emerald-500/10 blur-[150px] blob-3"></div>
+        <div
+            class="absolute inset-0 bg-[linear-gradient(to_right,var(--grid-color)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-color)_1px,transparent_1px)] bg-[size:40px_40px] global-grid">
+        </div>
+        <div
+            class="absolute top-[-15%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-accent/10 dark:bg-accent/15 blur-[120px] blob-1">
+        </div>
+        <div
+            class="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[150px] blob-2">
+        </div>
+        <div
+            class="absolute top-[20%] right-[10%] w-[40vw] h-[40vw] rounded-full bg-emerald-500/5 dark:bg-emerald-500/10 blur-[150px] blob-3">
+        </div>
     </div>
 
     <div class="noise"></div>
@@ -288,49 +1076,76 @@
 
     <!-- MOBILE NAV OVERLAY -->
     <div class="mobile-nav-overlay bg-slate-100/95 dark:bg-slate-950/95 backdrop-blur-xl" id="mobile-menu">
-        <a href="#profil" class="mobile-nav-link text-slate-900 dark:text-white hover:text-accent dark:hover:text-accent" onclick="closeMenu()">Profil</a>
-        <a href="#layanan" class="mobile-nav-link text-slate-900 dark:text-white hover:text-accent dark:hover:text-accent" onclick="closeMenu()">Layanan</a>
-        <a href="#alur-kerja" class="mobile-nav-link text-slate-900 dark:text-white hover:text-accent dark:hover:text-accent" onclick="closeMenu()">Metode</a>
-        <a href="#portofolio" class="mobile-nav-link text-slate-900 dark:text-white hover:text-accent dark:hover:text-accent" onclick="closeMenu()">Portofolio</a>
-        <a href="#kontak" class="mobile-nav-link text-slate-900 dark:text-white hover:text-accent dark:hover:text-accent" onclick="closeMenu()">Kontak</a>
+        <a href="#profil"
+            class="mobile-nav-link text-slate-900 dark:text-white hover:text-accent dark:hover:text-accent"
+            onclick="closeMenu()">Profil</a>
+        <a href="#layanan"
+            class="mobile-nav-link text-slate-900 dark:text-white hover:text-accent dark:hover:text-accent"
+            onclick="closeMenu()">Layanan</a>
+        <a href="#alur-kerja"
+            class="mobile-nav-link text-slate-900 dark:text-white hover:text-accent dark:hover:text-accent"
+            onclick="closeMenu()">Metode</a>
+        <a href="#portofolio"
+            class="mobile-nav-link text-slate-900 dark:text-white hover:text-accent dark:hover:text-accent"
+            onclick="closeMenu()">Portofolio</a>
+        <a href="#kontak"
+            class="mobile-nav-link text-slate-900 dark:text-white hover:text-accent dark:hover:text-accent"
+            onclick="closeMenu()">Kontak</a>
     </div>
 
     <!-- CUSTOM DOT SCROLL NAVIGATION -->
     <div class="scroll-nav hidden md:flex" id="scroll-nav">
         <div class="nav-section-title text-slate-400 dark:text-slate-500">PROLOGUE</div>
-        <div class="scroll-dot prolog-dot active" data-progress="0"><span class="scroll-label text-slate-900 dark:text-white">Bab 1: Mimpi</span></div>
-        <div class="scroll-dot prolog-dot" data-progress="0.25"><span class="scroll-label text-slate-900 dark:text-white">Bab 2: Bencana</span></div>
-        <div class="scroll-dot prolog-dot" data-progress="0.50"><span class="scroll-label text-slate-900 dark:text-white">Kasus 01: Dev</span></div>
-        <div class="scroll-dot prolog-dot" data-progress="0.75"><span class="scroll-label text-slate-900 dark:text-white">Kasus 02: Privat</span></div>
-        <div class="scroll-dot prolog-dot" data-progress="0.95"><span class="scroll-label text-slate-900 dark:text-white">Solusi Master</span></div>
+        <div class="scroll-dot prolog-dot active" data-progress="0"><span
+                class="scroll-label text-slate-900 dark:text-white">Bab 1: Mimpi</span></div>
+        <div class="scroll-dot prolog-dot" data-progress="0.25"><span
+                class="scroll-label text-slate-900 dark:text-white">Bab 2: Bencana</span></div>
+        <div class="scroll-dot prolog-dot" data-progress="0.50"><span
+                class="scroll-label text-slate-900 dark:text-white">Kasus 01: Dev</span></div>
+        <div class="scroll-dot prolog-dot" data-progress="0.75"><span
+                class="scroll-label text-slate-900 dark:text-white">Kasus 02: Privat</span></div>
+        <div class="scroll-dot prolog-dot" data-progress="0.95"><span
+                class="scroll-label text-slate-900 dark:text-white">Solusi Master</span></div>
 
         <div class="scroll-divider"></div>
         <div class="nav-section-title text-slate-400 dark:text-slate-500">PROFILE</div>
 
-        <div class="scroll-dot compro-dot" data-target="#beranda"><span class="scroll-label text-slate-900 dark:text-white">Beranda</span></div>
-        <div class="scroll-dot compro-dot" data-target="#profil"><span class="scroll-label text-slate-900 dark:text-white">Profil</span></div>
-        <div class="scroll-dot compro-dot" data-target="#layanan"><span class="scroll-label text-slate-900 dark:text-white">Layanan</span></div>
-        <div class="scroll-dot compro-dot" data-target="#alur-kerja"><span class="scroll-label text-slate-900 dark:text-white">Metode</span></div>
-        <div class="scroll-dot compro-dot" data-target="#portofolio"><span class="scroll-label text-slate-900 dark:text-white">Portofolio</span></div>
-        <div class="scroll-dot compro-dot" data-target="#kontak"><span class="scroll-label text-slate-900 dark:text-white">Kontak</span></div>
+        <div class="scroll-dot compro-dot" data-target="#beranda"><span
+                class="scroll-label text-slate-900 dark:text-white">Beranda</span></div>
+        <div class="scroll-dot compro-dot" data-target="#profil"><span
+                class="scroll-label text-slate-900 dark:text-white">Profil</span></div>
+        <div class="scroll-dot compro-dot" data-target="#layanan"><span
+                class="scroll-label text-slate-900 dark:text-white">Layanan</span></div>
+        <div class="scroll-dot compro-dot" data-target="#alur-kerja"><span
+                class="scroll-label text-slate-900 dark:text-white">Metode</span></div>
+        <div class="scroll-dot compro-dot" data-target="#portofolio"><span
+                class="scroll-label text-slate-900 dark:text-white">Portofolio</span></div>
+        <div class="scroll-dot compro-dot" data-target="#kontak"><span
+                class="scroll-label text-slate-900 dark:text-white">Kontak</span></div>
     </div>
 
     <!-- RÖGZÍTETT NAVIGÁCIÓS SÁV FENT -->
-    <div id="nav-wrapper" class="fixed top-0 w-full z-[5100] flex justify-center transition-all duration-700 ease-out -translate-y-full opacity-0 pointer-events-none">
-        <nav id="main-nav" class="w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 md:px-10 py-4 flex items-center justify-between transition-all duration-700 ease-out">
+    <div id="nav-wrapper"
+        class="fixed top-0 w-full z-[5100] flex justify-center transition-all duration-700 ease-out -translate-y-full opacity-0 pointer-events-none">
+        <nav id="main-nav"
+            class="w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 md:px-10 py-4 flex items-center justify-between transition-all duration-700 ease-out">
             <div class="font-space font-bold tracking-widest text-base md:text-lg flex items-center gap-2 shrink-0">
                 <span class="w-2 h-2 rounded-full bg-accent"></span> JK
             </div>
-            
-            <ul class="hidden md:flex items-center justify-center w-full gap-10 font-space text-sm text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+
+            <ul
+                class="hidden md:flex items-center justify-center w-full gap-10 font-space text-sm text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                 <li><a href="#profil" class="hover:text-accent transition-colors">Profil</a></li>
                 <li><a href="#layanan" class="hover:text-accent transition-colors">Layanan</a></li>
                 <li><a href="#portofolio" class="hover:text-accent transition-colors">Portofolio</a></li>
             </ul>
-            
+
             <div class="flex items-center gap-4 shrink-0">
-                <a href="#kontak" class="hidden md:block bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-space font-bold px-6 py-2.5 text-xs rounded-full hover:bg-accent dark:hover:bg-accent hover:text-white transition-colors uppercase whitespace-nowrap">Hubungi Kami</a>
-                <button class="burger-btn text-slate-900 dark:text-white" id="burger-btn" onclick="toggleMenu()" aria-label="Menu">
+                <a href="#kontak"
+                    class="hidden md:block bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-space font-bold px-6 py-2.5 text-xs rounded-full hover:bg-accent dark:hover:bg-accent hover:text-white transition-colors uppercase whitespace-nowrap">Hubungi
+                    Kami</a>
+                <button class="burger-btn text-slate-900 dark:text-white" id="burger-btn" onclick="toggleMenu()"
+                    aria-label="Menu">
                     <span class="burger-line"></span>
                 </button>
             </div>
@@ -343,22 +1158,34 @@
             <!-- ==========================================================
                  WRAPPER IMMERSIVE DENGAN NATIVE STICKY
                  ========================================================== -->
-            <div id="cinematic-wrapper" class="relative w-full h-[600vh] transition-colors duration-700"> <!-- Removed bg color, now global grid shines through -->
-                
+            <div id="cinematic-wrapper" class="relative w-full h-[600vh] transition-colors duration-700">
+                <!-- Removed bg color, now global grid shines through -->
+
                 <div id="cinematic-master" class="sticky top-0 w-full h-[100vh] overflow-hidden perspective-[1200px]">
                     <!-- SCENE 1: HERO -->
                     <div class="c-layer" id="scene-hero">
                         <div class="blueprint-grid" id="bp-grid"></div>
                         <div class="hero-img" id="hero-img"></div>
-                        <div class="absolute inset-0 bg-white/40 dark:bg-slate-950/60 z-[2] transition-colors duration-700"></div>
+                        <div
+                            class="absolute inset-0 bg-white/40 dark:bg-slate-950/60 z-[2] transition-colors duration-700">
+                        </div>
                         <div class="hero-text-container" id="hero-text">
                             <div> <!-- Penambahan div wrapper agar bisa melayang/float secara CSS -->
                                 <h1 class="huge-text huge-text-anim text-slate-900 dark:text-white">
-                                    <svg class="compass-svg stroke-slate-400 dark:stroke-slate-600" viewBox="0 0 100 100" fill="none" stroke-width="1"><circle cx="50" cy="50" r="40"/><line x1="50" y1="0" x2="50" y2="100"/><line x1="0" y1="50" x2="100" y2="50"/><circle cx="50" cy="50" r="10" fill="var(--accent)" stroke="none"/></svg>
+                                    <svg class="compass-svg stroke-slate-400 dark:stroke-slate-600"
+                                        viewBox="0 0 100 100" fill="none" stroke-width="1">
+                                        <circle cx="50" cy="50" r="40" />
+                                        <line x1="50" y1="0" x2="50" y2="100" />
+                                        <line x1="0" y1="50" x2="100" y2="50" />
+                                        <circle cx="50" cy="50" r="10" fill="var(--accent)" stroke="none" />
+                                    </svg>
                                     MIMPI YANG<br><span class="outline-text">SEMPURNA</span>
                                 </h1>
-                                <div class="mt-8 text-base md:text-xl lg:text-2xl text-slate-700 dark:text-slate-300 max-w-2xl mx-auto font-light leading-relaxed">
-                                    <span class="text-accent font-bold mr-2">//</span> Di atas kertas, desain properti Anda tampak tanpa cela. Namun, realita konstruksi tidak pernah semudah menggambar garis.
+                                <div
+                                    class="mt-8 text-base md:text-xl lg:text-2xl text-slate-700 dark:text-slate-300 max-w-2xl mx-auto font-light leading-relaxed">
+                                    <span class="text-accent font-bold mr-2">//</span> Di atas kertas, desain properti
+                                    Anda tampak tanpa cela. Namun, realita konstruksi tidak pernah semudah menggambar
+                                    garis.
                                 </div>
                             </div>
                         </div>
@@ -368,16 +1195,26 @@
                     <div class="c-layer transition-colors duration-700" id="scene-topo"> <!-- Removed bg color -->
                         <div class="blueprint-grid"></div>
                         <svg class="topo-svg hover-float" viewBox="0 0 1000 500" preserveAspectRatio="none">
-                            <path class="topo-path" d="M-100,250 Q100,100 300,250 T700,100 T1100,250" /><path class="topo-path" d="M-100,300 Q150,150 350,300 T750,150 T1100,300" stroke-opacity="0.5"/><path class="topo-path" d="M-100,350 Q200,200 400,350 T800,200 T1100,350" stroke-opacity="0.2"/>
-                            <circle cx="300" cy="250" r="5" fill="var(--accent)" opacity="0.8"/><circle cx="700" cy="100" r="5" fill="var(--accent)" opacity="0.8"/>
+                            <path class="topo-path" d="M-100,250 Q100,100 300,250 T700,100 T1100,250" />
+                            <path class="topo-path" d="M-100,300 Q150,150 350,300 T750,150 T1100,300"
+                                stroke-opacity="0.5" />
+                            <path class="topo-path" d="M-100,350 Q200,200 400,350 T800,200 T1100,350"
+                                stroke-opacity="0.2" />
+                            <circle cx="300" cy="250" r="5" fill="var(--accent)" opacity="0.8" />
+                            <circle cx="700" cy="100" r="5" fill="var(--accent)" opacity="0.8" />
                         </svg>
                         <div class="error-log el-1">COORD: X-892 // Y-112<br>WARNING: SOIL INSTABILITY</div>
                         <div class="error-log el-2">EST. MARGIN LOSS: 45%</div>
                         <div class="error-log el-3">STRUCTURAL RISK DETECTED</div>
                         <div class="relative z-10 text-center max-w-4xl px-6 topo-text-wrap" id="topo-text-wrap">
                             <div>
-                                <h2 class="font-space text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 topo-title text-slate-900 dark:text-white uppercase leading-none">SATU KESALAHAN,<br>BENCANA PANJANG.</h2>
-                                <p class="text-base sm:text-xl md:text-2xl text-slate-600 dark:text-slate-400 font-light topo-desc">Alam tidak menerima kompromi. Menyerahkan eksekusi pada pihak yang salah akan mengubah investasi miliaran menjadi mimpi buruk.</p>
+                                <h2
+                                    class="font-space text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 topo-title text-slate-900 dark:text-white uppercase leading-none">
+                                    SATU KESALAHAN,<br>BENCANA PANJANG.</h2>
+                                <p
+                                    class="text-base sm:text-xl md:text-2xl text-slate-600 dark:text-slate-400 font-light topo-desc">
+                                    Alam tidak menerima kompromi. Menyerahkan eksekusi pada pihak yang salah akan
+                                    mengubah investasi miliaran menjadi mimpi buruk.</p>
                             </div>
                         </div>
                     </div>
@@ -387,22 +1224,38 @@
                         <!-- FASE 1 -->
                         <div class="stack-card card-1" style="z-index: 1;">
                             <div class="c-bg c-bg-1 img-1"></div>
-                            <div class="absolute inset-0 bg-slate-100/90 dark:bg-slate-900/90 z-[2] transition-colors duration-700"></div>
+                            <div
+                                class="absolute inset-0 bg-slate-100/90 dark:bg-slate-900/90 z-[2] transition-colors duration-700">
+                            </div>
                             <div class="num-watermark">01</div>
-                            
+
                             <!-- MARQUEE FULL WIDTH DIPINDAH KE LUAR CONTAINER -->
-                            <div class="marquee-container"><div class="marquee-inner marquee-move"><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span></div></div>
+                            <div class="marquee-container">
+                                <div class="marquee-inner marquee-move"><span>// DANGER ZONE // REPUTATION DESTROYED //
+                                        BUDGET OVERRUN // LAWSUITS PENDING</span><span>// DANGER ZONE // REPUTATION
+                                        DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span><span>// DANGER ZONE //
+                                        REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS PENDING</span><span>// DANGER
+                                        ZONE // REPUTATION DESTROYED // BUDGET OVERRUN // LAWSUITS
+                                        PENDING</span><span>// DANGER ZONE // REPUTATION DESTROYED // BUDGET OVERRUN //
+                                        LAWSUITS PENDING</span></div>
+                            </div>
 
                             <div class="c-content">
                                 <div class="c-text inner-1-text">
                                     <div>
                                         <div class="c-tag">KASUS 01 // DEVELOPER PROPERTI</div>
-                                        <h2 class="c-title text-slate-900 dark:text-white">BLUNDER<br><span class="outline-text">MASIF.</span></h2>
-                                        <p class="c-desc text-slate-600 dark:text-slate-400">Terburu-buru mengejar target KPR, mengabaikan rekayasa topografi presisi. Hasilnya? Jalan kawasan amblas, drainase gagal total, dan ratusan unit terendam banjir. <strong class="text-slate-900 dark:text-white">Reputasi hancur dalam semalam.</strong></p>
+                                        <h2 class="c-title text-slate-900 dark:text-white">BLUNDER<br><span
+                                                class="outline-text">MASIF.</span></h2>
+                                        <p class="c-desc text-slate-600 dark:text-slate-400">Terburu-buru mengejar
+                                            target KPR, mengabaikan rekayasa topografi presisi. Hasilnya? Jalan kawasan
+                                            amblas, drainase gagal total, dan ratusan unit terendam banjir. <strong
+                                                class="text-slate-900 dark:text-white">Reputasi hancur dalam
+                                                semalam.</strong></p>
                                     </div>
                                 </div>
                                 <div class="visual-container inner-1-vis">
-                                    <div class="c1-img c1-img-2 border-white dark:border-slate-800"></div><div class="c1-img c1-img-1 border-white dark:border-slate-800"></div>
+                                    <div class="c1-img c1-img-2 border-white dark:border-slate-800"></div>
+                                    <div class="c1-img c1-img-1 border-white dark:border-slate-800"></div>
                                 </div>
                             </div>
                         </div>
@@ -410,27 +1263,47 @@
                         <!-- FASE 2 -->
                         <div class="stack-card card-2" style="z-index: 2;">
                             <div class="c-bg c-bg-2 img-2"></div>
-                            <div class="absolute inset-0 bg-slate-100/90 dark:bg-slate-900/90 z-[2] transition-colors duration-700"></div>
+                            <div
+                                class="absolute inset-0 bg-slate-100/90 dark:bg-slate-900/90 z-[2] transition-colors duration-700">
+                            </div>
                             <div class="num-watermark" style="left: auto; right: -5%;">02</div>
                             <div class="c-content">
                                 <div class="visual-container inner-2-vis order-2 lg:order-1">
                                     <div class="c2-img border border-slate-200 dark:border-slate-800 rounded-xl"></div>
-                                    <div class="c2-box c2-box-1 bg-white/80 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800">
+                                    <div
+                                        class="c2-box c2-box-1 bg-white/80 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800">
                                         <div>
-                                            <div class="text-xs text-slate-500 dark:text-slate-400 font-space mb-2">STATUS UPDATE</div><div class="text-xl font-bold text-accent">PROJECT STALLED</div><div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Contractor absconded. Structural cracks detected.</div>
+                                            <div class="text-xs text-slate-500 dark:text-slate-400 font-space mb-2">
+                                                STATUS UPDATE</div>
+                                            <div class="text-xl font-bold text-accent">PROJECT STALLED</div>
+                                            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Contractor
+                                                absconded. Structural cracks detected.</div>
                                         </div>
                                     </div>
-                                    <div class="c2-box c2-box-2 bg-white/80 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800">
+                                    <div
+                                        class="c2-box c2-box-2 bg-white/80 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800">
                                         <div>
-                                            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-2 mb-2"><span class="text-slate-500 dark:text-slate-400 text-sm">INITIAL BUDGET</span><span class="text-slate-900 dark:text-white font-space">RP 2.5 M</span></div><div class="flex justify-between"><span class="text-accent font-bold text-sm">REVISED COST</span><span class="text-accent font-space font-bold">+ 300%</span></div>
+                                            <div
+                                                class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-2 mb-2">
+                                                <span class="text-slate-500 dark:text-slate-400 text-sm">INITIAL
+                                                    BUDGET</span><span
+                                                    class="text-slate-900 dark:text-white font-space">RP 2.5 M</span>
+                                            </div>
+                                            <div class="flex justify-between"><span
+                                                    class="text-accent font-bold text-sm">REVISED COST</span><span
+                                                    class="text-accent font-space font-bold">+ 300%</span></div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="c-text inner-2-text order-1 lg:order-2">
                                     <div>
                                         <div class="c-tag">KASUS 02 // HUNIAN PRIBADI</div>
-                                        <h2 class="c-title text-slate-900 dark:text-white">MIMPI BURUK<br><span class="outline-text">PRIVAT.</span></h2>
-                                        <p class="c-desc text-slate-600 dark:text-slate-400">Tergiur janji manis kontraktor "asal murah". Realitanya: Anggaran membengkak tanpa kendali, jadwal molor berbulan-bulan, bangunan mangkrak, dan fondasi retak yang mengancam keselamatan nyawa keluarga.</p>
+                                        <h2 class="c-title text-slate-900 dark:text-white">MIMPI BURUK<br><span
+                                                class="outline-text">PRIVAT.</span></h2>
+                                        <p class="c-desc text-slate-600 dark:text-slate-400">Tergiur janji manis
+                                            kontraktor "asal murah". Realitanya: Anggaran membengkak tanpa kendali,
+                                            jadwal molor berbulan-bulan, bangunan mangkrak, dan fondasi retak yang
+                                            mengancam keselamatan nyawa keluarga.</p>
                                     </div>
                                 </div>
                             </div>
@@ -439,13 +1312,25 @@
                         <!-- FASE 3 (SOLUSI) -->
                         <div class="stack-card card-3" style="z-index: 3;">
                             <div class="c-bg c-bg-3 img-3"></div>
-                            <div class="absolute inset-0 bg-slate-50/95 dark:bg-slate-950/95 z-[2] transition-colors duration-700"></div>
+                            <div
+                                class="absolute inset-0 bg-slate-50/95 dark:bg-slate-950/95 z-[2] transition-colors duration-700">
+                            </div>
                             <div class="arch-lines"></div>
                             <div class="c-content c3-content inner-3">
                                 <div>
                                     <div class="c-tag bg-white/50 dark:bg-black/50">SOLUSI // PT JAYA KEDHATON</div>
-                                    <h2 class="c-title text-slate-900 dark:text-white" style="font-size: clamp(2.5rem, 8vw, 8rem); margin-bottom: 1.5rem md:margin-bottom: 2rem;">THE SPECIALIST.</h2>
-                                    <p class="c-desc mx-auto text-slate-700 dark:text-slate-300" style="font-size: clamp(0.95rem, 2vw, 1.15rem); max-w: 800px;">Kami hadir untuk menghentikan perjudian dalam proyek Anda. Sebagai spesialis rekayasa konstruksi, PT Jaya Kedhaton menerapkan metodologi presisi tinggi dan mitigasi risiko struktural sejak hari pertama. Kami mengambil alih kerumitan manajemen logistik, mengendalikan pembengkakan anggaran, dan memastikan eksekusi lapangan berjalan 100% sesuai <i>blueprint</i>. <br><strong class="text-slate-900 dark:text-white text-lg md:text-2xl mt-4 md:mt-6 block tracking-widest">PRESISI ABSOLUT. NOL KESALAHAN.</strong></p>
+                                    <h2 class="c-title text-slate-900 dark:text-white"
+                                        style="font-size: clamp(2.5rem, 8vw, 8rem); margin-bottom: 1.5rem md:margin-bottom: 2rem;">
+                                        THE SPECIALIST.</h2>
+                                    <p class="c-desc mx-auto text-slate-700 dark:text-slate-300"
+                                        style="font-size: clamp(0.95rem, 2vw, 1.15rem); max-w: 800px;">Kami hadir untuk
+                                        menghentikan perjudian dalam proyek Anda. Sebagai spesialis rekayasa konstruksi,
+                                        PT Jaya Kedhaton menerapkan metodologi presisi tinggi dan mitigasi risiko
+                                        struktural sejak hari pertama. Kami mengambil alih kerumitan manajemen logistik,
+                                        mengendalikan pembengkakan anggaran, dan memastikan eksekusi lapangan berjalan
+                                        100% sesuai <i>blueprint</i>. <br><strong
+                                            class="text-slate-900 dark:text-white text-lg md:text-2xl mt-4 md:mt-6 block tracking-widest">PRESISI
+                                            ABSOLUT. <br> NOL KESALAHAN.</strong></p>
                                 </div>
                             </div>
                         </div>
@@ -459,143 +1344,250 @@
                 <!-- COMPRO HERO (PARALLAX SCRUB) -->
                 <section class="relative h-screen flex items-center justify-center px-6 overflow-hidden" id="beranda">
                     <div class="hero-compro-bg absolute inset-0 -top-[20%] h-[140%] w-full">
-                        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover filter grayscale opacity-[0.05] dark:opacity-10" alt="Construction background">
+                        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop"
+                            class="w-full h-full object-cover filter grayscale opacity-[0.05] dark:opacity-10"
+                            alt="Construction background">
                     </div>
-                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-50/50 dark:to-slate-950/50 transition-colors duration-700"></div>
-                    
+                    <div
+                        class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-50/50 dark:to-slate-950/50 transition-colors duration-700">
+                    </div>
+
                     <div class="relative z-10 text-center max-w-5xl mx-auto pt-16" id="hero-content">
                         <div class="w-16 h-1 bg-accent mx-auto mb-6 md:mb-8 gs-hero-in"></div>
-                        <h1 class="font-space text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black uppercase leading-[1.1] md:leading-[0.9] mb-6 md:mb-8 gs-hero-in">
-                            Infrastruktur Kokoh,<br><span class="outline-text block mt-2 md:mt-0">Masa Depan Cemerlang</span>
+                        <h1
+                            class="font-space text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black uppercase leading-[1.1] md:leading-[0.9] mb-6 md:mb-8 gs-hero-in">
+                            Infrastruktur Kokoh,<br><span class="outline-text block mt-2 md:mt-0">Masa Depan
+                                Cemerlang</span>
                         </h1>
-                        <p class="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-400 font-light leading-relaxed max-w-4xl mx-auto gs-hero-in">
-                            Wujudkan visi pembangunan Anda bersama <strong class="text-slate-900 dark:text-white">PT Jaya Kedhaton</strong>. Spesialis konstruksi jalan, jembatan, dan infrastruktur perkebunan sawit dengan standar <strong>ISO 9001 & SMK3</strong>.
+                        <p
+                            class="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-400 font-light leading-relaxed max-w-4xl mx-auto gs-hero-in">
+                            Wujudkan visi pembangunan Anda bersama <strong class="text-slate-900 dark:text-white">PT
+                                Jaya Kedhaton</strong>. Spesialis konstruksi jalan, jembatan, dan infrastruktur
+                            perkebunan sawit dengan standar <strong>ISO 9001 & SMK3</strong>.
                         </p>
                     </div>
                 </section>
 
                 <!-- PROFIL PERUSAHAAN -->
-                <section class="py-20 md:py-32 px-6 border-t border-slate-200/50 dark:border-white/5 relative z-20 transition-colors duration-700 bg-transparent" id="profil">
+                <section
+                    class="py-20 md:py-32 px-6 border-t border-slate-200/50 dark:border-white/5 relative z-20 transition-colors duration-700 bg-transparent"
+                    id="profil">
                     <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                         <div class="gs-reveal order-2 lg:order-1">
-                            <h4 class="text-accent font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Identitas Korporat</h4>
-                            <h2 class="font-space text-3xl sm:text-4xl md:text-5xl font-bold uppercase mb-6">Fondasi Bisnis Anda.</h2>
+                            <h4 class="text-accent font-space tracking-widest uppercase text-xs md:text-sm mb-4">//
+                                Identitas Korporat</h4>
+                            <h2 class="font-space text-3xl sm:text-4xl md:text-5xl font-bold uppercase mb-6">Fondasi
+                                Bisnis Anda.</h2>
                             <p class="text-slate-600 dark:text-slate-400 text-base md:text-lg leading-relaxed mb-8">
-                                Berakar di Samarinda, Kalimantan Timur, PT Jaya Kedhaton adalah entitas konstruksi berlisensi <strong class="text-slate-900 dark:text-white">GAPEKSINDO</strong> yang mendedikasikan diri pada presisi rekayasa infrastruktur berat komersial dan industri.
+                                Berakar di Samarinda, Kalimantan Timur, PT Jaya Kedhaton adalah entitas konstruksi
+                                berlisensi <strong class="text-slate-900 dark:text-white">GAPEKSINDO</strong> yang
+                                mendedikasikan diri pada presisi rekayasa infrastruktur berat komersial dan industri.
                             </p>
-                            <div class="grid grid-cols-2 gap-6 md:gap-8 border-t border-slate-200 dark:border-slate-800 pt-8">
+                            <div
+                                class="grid grid-cols-2 gap-6 md:gap-8 border-t border-slate-200 dark:border-slate-800 pt-8">
                                 <div>
-                                    <div class="text-3xl md:text-4xl font-space font-black text-slate-900 dark:text-white mb-2">ISO 9001</div>
-                                    <div class="text-xs md:text-sm text-slate-500 uppercase tracking-wider">Quality Management</div>
+                                    <div
+                                        class="text-3xl md:text-4xl font-space font-black text-slate-900 dark:text-white mb-2">
+                                        ISO 9001</div>
+                                    <div class="text-xs md:text-sm text-slate-500 uppercase tracking-wider">Quality
+                                        Management</div>
                                 </div>
                                 <div>
-                                    <div class="text-3xl md:text-4xl font-space font-black text-slate-900 dark:text-white mb-2">SMK3</div>
-                                    <div class="text-xs md:text-sm text-slate-500 uppercase tracking-wider">Safety Excellence</div>
+                                    <div
+                                        class="text-3xl md:text-4xl font-space font-black text-slate-900 dark:text-white mb-2">
+                                        SMK3</div>
+                                    <div class="text-xs md:text-sm text-slate-500 uppercase tracking-wider">Safety
+                                        Excellence</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="relative h-[400px] md:h-[600px] rounded-2xl overflow-hidden gs-reveal order-1 lg:order-2 bg-slate-200 dark:bg-slate-900 shadow-2xl shadow-black/5 dark:shadow-none">
-                            <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop" class="profil-img absolute inset-0 w-full h-[120%] object-cover filter grayscale hover:grayscale-0 transition duration-700" alt="Heavy Machinery">
-                            <div class="absolute inset-0 border border-slate-300 dark:border-white/10 rounded-2xl pointer-events-none z-10"></div>
+                        <div
+                            class="relative h-[400px] md:h-[600px] rounded-2xl overflow-hidden gs-reveal order-1 lg:order-2 bg-slate-200 dark:bg-slate-900 shadow-2xl shadow-black/5 dark:shadow-none">
+                            <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop"
+                                class="profil-img absolute inset-0 w-full h-[120%] object-cover filter grayscale hover:grayscale-0 transition duration-700"
+                                alt="Heavy Machinery">
+                            <div
+                                class="absolute inset-0 border border-slate-300 dark:border-white/10 rounded-2xl pointer-events-none z-10">
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 <!-- LAYANAN PERUSAHAAN -->
-                <section class="py-20 md:py-32 px-6 relative z-20 transition-colors duration-700 bg-transparent" id="layanan">
+                <section class="py-20 md:py-32 px-6 relative z-20 transition-colors duration-700 bg-transparent"
+                    id="layanan">
                     <div class="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-12 lg:gap-20 items-stretch">
-                        
+
                         <!-- Kiri: Track (Jalur) untuk Elemen Sticky -->
                         <div class="lg:w-1/3 relative">
                             <!-- Elemen yang Menempel (Sticky) -->
                             <div class="lg:sticky lg:top-32 pt-2">
                                 <div class="gs-reveal">
-                                    <h4 class="text-accent font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Kapabilitas Eksekusi</h4>
-                                    <h2 class="font-space text-4xl sm:text-5xl md:text-6xl font-bold uppercase leading-tight">Layanan<br>Spesialis.</h2>
-                                    <p class="mt-6 text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed hidden lg:block">Solusi rekayasa struktural <i>end-to-end</i> yang mengedepankan presisi, keamanan, dan efisiensi waktu untuk skala industri dan komersial.</p>
+                                    <h4
+                                        class="text-accent font-space tracking-widest uppercase text-xs md:text-sm mb-4">
+                                        // Kapabilitas Eksekusi</h4>
+                                    <h2
+                                        class="font-space text-4xl sm:text-5xl md:text-6xl font-bold uppercase leading-tight">
+                                        Layanan<br>Spesialis.</h2>
+                                    <p
+                                        class="mt-6 text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed hidden lg:block">
+                                        Solusi rekayasa struktural <i>end-to-end</i> yang mengedepankan presisi,
+                                        keamanan, dan efisiensi waktu untuk skala industri dan komersial.</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Kanan: Grid Cards (Berjalan ke atas saat di-scroll) -->
                         <div class="lg:w-2/3 grid sm:grid-cols-2 gap-6 pb-4">
-                            <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
-                                <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
-                                    <svg class="w-7 h-7 text-accent hover-float" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            <div
+                                class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
+                                <div
+                                    class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
+                                    <svg class="w-7 h-7 text-accent hover-float" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                        </path>
+                                    </svg>
                                 </div>
                                 <h3 class="font-space text-xl font-bold mb-3 uppercase">Konstruksi Gedung</h3>
-                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Gedung hunian, perkantoran komersial, fasilitas pendidikan, dan infrastruktur bangunan publik terintegrasi dengan material premium.</p>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Gedung hunian,
+                                    perkantoran komersial, fasilitas pendidikan, dan infrastruktur bangunan publik
+                                    terintegrasi dengan material premium.</p>
                             </div>
-                            
-                            <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
-                                <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
-                                    <svg class="w-7 h-7 text-accent hover-float-delay" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
+
+                            <div
+                                class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
+                                <div
+                                    class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
+                                    <svg class="w-7 h-7 text-accent hover-float-delay" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
+                                    </svg>
                                 </div>
                                 <h3 class="font-space text-xl font-bold mb-3 uppercase">Bangunan Sipil</h3>
-                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Rekayasa struktural tinggi mencakup pembangunan jembatan, jalan layang (<i>flyover</i>), dan <i>underpass</i> perkotaan yang tahan gempa.</p>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Rekayasa
+                                    struktural tinggi mencakup pembangunan jembatan, jalan layang (<i>flyover</i>), dan
+                                    <i>underpass</i> perkotaan yang tahan gempa.
+                                </p>
                             </div>
-                            
-                            <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
-                                <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
-                                    <svg class="w-7 h-7 text-accent hover-float" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+
+                            <div
+                                class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
+                                <div
+                                    class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
+                                    <svg class="w-7 h-7 text-accent hover-float" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
                                 </div>
                                 <h3 class="font-space text-xl font-bold mb-3 uppercase">Instalasi MEP</h3>
-                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Pengembangan jaringan terpadu (Mechanical, Electrical, Plumbing), kelistrikan tingkat gedung, dan tata kelola suhu industri.</p>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Pengembangan
+                                    jaringan terpadu (Mechanical, Electrical, Plumbing), kelistrikan tingkat gedung, dan
+                                    tata kelola suhu industri.</p>
                             </div>
 
-                            <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
-                                <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
-                                    <svg class="w-7 h-7 text-accent hover-float-delay" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17l6-6-6-6"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"></path></svg>
+                            <div
+                                class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
+                                <div
+                                    class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
+                                    <svg class="w-7 h-7 text-accent hover-float-delay" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M9 17l6-6-6-6"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z">
+                                        </path>
+                                    </svg>
                                 </div>
                                 <h3 class="font-space text-xl font-bold mb-3 uppercase">Jalan Raya</h3>
-                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Pembuatan dan pengaspalan infrastruktur jalan tol, jalan arteri provinsi, hingga akses vital kawasan pelabuhan dengan aspal mutu tinggi.</p>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Pembuatan dan
+                                    pengaspalan infrastruktur jalan tol, jalan arteri provinsi, hingga akses vital
+                                    kawasan pelabuhan dengan aspal mutu tinggi.</p>
                             </div>
 
-                            <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
-                                <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
-                                    <svg class="w-7 h-7 text-accent hover-float" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                            <div
+                                class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
+                                <div
+                                    class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
+                                    <svg class="w-7 h-7 text-accent hover-float" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                                        </path>
+                                    </svg>
                                 </div>
                                 <h3 class="font-space text-xl font-bold mb-3 uppercase">Perkebunan Sawit</h3>
-                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Spesialisasi pembukaan lahan (<i>land clearing</i>), pembuatan terasering, drainase, dan infrastruktur hauling kawasan sawit.</p>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Spesialisasi
+                                    pembukaan lahan (<i>land clearing</i>), pembuatan terasering, drainase, dan
+                                    infrastruktur hauling kawasan sawit.</p>
                             </div>
 
-                            <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
-                                <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
-                                    <svg class="w-7 h-7 text-accent hover-float-delay" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2C8 6 4 11.5 4 16a8 8 0 0016 0c0-4.5-4-10-8-14z"></path></svg>
+                            <div
+                                class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-2xl transition-all duration-300 hover:border-accent dark:hover:border-accent hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/5 gs-reveal">
+                                <div
+                                    class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 border border-accent/20">
+                                    <svg class="w-7 h-7 text-accent hover-float-delay" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M12 2C8 6 4 11.5 4 16a8 8 0 0016 0c0-4.5-4-10-8-14z"></path>
+                                    </svg>
                                 </div>
                                 <h3 class="font-space text-xl font-bold mb-3 uppercase">Sumber Daya Air</h3>
-                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Manajemen tata air, instalasi perpipaan raksasa, stasiun pompa, serta pengolahan instalasi air minum bersih untuk tata kota.</p>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">Manajemen tata
+                                    air, instalasi perpipaan raksasa, stasiun pompa, serta pengolahan instalasi air
+                                    minum bersih untuk tata kota.</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
                 <!-- ALUR KERJA -->
-                <section class="py-20 md:py-32 px-6 border-t border-slate-200/50 dark:border-white/5 relative z-20 transition-colors duration-700 bg-transparent" id="alur-kerja">
+                <section
+                    class="py-20 md:py-32 px-6 border-t border-slate-200/50 dark:border-white/5 relative z-20 transition-colors duration-700 bg-transparent"
+                    id="alur-kerja">
                     <div class="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-12 lg:gap-20 items-stretch">
-                        
+
                         <!-- KIRI: Langkah Kerja (Scroll) -->
                         <div class="lg:w-2/3 order-2 lg:order-1 relative pb-4">
                             <div class="ml-4 md:ml-8 relative">
                                 <div class="work-step mb-16 gs-reveal">
                                     <div class="step-dot bg-slate-50 dark:bg-[#050810]"></div>
-                                    <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">01. Analisis Topografi & Mitigasi</h3>
-                                    <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">Pemetaan area secara presisi tinggi untuk mengidentifikasi anomali tanah dan menghitung estimasi risiko sebelum garis pertama ditarik.</p>
+                                    <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">01. Analisis
+                                        Topografi & Mitigasi</h3>
+                                    <p
+                                        class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">
+                                        Pemetaan area secara presisi tinggi untuk mengidentifikasi anomali tanah dan
+                                        menghitung estimasi risiko sebelum garis pertama ditarik.</p>
                                 </div>
                                 <div class="work-step mb-16 gs-reveal">
                                     <div class="step-dot bg-slate-50 dark:bg-[#050810]"></div>
-                                    <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">02. Blueprint Rekayasa</h3>
-                                    <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">Penyusunan desain teknis, struktur beton, dan perhitungan RAB (Rencana Anggaran Biaya) yang transparan dan efisien.</p>
+                                    <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">02. Blueprint
+                                        Rekayasa</h3>
+                                    <p
+                                        class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">
+                                        Penyusunan desain teknis, struktur beton, dan perhitungan RAB (Rencana Anggaran
+                                        Biaya) yang transparan dan efisien.</p>
                                 </div>
                                 <div class="work-step mb-16 gs-reveal">
                                     <div class="step-dot bg-slate-50 dark:bg-[#050810]"></div>
-                                    <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">03. Eksekusi Lapangan & K3</h3>
-                                    <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">Mobilisasi alat berat dan tenaga ahli dengan kepatuhan mutlak terhadap Sistem Manajemen Keselamatan dan Kesehatan Kerja (SMK3).</p>
+                                    <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">03. Eksekusi
+                                        Lapangan & K3</h3>
+                                    <p
+                                        class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">
+                                        Mobilisasi alat berat dan tenaga ahli dengan kepatuhan mutlak terhadap Sistem
+                                        Manajemen Keselamatan dan Kesehatan Kerja (SMK3).</p>
                                 </div>
                                 <div class="work-step gs-reveal">
                                     <div class="step-dot bg-slate-50 dark:bg-[#050810]"></div>
-                                    <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">04. Serah Terima & QA</h3>
-                                    <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">Inspeksi akhir kualitas fisik, uji kelayakan, dan penyerahan proyek dengan sertifikasi garansi pekerjaan (ISO 9001 standard).</p>
+                                    <h3 class="font-space text-xl md:text-2xl font-bold uppercase mb-2">04. Serah Terima
+                                        & QA</h3>
+                                    <p
+                                        class="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-xl leading-relaxed">
+                                        Inspeksi akhir kualitas fisik, uji kelayakan, dan penyerahan proyek dengan
+                                        sertifikasi garansi pekerjaan (ISO 9001 standard).</p>
                                 </div>
                             </div>
                         </div>
@@ -604,8 +1596,12 @@
                         <div class="lg:w-1/3 order-1 lg:order-2 relative">
                             <div class="lg:sticky lg:top-32 pt-2">
                                 <div class="gs-reveal">
-                                    <h4 class="text-accent font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Metodologi</h4>
-                                    <h2 class="font-space text-4xl sm:text-5xl md:text-6xl font-bold uppercase leading-tight hover-float">Proses Kerja Absolut.</h2>
+                                    <h4
+                                        class="text-accent font-space tracking-widest uppercase text-xs md:text-sm mb-4">
+                                        // Metodologi</h4>
+                                    <h2
+                                        class="font-space text-4xl sm:text-5xl md:text-6xl font-bold uppercase leading-tight hover-float">
+                                        Proses Kerja Absolut.</h2>
                                 </div>
                             </div>
                         </div>
@@ -614,34 +1610,57 @@
                 </section>
 
                 <!-- PORTOFOLIO -->
-                <section class="py-20 md:py-32 px-6 relative z-20 transition-colors duration-700 bg-transparent" id="portofolio">
+                <section class="py-20 md:py-32 px-6 relative z-20 transition-colors duration-700 bg-transparent"
+                    id="portofolio">
                     <div class="max-w-7xl mx-auto">
-                        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-20 gap-6 gs-reveal">
+                        <div
+                            class="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-20 gap-6 gs-reveal">
                             <div>
-                                <h4 class="text-accent font-space tracking-widest uppercase text-xs md:text-sm mb-4">// Track Record B2B</h4>
-                                <h2 class="font-space text-4xl sm:text-5xl md:text-6xl font-bold uppercase">Bukti Nyata.</h2>
+                                <h4 class="text-accent font-space tracking-widest uppercase text-xs md:text-sm mb-4">//
+                                    Track Record B2B</h4>
+                                <h2 class="font-space text-4xl sm:text-5xl md:text-6xl font-bold uppercase">Bukti Nyata.
+                                </h2>
                             </div>
-                            <div class="text-slate-500 dark:text-slate-400 text-sm max-w-xs md:text-right">Sebagian kecil dari portofolio masterplan yang telah kami selesaikan dengan presisi 100%.</div>
+                            <div class="text-slate-500 dark:text-slate-400 text-sm max-w-xs md:text-right">Sebagian
+                                kecil dari portofolio masterplan yang telah kami selesaikan dengan presisi 100%.</div>
                         </div>
-                        
+
                         <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
-                            <div class="port-card border border-slate-200 dark:border-white/5 shadow-2xl shadow-black/5 dark:shadow-none gs-reveal">
-                                <div class="h-[350px] md:h-[500px] relative overflow-hidden bg-slate-200 dark:bg-slate-900">
-                                    <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1200&auto=format&fit=crop" class="port-img absolute inset-0 w-full h-[120%] object-cover filter grayscale hover:grayscale-0" alt="Hauling Road">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                                    <div class="absolute inset-0 flex flex-col justify-end p-8 md:p-10 z-10 pointer-events-none">
-                                        <div class="text-accent font-space text-xs tracking-widest uppercase mb-2">Jalan Hauling Tambang</div>
-                                        <h3 class="text-2xl md:text-3xl font-bold text-white font-space uppercase">PT Bayan Resources Tbk</h3>
+                            <div
+                                class="port-card border border-slate-200 dark:border-white/5 shadow-2xl shadow-black/5 dark:shadow-none gs-reveal">
+                                <div
+                                    class="h-[350px] md:h-[500px] relative overflow-hidden bg-slate-200 dark:bg-slate-900">
+                                    <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1200&auto=format&fit=crop"
+                                        class="port-img absolute inset-0 w-full h-[120%] object-cover filter grayscale hover:grayscale-0"
+                                        alt="Hauling Road">
+                                    <div
+                                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                                    </div>
+                                    <div
+                                        class="absolute inset-0 flex flex-col justify-end p-8 md:p-10 z-10 pointer-events-none">
+                                        <div class="text-accent font-space text-xs tracking-widest uppercase mb-2">Jalan
+                                            Hauling Tambang</div>
+                                        <h3 class="text-2xl md:text-3xl font-bold text-white font-space uppercase">PT
+                                            Bayan Resources Tbk</h3>
                                     </div>
                                 </div>
                             </div>
-                            <div class="port-card border border-slate-200 dark:border-white/5 mt-0 md:mt-24 shadow-2xl shadow-black/5 dark:shadow-none gs-reveal">
-                                <div class="h-[350px] md:h-[500px] relative overflow-hidden bg-slate-200 dark:bg-slate-900">
-                                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop" class="port-img absolute inset-0 w-full h-[120%] object-cover filter grayscale hover:grayscale-0" alt="Bridge Construction">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                                    <div class="absolute inset-0 flex flex-col justify-end p-8 md:p-10 z-10 pointer-events-none">
-                                        <div class="text-accent font-space text-xs tracking-widest uppercase mb-2">Konstruksi Publik</div>
-                                        <h3 class="text-2xl md:text-3xl font-bold text-white font-space uppercase">Jembatan Long Penjalin</h3>
+                            <div
+                                class="port-card border border-slate-200 dark:border-white/5 mt-0 md:mt-24 shadow-2xl shadow-black/5 dark:shadow-none gs-reveal">
+                                <div
+                                    class="h-[350px] md:h-[500px] relative overflow-hidden bg-slate-200 dark:bg-slate-900">
+                                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop"
+                                        class="port-img absolute inset-0 w-full h-[120%] object-cover filter grayscale hover:grayscale-0"
+                                        alt="Bridge Construction">
+                                    <div
+                                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                                    </div>
+                                    <div
+                                        class="absolute inset-0 flex flex-col justify-end p-8 md:p-10 z-10 pointer-events-none">
+                                        <div class="text-accent font-space text-xs tracking-widest uppercase mb-2">
+                                            Konstruksi Publik</div>
+                                        <h3 class="text-2xl md:text-3xl font-bold text-white font-space uppercase">
+                                            Jembatan Long Penjalin</h3>
                                     </div>
                                 </div>
                             </div>
@@ -650,55 +1669,96 @@
                 </section>
 
                 <!-- CONTACT FORM -->
-                <section class="py-24 md:py-40 px-6 border-t border-slate-200/50 dark:border-white/5 relative z-20 transition-colors duration-700 overflow-hidden bg-transparent" id="kontak">
+                <section
+                    class="py-24 md:py-40 px-6 border-t border-slate-200/50 dark:border-white/5 relative z-20 transition-colors duration-700 overflow-hidden bg-transparent"
+                    id="kontak">
 
                     <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
                         <div class="gs-reveal">
-                            <h2 class="font-space text-4xl sm:text-5xl md:text-7xl font-bold uppercase mb-6">Mulai<br><span class="text-accent">Proyek Anda.</span></h2>
-                            <p class="text-slate-600 dark:text-slate-400 mb-10 md:mb-14 text-sm md:text-base leading-relaxed max-w-md">Konsultasikan kebutuhan infrastruktur Anda. Tim <i>engineering</i> kami siap memberikan analisis awal dan estimasi rancangan presisi.</p>
-                            
+                            <h2 class="font-space text-4xl sm:text-5xl md:text-7xl font-bold uppercase mb-6">
+                                Mulai<br><span class="text-accent">Proyek Anda.</span></h2>
+                            <p
+                                class="text-slate-600 dark:text-slate-400 mb-10 md:mb-14 text-sm md:text-base leading-relaxed max-w-md">
+                                Konsultasikan kebutuhan infrastruktur Anda. Tim <i>engineering</i> kami siap memberikan
+                                analisis awal dan estimasi rancangan presisi.</p>
+
                             <div class="space-y-8">
                                 <div class="flex items-start gap-5">
-                                    <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-800 shadow-sm hover-float-delay">
-                                        <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-800 shadow-sm hover-float-delay">
+                                        <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                            </path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
                                     </div>
                                     <div>
-                                        <div class="font-bold font-space text-sm md:text-base uppercase tracking-wider mb-1">Kantor Pusat</div>
-                                        <div class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Jl. AW Syahranie No. 36 A,<br>Samarinda 75123, Kalimantan Timur.</div>
+                                        <div
+                                            class="font-bold font-space text-sm md:text-base uppercase tracking-wider mb-1">
+                                            Kantor Pusat</div>
+                                        <div class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Jl. AW
+                                            Syahranie No. 36 A,<br>Samarinda 75123, Kalimantan Timur.</div>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-5">
-                                    <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-800 shadow-sm hover-float">
-                                        <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-800 shadow-sm hover-float">
+                                        <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
                                     </div>
-                                    <div class="text-slate-600 dark:text-slate-400 text-sm">corporate@jayakedhaton.co.id</div>
+                                    <div class="text-slate-600 dark:text-slate-400 text-sm">corporate@jayakedhaton.co.id
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl p-8 sm:p-10 md:p-12 rounded-3xl border border-slate-200 dark:border-slate-800 gs-reveal shadow-2xl shadow-slate-200/50 dark:shadow-none relative">
+
+                        <div
+                            class="bg-white/80 dark:bg-[#0f141e]/80 backdrop-blur-xl p-8 sm:p-10 md:p-12 rounded-3xl border border-slate-200 dark:border-slate-800 gs-reveal shadow-2xl shadow-slate-200/50 dark:shadow-none relative">
                             <form onsubmit="event.preventDefault();" class="space-y-8 relative z-10">
                                 <div>
-                                    <label class="text-[10px] md:text-xs text-slate-500 font-space tracking-widest uppercase mb-2 block">Nama Perusahaan / Instansi</label>
-                                    <input type="text" class="input-b2b text-sm md:text-base border-b border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white" placeholder="Contoh: PT Bangun Persada">
+                                    <label
+                                        class="text-[10px] md:text-xs text-slate-500 font-space tracking-widest uppercase mb-2 block">Nama
+                                        Perusahaan / Instansi</label>
+                                    <input type="text"
+                                        class="input-b2b text-sm md:text-base border-b border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white"
+                                        placeholder="Contoh: PT Bangun Persada">
                                 </div>
                                 <div>
-                                    <label class="text-[10px] md:text-xs text-slate-500 font-space tracking-widest uppercase mb-2 block">Email Representatif</label>
-                                    <input type="email" class="input-b2b text-sm md:text-base border-b border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white" placeholder="email@perusahaan.com">
+                                    <label
+                                        class="text-[10px] md:text-xs text-slate-500 font-space tracking-widest uppercase mb-2 block">Email
+                                        Representatif</label>
+                                    <input type="email"
+                                        class="input-b2b text-sm md:text-base border-b border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white"
+                                        placeholder="email@perusahaan.com">
                                 </div>
                                 <div>
-                                    <label class="text-[10px] md:text-xs text-slate-500 font-space tracking-widest uppercase mb-2 block">Rincian Kebutuhan Proyek</label>
-                                    <textarea class="input-b2b text-sm md:text-base border-b border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white min-h-[100px] resize-none" placeholder="Deskripsikan lokasi, jenis infrastruktur, dan timeline..."></textarea>
+                                    <label
+                                        class="text-[10px] md:text-xs text-slate-500 font-space tracking-widest uppercase mb-2 block">Rincian
+                                        Kebutuhan Proyek</label>
+                                    <textarea
+                                        class="input-b2b text-sm md:text-base border-b border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white min-h-[100px] resize-none"
+                                        placeholder="Deskripsikan lokasi, jenis infrastruktur, dan timeline..."></textarea>
                                 </div>
-                                <button class="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-space font-bold uppercase tracking-widest py-4 text-xs md:text-sm rounded-xl hover:bg-accent dark:hover:bg-accent hover:text-white transition-all duration-300 shadow-lg hover:shadow-accent/25">Kirim Permintaan</button>
+                                <button
+                                    class="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-space font-bold uppercase tracking-widest py-4 text-xs md:text-sm rounded-xl hover:bg-accent dark:hover:bg-accent hover:text-white transition-all duration-300 shadow-lg hover:shadow-accent/25">Kirim
+                                    Permintaan</button>
                             </form>
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- FOOTER -->
-                <footer class="py-8 md:py-10 text-center text-slate-500 dark:text-slate-600 text-[10px] md:text-xs font-space uppercase tracking-widest border-t border-slate-200 dark:border-slate-900 bg-transparent relative z-20 transition-colors duration-700">
-                    &copy; 2026 PT JAYA KEDHATON. ALL RIGHTS RESERVED. <br class="md:hidden"><span class="hidden md:inline"> | </span> ENGINEERED FOR EXCELLENCE.
+                <footer
+                    class="py-8 md:py-10 text-center text-slate-500 dark:text-slate-600 text-[10px] md:text-xs font-space uppercase tracking-widest border-t border-slate-200 dark:border-slate-900 bg-transparent relative z-20 transition-colors duration-700">
+                    &copy; 2026 PT JAYA KEDHATON. ALL RIGHTS RESERVED. <br class="md:hidden"><span
+                        class="hidden md:inline"> | </span> ENGINEERED FOR EXCELLENCE.
                 </footer>
 
             </main>
@@ -728,7 +1788,7 @@
         // =========================================================
         function toggleMenu() {
             document.body.classList.toggle('menu-open');
-            if(document.body.classList.contains('menu-open')) lenis.stop(); 
+            if (document.body.classList.contains('menu-open')) lenis.stop();
             else lenis.start();
         }
         function closeMenu() {
@@ -742,10 +1802,10 @@
         const isTouch = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
         const cursorDot = document.getElementById("cursor-dot");
         const cursorRing = document.getElementById("cursor-ring");
-        
+
         if (isTouch) {
-            if(cursorDot) cursorDot.style.display = 'none';
-            if(cursorRing) cursorRing.style.display = 'none';
+            if (cursorDot) cursorDot.style.display = 'none';
+            if (cursorRing) cursorRing.style.display = 'none';
         } else {
             let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
             let ringX = mouseX, ringY = mouseY;
@@ -768,10 +1828,10 @@
         // =========================================================
         // INIT LENIS SMOOTH SCROLL
         // =========================================================
-        const lenis = new Lenis({ 
+        const lenis = new Lenis({
             duration: 0.8,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smoothTouch: false 
+            smoothTouch: false
         });
 
         function raf(time) {
@@ -783,7 +1843,7 @@
         // =========================================================
         // MURNI VANILLA JS SCROLL ANIMATION (PENGGANTI GSAP)
         // =========================================================
-        
+
         // CACHE DOM ELEMENTS AGAR TIDAK BERAT
         const DOM = {
             wrapper: document.getElementById('cinematic-wrapper'),
@@ -835,8 +1895,8 @@
         window.addEventListener('resize', () => {
             // Hanya update jika perubahannya signifikan (misal ganti orientasi layar)
             // untuk mengabaikan address bar yang hilang/muncul
-            if(Math.abs(window.innerHeight - winHeight) > 100) {
-                 winHeight = window.innerHeight;
+            if (Math.abs(window.innerHeight - winHeight) > 100) {
+                winHeight = window.innerHeight;
             }
         });
 
@@ -873,7 +1933,7 @@
             const isDark = document.documentElement.classList.contains('dark');
 
             // ANIMASI HERO LAYER
-            if(DOM.heroText) {
+            if (DOM.heroText) {
                 DOM.heroText.style.transform = `scale(${I(t, 0, 0.5, 1, 5)})`;
                 DOM.heroText.style.opacity = I(t, 0, 0.5, 1, 0);
                 DOM.heroImg.style.transform = `scale(${I(t, 0, 1.0, 1, 3)})`;
@@ -883,20 +1943,20 @@
             }
 
             // ANIMASI TOPO LAYER
-            if(DOM.sceneTopo) {
+            if (DOM.sceneTopo) {
                 DOM.sceneTopo.style.visibility = (t >= 0.2 && t < 2.8) ? 'visible' : 'hidden';
                 DOM.sceneTopo.style.opacity = I(t, 0.2, 0.8, 0, 1) * I(t, 2.5, 2.8, 1, 0);
                 DOM.sceneTopo.style.clipPath = `circle(${I(t, 0.2, 0.8, 0, 150)}% at 50% 50%)`;
                 DOM.sceneTopo.style.transform = `scale(${I(t, 2.5, 2.8, 1, 0.9)})`;
-                
+
                 DOM.topoPaths.forEach(path => {
                     path.style.strokeDashoffset = I(t, 0.4, 1.0, 2000, 0);
                 });
-                
+
                 DOM.errorLogs.forEach((el, i) => {
                     const start = 0.6 + (i * 0.1);
-                    el.style.opacity = I(t, start, start+0.3, 0, 1) * I(t, 2.5, 2.8, 1, 0);
-                    el.style.transform = `translateY(${I(t, start, start+0.3, 0, -10) + I(t, 2.5, 2.8, 0, -30)}px)`;
+                    el.style.opacity = I(t, start, start + 0.3, 0, 1) * I(t, 2.5, 2.8, 1, 0);
+                    el.style.transform = `translateY(${I(t, start, start + 0.3, 0, -10) + I(t, 2.5, 2.8, 0, -30)}px)`;
                 });
 
                 DOM.topoTextWrap.style.opacity = I(t, 0.7, 1.0, 0, 1) * I(t, 2.5, 2.8, 1, 0);
@@ -904,7 +1964,7 @@
             }
 
             // ANIMASI KARTU TUMPUK (STACK LAYER)
-            if(DOM.sceneStack) {
+            if (DOM.sceneStack) {
                 DOM.sceneStack.style.visibility = t >= 2.5 ? 'visible' : 'hidden';
                 DOM.sceneStack.style.opacity = I(t, 2.5, 2.7, 0, 1);
                 DOM.sceneStack.style.pointerEvents = t >= 2.5 ? 'auto' : 'none';
@@ -914,7 +1974,7 @@
                 DOM.card1.style.opacity = I(t, 2.7, 3.3, 0, 1) * I(t, 5.0, 5.4, 1, 0);
                 DOM.card1.style.transform = `scale(${I(t, 2.7, 3.3, 1.1, 1) * I(t, 5.0, 5.4, 1, 0.85)})`;
                 DOM.card1.style.filter = `blur(${I(t, 5.0, 5.4, 0, 20)}px)`;
-                
+
                 DOM.inner1Text.style.opacity = I(t, 2.9, 3.3, 0, 1);
                 DOM.inner1Text.style.transform = `translateX(${I(t, 2.9, 3.3, -50, 0)}px)`;
                 DOM.c1Img1.style.opacity = I(t, 3.0, 3.4, 0, 1);
@@ -948,7 +2008,7 @@
                 DOM.img3.style.transform = `scale(${I(t, 7.7, 8.3, 0.5, 1)}) rotate(${I(t, 7.7, 8.3, -5, 0)}deg)`;
                 DOM.archLines.style.opacity = I(t, 7.9, 8.5, 0, 1);
                 DOM.archLines.style.transform = `scale(${I(t, 7.9, 8.5, 1.2, 1)})`;
-                
+
                 DOM.tag3.style.opacity = I(t, 8.0, 8.3, 0, 1);
                 DOM.tag3.style.transform = `translateY(${I(t, 8.0, 8.3, 50, 0)}px)`;
                 DOM.title3.style.opacity = I(t, 8.1, 8.4, 0, 1);
@@ -960,17 +2020,17 @@
             // DOTS HIGHLIGHT LOGIC UNTUK PROLOGUE
             if (p < 0.99) { // Jika masih di dalam section prologue
                 clearAllDots();
-                if (p < 0.15) prologDots[0].classList.add('active'); 
-                else if (p < 0.40) prologDots[1].classList.add('active'); 
-                else if (p < 0.65) prologDots[2].classList.add('active'); 
-                else if (p < 0.90) prologDots[3].classList.add('active'); 
-                else prologDots[4].classList.add('active'); 
+                if (p < 0.15) prologDots[0].classList.add('active');
+                else if (p < 0.40) prologDots[1].classList.add('active');
+                else if (p < 0.65) prologDots[2].classList.add('active');
+                else if (p < 0.90) prologDots[3].classList.add('active');
+                else prologDots[4].classList.add('active');
             }
         }
 
         // Jalankan timeline function saat Lenis scroll aktif
         lenis.on('scroll', updateImmersiveTimeline);
-        updateImmersiveTimeline({scroll: window.scrollY}); // init pertama
+        updateImmersiveTimeline({ scroll: window.scrollY }); // init pertama
 
 
         // =========================================================
@@ -994,13 +2054,13 @@
         // DOT NAVIGATION COMPRO (INTERSECTION OBSERVER)
         // =========================================================
         const sections = ['#beranda', '#profil', '#layanan', '#alur-kerja', '#portofolio', '#kontak'];
-        
+
         const comproObserver = new IntersectionObserver((entries) => {
             // Hanya aktifkan logika ini jika sedang berada melewati prologue
             const scrollY = window.scrollY;
             const maxPrologScroll = DOM.wrapper.offsetHeight - winHeight;
 
-            if(scrollY >= maxPrologScroll - 100) {
+            if (scrollY >= maxPrologScroll - 100) {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         clearAllDots();
@@ -1038,4 +2098,5 @@
 
     </script>
 </body>
+
 </html>
