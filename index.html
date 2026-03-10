@@ -10,6 +10,10 @@
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;700;900&display=swap"
         rel="stylesheet">
 
+    <!-- Pannellum 360 Viewer -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
     <script>
         // Konfigurasi Tailwind untuk Dark Mode & Warna Custom
         tailwind.config = {
@@ -93,7 +97,7 @@
             background-color: var(--accent);
             border-radius: 50%;
             pointer-events: none;
-            z-index: 99999;
+            z-index: 999999;
             transform: translate(-50%, -50%);
             transition: width 0.3s, height 0.3s;
         }
@@ -107,7 +111,7 @@
             border: 1.5px solid var(--accent);
             border-radius: 50%;
             pointer-events: none;
-            z-index: 99998;
+            z-index: 999998;
             transform: translate(-50%, -50%);
             transition: transform 0.1s ease-out, background-color 0.3s;
             mix-blend-mode: difference;
@@ -540,7 +544,7 @@
             position: relative;
             z-index: 2;
             width: 100%;
-            max-w: 1400px;
+            max-width: 1400px;
             padding: 0 5vw;
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -577,7 +581,7 @@
             color: var(--text-muted);
             line-height: 1.7;
             margin-bottom: 1.5rem;
-            max-w: 480px;
+            max-width: 480px;
         }
 
         .num-watermark {
@@ -757,6 +761,395 @@
         .work-step {
             position: relative;
             padding-left: 3rem;
+        }
+
+        /* =======================================================
+           PORTFOLIO MODAL & TABS
+           ======================================================= */
+        .port-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .port-modal.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .modal-content-wrap {
+            width: 95%;
+            max-width: 1200px;
+            height: 90vh;
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(40px) scale(0.98);
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dark .modal-content-wrap {
+            background: #0f141e;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .port-modal.active .modal-content-wrap {
+            transform: translateY(0) scale(1);
+        }
+
+        /* Modal Header */
+        .modal-header {
+            padding: 2rem 3rem;
+            border-bottom: 1px solid var(--grid-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-shrink: 0;
+        }
+
+        .modal-close {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--stroke-color);
+        }
+
+        .dark .modal-close {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-close:hover {
+            background: var(--accent);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        /* Modal Body & Tabs */
+        .modal-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 3rem;
+            border-bottom: 1px solid var(--grid-color);
+            background: rgba(15, 23, 42, 0.02);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .dark .tab-nav {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--stroke-color);
+            opacity: 0.5;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        .tab-btn:hover {
+            opacity: 0.8;
+        }
+
+        .tab-btn.active {
+            opacity: 1;
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(255, 69, 0, 0.2);
+        }
+
+        .tab-content-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .tab-pane {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            overflow-y: hidden;
+        }
+
+        .tab-pane::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-pane.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        /* Tab 1: Layout Galeri CSS Grid */
+        .gallery-wrap {
+            height: 100%;
+            overflow-y: auto;
+            -ms-overflow-style: auto;
+            scrollbar-width: thin;
+        }
+
+        .gallery-grid {
+            display: grid;
+            /* Bento grid: uniform columns */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            width: 100%;
+            padding-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        .gal-item {
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            /* Uniform square aspect ratio */
+            aspect-ratio: 1 / 1;
+            background: var(--grid-color);
+        }
+
+        .gal-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            filter: grayscale(80%);
+        }
+
+        .gal-item:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+        }
+
+        /* Tab 2: Pannellum 360 */
+        #panorama-container {
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        /* Prevent overlay panels from blocking default Pannellum controls */
+        .pnlm-controls-container {
+            z-index: 50 !important;
+        }
+
+        /* Tab 3: Before - After Slider */
+        .ba-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #050810;
+        }
+
+        .ba-wrapper {
+            position: relative;
+            width: 90%;
+            height: 80%;
+            max-width: 1000px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            /* Important untuk slider before/after */
+            user-select: none;
+        }
+
+        .ba-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .ba-before {
+            z-index: 1;
+            filter: grayscale(100%);
+            width: 100%;
+        }
+
+        /* Menggunakan clip-path lebih smooth dibanding merubah width */
+        .ba-after {
+            z-index: 2;
+            width: 100%;
+            clip-path: inset(0 50% 0 0);
+        }
+
+        .ba-slider-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background: var(--accent);
+            z-index: 4;
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+
+        .ba-slider-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px;
+            height: 44px;
+            background: var(--accent);
+            border: 3px solid #fff;
+            border-radius: 50%;
+            z-index: 5;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .ba-slider-btn::before,
+        .ba-slider-btn::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .ba-slider-btn::before {
+            border-right: 6px solid #fff;
+            left: 8px;
+        }
+
+        .ba-slider-btn::after {
+            border-left: 6px solid #fff;
+            right: 8px;
+        }
+
+        /* Interactive Input Drag (Tidak pakai class ba-slider untuk menghindari JS conflict) */
+        .ba-dragger {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            z-index: 10;
+            cursor: ew-resize;
+            margin: 0;
+            /* Disable default styling */
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .ba-label {
+            position: absolute;
+            bottom: 20px;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-family: 'Space Grotesk';
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            border-radius: 50px;
+            backdrop-filter: blur(4px);
+            text-transform: uppercase;
+        }
+
+        .lbl-before {
+            right: 20px;
+            z-index: 1;
+        }
+
+        .lbl-after {
+            left: 20px;
+            z-index: 3;
+        }
+
+        @media (max-width: 768px) {
+            .modal-header {
+                padding: 1.5rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .modal-close {
+                position: absolute;
+                top: 1.5rem;
+                right: 1.5rem;
+                width: 40px;
+                height: 40px;
+            }
+
+            .tab-nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .gallery-wrap {
+                padding-bottom: 2rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(1, 1fr);
+                gap: 1rem;
+            }
+
+            .ba-wrapper {
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+            }
         }
 
         .work-step::before {
@@ -1321,10 +1714,11 @@
                                 <div>
                                     <div class="c-tag bg-white/50 dark:bg-black/50">SOLUSI // PT JAYA KEDHATON</div>
                                     <h2 class="c-title text-slate-900 dark:text-white"
-                                        style="font-size: clamp(2.5rem, 8vw, 8rem); margin-bottom: 1.5rem md:margin-bottom: 2rem;">
+                                        style="font-size: clamp(2.5rem, 8vw, 8rem); margin-bottom: 2rem;">
                                         THE SPECIALIST.</h2>
                                     <p class="c-desc mx-auto text-slate-700 dark:text-slate-300"
-                                        style="font-size: clamp(0.95rem, 2vw, 1.15rem); max-w: 800px;">Kami hadir untuk
+                                        style="font-size: clamp(0.95rem, 2vw, 1.15rem); max-width: 800px;">Kami hadir
+                                        untuk
                                         menghentikan perjudian dalam proyek Anda. Sebagai spesialis rekayasa konstruksi,
                                         PT Jaya Kedhaton menerapkan metodologi presisi tinggi dan mitigasi risiko
                                         struktural sejak hari pertama. Kami mengambil alih kerumitan manajemen logistik,
@@ -1627,44 +2021,60 @@
                         </div>
 
                         <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
-                            <div
-                                class="port-card border border-slate-200 dark:border-white/5 shadow-2xl shadow-black/5 dark:shadow-none gs-reveal">
+                            <a href="javascript:void(0)"
+                                class="port-item border border-slate-200 dark:border-white/5 shadow-2xl shadow-black/5 dark:shadow-none gs-reveal cursor-hover mb-8 block relative overflow-hidden group rounded-2xl"
+                                id="portItem1"
+                                data-project='{"title": "Jalan Hauling Tambang", "scale": "Infrastruktur Industri, 35 KM", "cat": "PT Bayan Resources Tbk"}'>
                                 <div
-                                    class="h-[350px] md:h-[500px] relative overflow-hidden bg-slate-200 dark:bg-slate-900">
+                                    class="h-[350px] md:h-[500px] relative overflow-hidden bg-slate-200 dark:bg-slate-900 rounded-2xl">
                                     <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1200&auto=format&fit=crop"
-                                        class="port-img absolute inset-0 w-full h-[120%] object-cover filter grayscale hover:grayscale-0"
+                                        class="port-img absolute inset-0 w-full h-[120%] object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700"
                                         alt="Hauling Road">
                                     <div
                                         class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
                                     </div>
                                     <div
-                                        class="absolute inset-0 flex flex-col justify-end p-8 md:p-10 z-10 pointer-events-none">
+                                        class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl flex items-center justify-center backdrop-blur-sm z-20 pointer-events-none">
+                                        <span
+                                            class="text-white font-space font-bold tracking-widest uppercase border border-white/50 px-6 py-3 rounded-full hover:bg-white hover:text-slate-900 transition-colors pointer-events-auto">SEE
+                                            DETAILS</span>
+                                    </div>
+                                    <div
+                                        class="absolute inset-0 flex flex-col justify-end p-8 md:p-10 z-10 pointer-events-none transition-transform duration-500 group-hover:-translate-y-4">
                                         <div class="text-accent font-space text-xs tracking-widest uppercase mb-2">Jalan
                                             Hauling Tambang</div>
                                         <h3 class="text-2xl md:text-3xl font-bold text-white font-space uppercase">PT
                                             Bayan Resources Tbk</h3>
                                     </div>
                                 </div>
-                            </div>
-                            <div
-                                class="port-card border border-slate-200 dark:border-white/5 mt-0 md:mt-24 shadow-2xl shadow-black/5 dark:shadow-none gs-reveal">
+                            </a>
+                            <a href="javascript:void(0)"
+                                class="port-item border border-slate-200 dark:border-white/5 mt-0 md:mt-24 shadow-2xl shadow-black/5 dark:shadow-none gs-reveal cursor-hover mb-8 block relative overflow-hidden group rounded-2xl"
+                                id="portItem2"
+                                data-project='{"title": "Jembatan Long Penjalin", "scale": "Konstruksi Publik, 120m Span", "cat": "Pemerintah Daerah"}'>
                                 <div
-                                    class="h-[350px] md:h-[500px] relative overflow-hidden bg-slate-200 dark:bg-slate-900">
+                                    class="h-[350px] md:h-[500px] relative overflow-hidden bg-slate-200 dark:bg-slate-900 rounded-2xl">
                                     <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop"
-                                        class="port-img absolute inset-0 w-full h-[120%] object-cover filter grayscale hover:grayscale-0"
+                                        class="port-img absolute inset-0 w-full h-[120%] object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700"
                                         alt="Bridge Construction">
                                     <div
                                         class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
                                     </div>
                                     <div
-                                        class="absolute inset-0 flex flex-col justify-end p-8 md:p-10 z-10 pointer-events-none">
+                                        class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl flex items-center justify-center backdrop-blur-sm z-20 pointer-events-none">
+                                        <span
+                                            class="text-white font-space font-bold tracking-widest uppercase border border-white/50 px-6 py-3 rounded-full hover:bg-white hover:text-slate-900 transition-colors pointer-events-auto">SEE
+                                            DETAILS</span>
+                                    </div>
+                                    <div
+                                        class="absolute inset-0 flex flex-col justify-end p-8 md:p-10 z-10 pointer-events-none transition-transform duration-500 group-hover:-translate-y-4">
                                         <div class="text-accent font-space text-xs tracking-widest uppercase mb-2">
                                             Konstruksi Publik</div>
                                         <h3 class="text-2xl md:text-3xl font-bold text-white font-space uppercase">
                                             Jembatan Long Penjalin</h3>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </section>
@@ -1763,7 +2173,193 @@
                 </footer>
 
             </main>
+        </div>
+    </div>
 
+    <!-- Gallery Lightbox Modal -->
+    <div id="lightboxOverlay"
+        class="fixed inset-0 bg-black/95 z-[99999] hidden items-center justify-center p-4 transition-opacity opacity-0 pointer-events-none">
+        <button onclick="closeLightbox()"
+            class="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full w-12 h-12 flex items-center justify-center transition-colors pointer-events-auto">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <img id="lightboxImg" src=""
+            class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl transition-transform transform scale-95 pointer-events-auto"
+            alt="Gallery View">
+    </div>
+
+    <!-- PORTFOLIO MODAL (POPUP) -->
+    <div id="portfolioModal" class="port-modal">
+        <div class="modal-content-wrap dark:bg-slate-950 dark:border-slate-800">
+            <!-- Modal Header -->
+            <div
+                class="flex flex-col sm:flex-row justify-between items-start gap-4 p-6 md:p-8 border-b border-slate-200 dark:border-slate-800 shrink-0">
+                <div>
+                    <div class="text-accent font-space text-[10px] md:text-xs tracking-widest uppercase mb-2"
+                        id="modalCategory">Kategori</div>
+                    <h2 class="text-2xl md:text-4xl font-bold font-space uppercase text-slate-900 dark:text-white"
+                        id="modalTitle">Project Title</h2>
+                    <div class="text-slate-500 dark:text-slate-400 text-[10px] md:text-sm mt-3 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                            </path>
+                        </svg>
+                        <span id="modalScale">Skala</span>
+                    </div>
+                </div>
+                <button id="closeModalBtn"
+                    class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-slate-500 hover:text-accent hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div
+                class="flex overflow-x-auto no-scrollbar px-6 md:px-8 border-b border-slate-200 dark:border-slate-800 shrink-0">
+                <button
+                    class="tab-btn active whitespace-nowrap px-6 py-4 font-space text-[10px] md:text-sm tracking-widest uppercase text-slate-500 dark:text-slate-400 relative"
+                    data-tab="gallery">Galeri Project</button>
+                <button
+                    class="tab-btn whitespace-nowrap px-6 py-4 font-space text-[10px] md:text-sm tracking-widest uppercase text-slate-500 dark:text-slate-400 relative"
+                    data-tab="360view">360 View</button>
+                <button
+                    class="tab-btn whitespace-nowrap px-6 py-4 font-space text-[10px] md:text-sm tracking-widest uppercase text-slate-500 dark:text-slate-400 relative"
+                    data-tab="beforeafter">Before / After</button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="tab-content-container bg-slate-50 dark:bg-[#0b0f17]">
+
+                <!-- Tab 1: Gallery -->
+                <div id="tab-gallery" class="tab-pane active h-full p-6 md:p-8">
+                    <div class="gallery-wrap">
+                        <div class="gallery-grid relative">
+                            <!-- Img 1 -->
+                            <div class="gal-item shadow-sm">
+                                <img src="https://images.unsplash.com/photo-1531834685032-c34bf0d84c77?q=80&w=800&auto=format&fit=crop"
+                                    alt="Construction Stage 1">
+                            </div>
+                            <!-- Img 2 -->
+                            <div class="gal-item shadow-sm">
+                                <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=800&auto=format&fit=crop"
+                                    alt="Engineering Detail">
+                            </div>
+                            <!-- Img 3 -->
+                            <div class="gal-item shadow-sm">
+                                <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800&auto=format&fit=crop"
+                                    alt="Masterplan View">
+                            </div>
+                            <!-- Img 4 -->
+                            <div class="gal-item shadow-sm">
+                                <img src="https://images.unsplash.com/photo-1541888081622-152e1281e285?q=80&w=800&auto=format&fit=crop"
+                                    alt="Structure Overview">
+                            </div>
+                            <!-- Img 5 -->
+                            <div class="gal-item shadow-sm">
+                                <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=800&auto=format&fit=crop"
+                                    alt="Material Setup">
+                            </div>
+                            <!-- Img 6 -->
+                            <div class="gal-item shadow-sm">
+                                <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop"
+                                    alt="Finishing Touch">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: 360 View -->
+                <div id="tab-360view" class="tab-pane h-full p-6 md:p-8">
+                    <div
+                        class="w-full h-full bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden relative shadow-sm min-h-[300px] md:min-h-[500px]">
+                        <!-- Pannellum Container -->
+                        <div id="panorama-container" class="w-full h-full absolute inset-0"></div>
+                        <!-- Overlay Loading/Info -->
+                        <div class="absolute inset-0 pointer-events-none flex items-center justify-center bg-black/50 z-10 opacity-0 transition-opacity"
+                            id="panoInfo">
+                            <div
+                                class="px-6 py-2 bg-black/50 backdrop-blur-md rounded-full text-white text-[10px] md:text-xs font-space tracking-widest uppercase border border-white/20">
+                                Drag to look around
+                            </div>
+                        </div>
+
+                        <!-- 360 Room Menu -->
+                        <div class="absolute top-4 right-16 md:right-4 z-20 flex flex-col gap-2">
+                            <button onclick="viewer.loadScene('luar')"
+                                class="px-3 py-2 bg-black/60 backdrop-blur-sm text-white text-[10px] md:text-xs font-space uppercase tracking-widest rounded-lg border border-white/20 hover:bg-accent transition-colors text-right shadow-lg">Bagian
+                                Luar</button>
+                            <button onclick="viewer.loadScene('interior')"
+                                class="px-3 py-2 bg-black/60 backdrop-blur-sm text-white text-[10px] md:text-xs font-space uppercase tracking-widest rounded-lg border border-white/20 hover:bg-accent transition-colors text-right shadow-lg">Interior</button>
+                            <button onclick="viewer.loadScene('billiard')"
+                                class="px-3 py-2 bg-black/60 backdrop-blur-sm text-white text-[10px] md:text-xs font-space uppercase tracking-widest rounded-lg border border-white/20 hover:bg-accent transition-colors text-right shadow-lg">Billiard
+                                Hall</button>
+                        </div>
+
+                        <!-- Custom Hotspot Popup Overlay -->
+                        <div id="panoPopupOverlay"
+                            class="absolute inset-0 bg-black/80 backdrop-blur-md z-30 hidden items-center justify-center p-6 transition-opacity">
+                            <div
+                                class="bg-slate-900 border border-slate-700 p-8 rounded-3xl max-w-sm w-full text-center relative shadow-2xl">
+                                <button onclick="hidePanoPopup()"
+                                    class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 rounded-full p-2 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                                <h3 id="panoPopupTitle"
+                                    class="text-xl md:text-2xl font-space font-bold text-white mb-3">Judul</h3>
+                                <p id="panoPopupDesc" class="text-sm text-slate-300 leading-relaxed">Deskripsi lengkap
+                                    dari informasi.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Before & After -->
+                <div id="tab-beforeafter" class="tab-pane h-full p-6 md:p-8">
+                    <div
+                        class="ba-container rounded-xl overflow-hidden shadow-sm h-full max-h-[400px] md:max-h-[600px] w-full max-w-4xl mx-auto min-h-[300px]">
+                        <div class="ba-wrapper">
+                            <!-- Bottom Image (Before) -->
+                            <img src="https://properti1.net/images/2023/03/2023-03-24_NeCKIcg8fcK0iyo.jpg"
+                                class="ba-image ba-before dark:brightness-75" alt="Before Construction">
+
+                            <!-- Top Image (After - Clipped via JS) -->
+                            <img src="https://i0.wp.com/rancangrekaruang.id/wp-content/uploads/2024/09/Rumah-Industrial-Japandi-Minimalis.jpg?fit=1920%2C1080&ssl=1"
+                                class="ba-image ba-after filter brightness-110 saturate-110" id="imgAfter"
+                                alt="After Construction">
+
+                            <!-- Dragger Interface -->
+                            <div class="ba-slider-line" id="baLine"></div>
+                            <div class="ba-slider-btn" id="baBtn">
+                                <svg class="w-4 h-4 md:w-5 md:h-5 text-slate-900" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
+                                </svg>
+                            </div>
+
+                            <!-- Invisible Input Range -->
+                            <input type="range" class="ba-dragger" id="baDragger" min="0" max="100" value="50">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div
+                class="p-6 md:p-8 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f141e] shrink-0 rounded-b-3xl">
+                <p class="text-xs md:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-3xl"
+                    id="modalDesc">Pembangunan infrastruktur dengan metode presisi tinggi yang memastikan durabilitas
+                    30+ tahun.</p>
+            </div>
         </div>
     </div>
 
@@ -1813,14 +2409,14 @@
 
             window.addEventListener("mousemove", (e) => {
                 mouseX = e.clientX; mouseY = e.clientY;
-                cursorDot.style.transform = `translate(calc(-50% + ${mouseX}px), calc(-50% + ${mouseY}px))`;
+                if (cursorDot) cursorDot.style.transform = `translate(calc(-50% + ${mouseX}px), calc(-50% + ${mouseY}px))`;
             });
 
             // Smooth interpolation for ring
             function renderCursor() {
                 ringX += (mouseX - ringX) * 0.15;
                 ringY += (mouseY - ringY) * 0.15;
-                cursorRing.style.transform = `translate(calc(-50% + ${ringX}px), calc(-50% + ${ringY}px))`;
+                if (cursorRing) cursorRing.style.transform = `translate(calc(-50% + ${ringX}px), calc(-50% + ${ringY}px))`;
                 requestAnimationFrame(renderCursor);
             }
             requestAnimationFrame(renderCursor);
@@ -1901,6 +2497,229 @@
             }
         });
 
+        // =========================================================
+        // PORTFOLIO POPUP MODAL & TABS LOGIC
+        // =========================================================
+        const portModal = document.getElementById('portfolioModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const portItems = document.querySelectorAll('.port-item');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        let viewer; // Pannellum instance
+
+        // 1. Modal Open/Close Logic
+        portItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                // Get Data
+                let projectData = {};
+                try {
+                    const dataAttr = item.getAttribute('data-project');
+                    if (dataAttr) projectData = JSON.parse(dataAttr);
+                } catch (err) {
+                    console.error("Invalid JSON in data-project", err);
+                }
+
+                if (projectData.title) document.getElementById('modalTitle').textContent = projectData.title;
+                if (projectData.cat) document.getElementById('modalCategory').textContent = projectData.cat;
+                if (projectData.scale) document.getElementById('modalScale').textContent = projectData.scale;
+                if (projectData.desc) document.getElementById('modalDesc').textContent = projectData.desc;
+
+                // Open Modal
+                portModal.classList.remove('hidden');
+                // Allow display: flex to apply before transitioning opacity
+                requestAnimationFrame(() => {
+                    portModal.classList.add('active');
+                });
+                lenis.stop(); // Pause smooth scrolling
+                document.body.style.overflow = 'hidden'; // Prevent background scroll
+            });
+        });
+
+        function closePortModal() {
+            portModal.classList.remove('active');
+            setTimeout(() => {
+                portModal.classList.add('hidden');
+                lenis.start();
+                document.body.style.overflow = '';
+            }, 400); // match CSS transition duration
+        }
+
+        closeModalBtn.addEventListener('click', closePortModal);
+        portModal.addEventListener('click', (e) => {
+            if (e.target === portModal) closePortModal();
+        });
+
+        // 2. Tab Navigation Logic
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-tab');
+
+                // Active classes
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabPanes.forEach(p => p.classList.remove('active'));
+
+                btn.classList.add('active');
+                document.getElementById('tab-' + targetId).classList.add('active');
+
+                // If Pannellum tab is opened and not initialized yet
+                if (targetId === '360view' && !viewer) {
+                    initPannellum();
+                }
+            });
+        });
+
+        // Custom Action Hotspot Logic
+        window.showPanoPopup = function (evt, args) {
+            document.getElementById('panoPopupTitle').innerText = args.title;
+            document.getElementById('panoPopupDesc').innerText = args.desc;
+            const overlay = document.getElementById('panoPopupOverlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+        };
+
+        window.hidePanoPopup = function () {
+            const overlay = document.getElementById('panoPopupOverlay');
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+        };
+
+        // 3. Pannellum 360 Initialization
+        function initPannellum() {
+            viewer = pannellum.viewer('panorama-container', {
+                "default": {
+                    "firstScene": "luar",
+                    "autoLoad": true,
+                    "compass": true
+                },
+                "scenes": {
+                    "luar": {
+                        "type": "equirectangular",
+                        "panorama": "https://cdn.polyhaven.com/asset_img/primary/modern_evening_street.png?height=760&quality=95",
+                        "title": "Bagian Luar",
+                        "hotSpots": [
+                            {
+                                "pitch": -5,
+                                "yaw": -20,
+                                "type": "scene",
+                                "text": "Masuk ke Interior",
+                                "sceneId": "interior"
+                            },
+                            {
+                                "pitch": 5,
+                                "yaw": 40,
+                                "type": "info",
+                                "text": "Fasad Eksterior",
+                                "clickHandlerFunc": showPanoPopup,
+                                "clickHandlerArgs": { "title": "Fasad Bangunan", "desc": "Material fasad menggunakan Aluminium Composite Panel berkualitas untuk daya tahan ekstrem terhadap cuaca dengan garansi 15 tahun." }
+                            }
+                        ]
+                    },
+                    "interior": {
+                        "type": "equirectangular",
+                        "panorama": "https://cdn.polyhaven.com/asset_img/primary/glasshouse_interior.png?height=760&quality=95",
+                        "title": "Glasshouse Interior",
+                        "hotSpots": [
+                            {
+                                "pitch": 5,
+                                "yaw": 60,
+                                "type": "scene",
+                                "text": "Ke Billiard Hall",
+                                "sceneId": "billiard"
+                            },
+                            {
+                                "pitch": 0,
+                                "yaw": -150,
+                                "type": "scene",
+                                "text": "Kembali Keluar",
+                                "sceneId": "luar"
+                            },
+                            {
+                                "pitch": -20,
+                                "yaw": -30,
+                                "type": "info",
+                                "text": "Area Duduk Minimalis",
+                                "clickHandlerFunc": showPanoPopup,
+                                "clickHandlerArgs": { "title": "Furniture Interior", "desc": "Penataan kursi minimalis berbahan kulit sentetis premium digabung dengan pencahayaan natural dari jendela glasshouse." }
+                            }
+                        ]
+                    },
+                    "billiard": {
+                        "type": "equirectangular",
+                        "panorama": "https://cdn.polyhaven.com/asset_img/primary/billiard_hall.png?height=760&quality=95",
+                        "title": "Billiard Hall",
+                        "hotSpots": [
+                            {
+                                "pitch": -10,
+                                "yaw": 180,
+                                "type": "scene",
+                                "text": "Kembali ke Interior",
+                                "sceneId": "interior"
+                            },
+                            {
+                                "pitch": -15,
+                                "yaw": -80,
+                                "type": "info",
+                                "text": "Meja Billiard",
+                                "clickHandlerFunc": showPanoPopup,
+                                "clickHandlerArgs": { "title": "Meja Billiard Turnamen", "desc": "Instalasi presisi tinggi pada meja billiard profesional 9ft. Menggunakan kerangka besi di bagian dalam untuk stabilitas." }
+                            }
+                        ]
+                    }
+                }
+            });
+        }
+
+        // 4. Before-After Slider Logic
+        const baDragger = document.getElementById('baDragger');
+        const imgAfter = document.getElementById('imgAfter');
+        const baLine = document.getElementById('baLine');
+        const baBtn = document.getElementById('baBtn');
+
+        function updateSlider(val) {
+            // Update CSS clip-path inset (top right bottom left)
+            // Left means we are clipping from the left side, so we use (100 - val)% to reveal
+            imgAfter.style.clipPath = `inset(0 ${100 - val}% 0 0)`;
+            baLine.style.left = `${val}%`;
+            baBtn.style.left = `${val}%`;
+        }
+
+        if (baDragger) {
+            baDragger.addEventListener('input', (e) => {
+                updateSlider(e.target.value);
+            });
+        }
+
+        // 5. Gallery Lightbox Logic
+        const galItems = document.querySelectorAll('.gal-item img');
+        const lightboxOverlay = document.getElementById('lightboxOverlay');
+        const lightboxImage = document.getElementById('lightboxImg');
+
+        galItems.forEach(img => {
+            img.parentElement.addEventListener('click', () => {
+                lightboxImage.src = img.src;
+                lightboxOverlay.classList.remove('hidden');
+                void lightboxOverlay.offsetWidth; // trigger reflow
+                lightboxOverlay.classList.add('opacity-100', 'flex');
+                lightboxOverlay.classList.remove('pointer-events-none');
+                lightboxImage.classList.remove('scale-95');
+                lightboxImage.classList.add('scale-100');
+            });
+        });
+
+        window.closeLightbox = function () {
+            lightboxOverlay.classList.remove('opacity-100');
+            lightboxOverlay.classList.add('pointer-events-none');
+            lightboxImage.classList.remove('scale-100');
+            lightboxImage.classList.add('scale-95');
+            setTimeout(() => {
+                lightboxOverlay.classList.remove('flex');
+                lightboxOverlay.classList.add('hidden');
+            }, 300);
+        }
+
         // FUNGSI UTAMA TIMELINE MASTER
         function updateImmersiveTimeline(e) {
             const scrollY = e.scroll || window.scrollY;
@@ -1966,9 +2785,9 @@
 
             // ANIMASI KARTU TUMPUK (STACK LAYER)
             if (DOM.sceneStack) {
-                DOM.sceneStack.style.visibility = t >= 2.5 ? 'visible' : 'hidden';
-                DOM.sceneStack.style.opacity = I(t, 2.5, 2.7, 0, 1);
-                DOM.sceneStack.style.pointerEvents = t >= 2.5 ? 'auto' : 'none';
+                DOM.sceneStack.style.visibility = t >= 2.5 && t <= 9.5 ? 'visible' : 'hidden';
+                DOM.sceneStack.style.opacity = I(t, 2.5, 2.7, 0, 1) * I(t, 8.5, 9.5, 1, 0);
+                DOM.sceneStack.style.pointerEvents = (t >= 2.5 && t <= 9.5) ? 'auto' : 'none';
 
                 // Kartu 1 (Dev)
                 DOM.card1.style.visibility = (t >= 2.5 && t < 5.4) ? 'visible' : 'hidden';
