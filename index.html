@@ -345,7 +345,7 @@
                  ========================================================== -->
             <div id="cinematic-wrapper" class="relative w-full h-[600vh] transition-colors duration-700"> <!-- Removed bg color, now global grid shines through -->
                 
-                <div id="cinematic-master" class="sticky top-0 w-full h-[100dvh] overflow-hidden perspective-[1200px]">
+                <div id="cinematic-master" class="sticky top-0 w-full h-[100vh] overflow-hidden perspective-[1200px]">
                     <!-- SCENE 1: HERO -->
                     <div class="c-layer" id="scene-hero">
                         <div class="blueprint-grid" id="bp-grid"></div>
@@ -830,10 +830,20 @@
             return vMin + (vMax - vMin) * ((val - tMin) / (tMax - tMin));
         }
 
+        // VARIABLE CACHE UNTUK MENGHINDARI LOMPAT/GLITCH SAAT SCROLL DI MOBILE
+        let winHeight = window.innerHeight;
+        window.addEventListener('resize', () => {
+            // Hanya update jika perubahannya signifikan (misal ganti orientasi layar)
+            // untuk mengabaikan address bar yang hilang/muncul
+            if(Math.abs(window.innerHeight - winHeight) > 100) {
+                 winHeight = window.innerHeight;
+            }
+        });
+
         // FUNGSI UTAMA TIMELINE MASTER
         function updateImmersiveTimeline(e) {
             const scrollY = e.scroll || window.scrollY;
-            const maxPrologScroll = DOM.wrapper.offsetHeight - window.innerHeight;
+            const maxPrologScroll = DOM.wrapper.offsetHeight - winHeight;
 
             // --- MORPHING NAVBAR (HANYA MUNCUL SAAT MASUK COMPRO) ---
             if (scrollY > maxPrologScroll - 50) {
@@ -856,7 +866,7 @@
 
             // --- PERHITUNGAN PROGRESS IMMERSIVE (0 -> 10) ---
             const rect = DOM.wrapper.getBoundingClientRect();
-            const maxScroll = DOM.wrapper.offsetHeight - window.innerHeight;
+            const maxScroll = DOM.wrapper.offsetHeight - winHeight;
             let p = (-rect.top) / maxScroll;
             p = Math.max(0, Math.min(1, p)); // Clamp progress 0 to 1
             let t = p * 10; // Rentangkan range dari 0 sampai 10 agar mudah di-mapping
@@ -988,7 +998,7 @@
         const comproObserver = new IntersectionObserver((entries) => {
             // Hanya aktifkan logika ini jika sedang berada melewati prologue
             const scrollY = window.scrollY;
-            const maxPrologScroll = DOM.wrapper.offsetHeight - window.innerHeight;
+            const maxPrologScroll = DOM.wrapper.offsetHeight - winHeight;
 
             if(scrollY >= maxPrologScroll - 100) {
                 entries.forEach(entry => {
@@ -1013,7 +1023,7 @@
         prologDots.forEach(dot => {
             dot.addEventListener('click', () => {
                 const prog = parseFloat(dot.getAttribute('data-progress'));
-                const maxScroll = DOM.wrapper.offsetHeight - window.innerHeight;
+                const maxScroll = DOM.wrapper.offsetHeight - winHeight;
                 const targetY = DOM.wrapper.offsetTop + (prog * maxScroll);
                 lenis.scrollTo(targetY, { duration: 1.5 });
             });
