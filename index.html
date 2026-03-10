@@ -34,11 +34,12 @@
             }
         }
 
-        // Cek Tema Awal
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        // Cek Tema Awal (Default Light)
+        if (localStorage.theme === 'dark') {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
+            localStorage.theme = 'light';
         }
     </script>
 
