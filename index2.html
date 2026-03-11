@@ -140,7 +140,7 @@
         .prog-sticky {
             position: sticky;
             top: 0;
-            height: 100vh;
+            height: 100dvh;
             width: 100vw;
             /* ensure full width */
             overflow: hidden;
@@ -513,18 +513,26 @@
         }
 
         .modal-content {
-            width: 90%;
-            max-width: 1200px;
-            height: 85vh;
+            width: 100%;
+            height: 100dvh;
             background: #ffffff;
-            border: 1px solid rgba(15, 23, 42, 0.1);
-            border-radius: 16px;
+            border-radius: 0;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             transform: scale(0.95);
             transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        @media (min-width: 768px) {
+            .modal-content {
+                width: 90%;
+                max-width: 1200px;
+                height: 85dvh;
+                border: 1px solid rgba(15, 23, 42, 0.1);
+                border-radius: 16px;
+            }
         }
 
         .dark .modal-content {
@@ -1153,14 +1161,14 @@
         <div class="modal-content relative flex flex-col">
             <!-- Header -->
             <div
-                class="flex flex-col md:flex-row justify-between items-start md:items-center p-6 border-b border-slate-200 dark:border-white/10 shrink-0">
+                class="flex flex-col md:flex-row justify-between items-start md:items-center p-4 md:p-6 border-b border-slate-200 dark:border-white/10 shrink-0">
                 <div>
                     <h2 class="font-space text-2xl font-bold" id="modalTitle">Project Title</h2>
                     <p class="text-sm text-accent mt-1 uppercase tracking-widest font-bold"><span
                             id="modalCategory">Category</span> â€¢ <span id="modalScale">Scale</span></p>
                 </div>
                 <!-- Navigation Tabs in Header -->
-                <div class="flex mt-4 md:mt-0 space-x-2">
+                <div class="flex overflow-x-auto no-scrollbar w-full md:w-auto mt-4 md:mt-0 space-x-2 shrink-0 pb-2 md:pb-0">
                     <button class="tab-btn active hover-trigger" data-tab="info">Info</button>
                     <button class="tab-btn hover-trigger" data-tab="gallery">Gallery</button>
                     <button class="tab-btn hover-trigger" data-tab="ba">Before/After</button>
@@ -1181,7 +1189,7 @@
 
                 <!-- TAB 1: INFO -->
                 <div class="tab-pane active" id="tab-info">
-                    <div class="p-6 md:p-10 max-w-3xl mx-auto">
+                    <div class="p-4 md:p-10 max-w-3xl mx-auto h-full overflow-y-auto">
                         <h4 class="text-xs text-slate-500 uppercase tracking-widest mb-4 font-bold">Deskripsi Proyek
                         </h4>
                         <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm md:text-base mb-8"
@@ -1195,7 +1203,7 @@
 
                 <!-- TAB 2: GALLERY -->
                 <div class="tab-pane" id="tab-gallery">
-                    <div class="p-6 h-full">
+                    <div class="p-4 md:p-6 h-full overflow-y-auto">
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 h-full auto-rows-fr">
                             <div class="bg-slate-200 dark:bg-slate-800 rounded-lg overflow-hidden group"><img
                                     src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=600&auto=format&fit=crop"
@@ -1215,7 +1223,7 @@
 
                 <!-- TAB: BEFORE AFTER -->
                 <div class="tab-pane" id="tab-ba">
-                    <div class="p-6 h-full flex flex-col items-center justify-center">
+                    <div class="p-4 md:p-6 h-full flex flex-col items-center justify-center overflow-y-auto">
                         <div class="w-full max-w-4xl aspect-[16/9] ba-slider" id="baSlider">
                             <img src="https://images.unsplash.com/photo-1707157284454-553ef0a4ed0d?q=80&w=1200&auto=format&fit=crop"
                                 class="ba-img-after" id="baAfter" alt="After">
@@ -1237,7 +1245,7 @@
 
                 <!-- TAB 3: 360 VIEW -->
                 <div class="tab-pane" id="tab-360view">
-                    <div class="w-full h-full bg-black relative" id="panoramaContainer">
+                    <div class="w-full h-[60vh] md:h-full bg-black relative rounded-none md:rounded-b-2xl overflow-hidden" id="panoramaContainer">
                         <div id="panorama" class="w-full h-full"></div>
                     </div>
                 </div>

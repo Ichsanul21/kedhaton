@@ -494,7 +494,7 @@
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100vh;
+            height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -788,11 +788,10 @@
         }
 
         .modal-content-wrap {
-            width: 95%;
-            max-width: 1200px;
-            height: 90vh;
+            width: 100%;
+            height: 100dvh;
             background: #ffffff;
-            border-radius: 24px;
+            border-radius: 0;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -800,6 +799,15 @@
             transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
             box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (min-width: 768px) {
+            .modal-content-wrap {
+                width: 95%;
+                max-width: 1200px;
+                height: 90dvh;
+                border-radius: 24px;
+            }
         }
 
         .dark .modal-content-wrap {
@@ -909,7 +917,8 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.4s ease, visibility 0.4s ease;
-            overflow-y: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tab-pane::-webkit-scrollbar {
@@ -924,10 +933,9 @@
 
         /* Tab 1: Layout Galeri CSS Grid */
         .gallery-wrap {
-            height: 100%;
-            overflow-y: auto;
-            -ms-overflow-style: auto;
-            scrollbar-width: thin;
+            height: auto;
+            min-height: 100%;
+            padding-bottom: 2rem;
         }
 
         .gallery-grid {
@@ -1555,7 +1563,7 @@
             <div id="cinematic-wrapper" class="relative w-full h-[600vh] transition-colors duration-700">
                 <!-- Removed bg color, now global grid shines through -->
 
-                <div id="cinematic-master" class="sticky top-0 w-full h-[100vh] overflow-hidden perspective-[1200px]">
+                <div id="cinematic-master" class="sticky top-0 w-full h-[100dvh] overflow-hidden perspective-[1200px]">
                     <!-- SCENE 1: HERO -->
                     <div class="c-layer" id="scene-hero">
                         <div class="blueprint-grid" id="bp-grid"></div>
@@ -1737,7 +1745,7 @@
             <main id="compro-main" class="relative z-20 transition-colors duration-700 bg-transparent">
 
                 <!-- COMPRO HERO (PARALLAX SCRUB) -->
-                <section class="relative h-screen flex items-center justify-center px-6 overflow-hidden" id="beranda">
+                <section class="relative h-[100dvh] flex items-center justify-center px-6 overflow-hidden" id="beranda">
                     <div class="hero-compro-bg absolute inset-0 -top-[20%] h-[140%] w-full">
                         <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop"
                             class="w-full h-full object-cover filter grayscale opacity-[0.05] dark:opacity-10"
@@ -2195,7 +2203,7 @@
         <div class="modal-content-wrap dark:bg-slate-950 dark:border-slate-800">
             <!-- Modal Header -->
             <div
-                class="flex flex-col sm:flex-row justify-between items-start gap-4 p-6 md:p-8 border-b border-slate-200 dark:border-slate-800 shrink-0">
+                class="flex flex-col sm:flex-row justify-between items-start gap-4 p-4 md:p-8 border-b border-slate-200 dark:border-slate-800 shrink-0">
                 <div>
                     <div class="text-accent font-space text-[10px] md:text-xs tracking-widest uppercase mb-2"
                         id="modalCategory">Kategori</div>
@@ -2221,7 +2229,7 @@
 
             <!-- Tab Navigation -->
             <div
-                class="flex overflow-x-auto no-scrollbar px-6 md:px-8 border-b border-slate-200 dark:border-slate-800 shrink-0">
+                class="flex overflow-x-auto no-scrollbar px-4 md:px-8 border-b border-slate-200 dark:border-slate-800 shrink-0">
                 <button
                     class="tab-btn active whitespace-nowrap px-6 py-4 font-space text-[10px] md:text-sm tracking-widest uppercase text-slate-500 dark:text-slate-400 relative"
                     data-tab="gallery">Galeri Project</button>
@@ -2237,7 +2245,7 @@
             <div class="tab-content-container bg-slate-50 dark:bg-[#0b0f17]">
 
                 <!-- Tab 1: Gallery -->
-                <div id="tab-gallery" class="tab-pane active h-full p-6 md:p-8">
+                <div id="tab-gallery" class="tab-pane active h-full p-4 md:p-8">
                     <div class="gallery-wrap">
                         <div class="gallery-grid relative">
                             <!-- Img 1 -->
@@ -2275,7 +2283,7 @@
                 </div>
 
                 <!-- Tab 2: 360 View -->
-                <div id="tab-360view" class="tab-pane h-full p-6 md:p-8">
+                <div id="tab-360view" class="tab-pane h-full p-4 md:p-8">
                     <div
                         class="w-full h-full bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden relative shadow-sm min-h-[300px] md:min-h-[500px]">
                         <!-- Pannellum Container -->
@@ -2323,7 +2331,7 @@
                 </div>
 
                 <!-- Tab 3: Before & After -->
-                <div id="tab-beforeafter" class="tab-pane h-full p-6 md:p-8">
+                <div id="tab-beforeafter" class="tab-pane h-full p-4 md:p-8">
                     <div
                         class="ba-container rounded-xl overflow-hidden shadow-sm h-full max-h-[400px] md:max-h-[600px] w-full max-w-4xl mx-auto min-h-[300px]">
                         <div class="ba-wrapper">
