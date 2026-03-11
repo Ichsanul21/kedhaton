@@ -2754,15 +2754,18 @@
                 DOM.navWrap.classList.remove("pt-4", "md:pt-6");
             }
 
-            // --- PARALLAX HERO COMPRO ---
-            if (DOM.heroBg) {
-                // Background akan sedikit turun seiring scroll
-                DOM.heroBg.style.transform = `translateY(${scrollY * 0.25}px)`;
-            }
-
             // --- PERHITUNGAN PROGRESS IMMERSIVE (0 -> 10) ---
             const rect = DOM.wrapper.getBoundingClientRect();
             const maxScroll = DOM.wrapper.offsetHeight - winHeight;
+
+            // --- PARALLAX HERO COMPRO ---
+            if (DOM.heroBg) {
+                // Background akan sedikit turun seiring scroll khusus saat masuk area compro
+                const comproScroll = Math.max(0, scrollY - maxScroll);
+                DOM.heroBg.style.transform = `translateY(${comproScroll * 0.25}px) translateZ(0)`;
+            }
+
+            // MaxScroll calculated above
             let p = (-rect.top) / maxScroll;
             p = Math.max(0, Math.min(1, p)); // Clamp progress 0 to 1
             let t = p * 8.5; // Sync timeline max flawlessly with Card 3 finish to kill 100vh dead scroll
