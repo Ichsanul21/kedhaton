@@ -299,15 +299,16 @@
         .gs-reveal,
         .gs-hero-in {
             opacity: 0;
-            transform: translateY(40px);
+            transform: translateY(40px) translateZ(0);
             transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
             will-change: opacity, transform;
+            backface-visibility: hidden;
         }
 
         .gs-reveal.is-revealed,
         .gs-hero-in.is-revealed {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) translateZ(0);
         }
 
         #hero-content .gs-hero-in:nth-child(1) {
@@ -785,6 +786,7 @@
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
+            transform: translateZ(0);
         }
 
         .modal-content-wrap {
@@ -795,7 +797,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transform: translateY(40px) scale(0.98);
+            transform: translateY(40px) scale(0.98) translateZ(0);
             transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
             box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -816,7 +818,7 @@
         }
 
         .port-modal.active .modal-content-wrap {
-            transform: translateY(0) scale(1);
+            transform: translateY(0) scale(1) translateZ(0);
         }
 
         /* Modal Header */
@@ -2229,15 +2231,15 @@
 
             <!-- Tab Navigation -->
             <div
-                class="flex overflow-x-auto no-scrollbar w-full px-4 md:px-8 border-b border-slate-200 dark:border-slate-800 shrink-0 pointer-events-auto" style="-webkit-overflow-scrolling: touch;">
+                class="flex flex-nowrap overflow-x-auto no-scrollbar w-full px-4 md:px-8 border-b border-slate-200 dark:border-slate-800 shrink-0 pointer-events-auto" style="-webkit-overflow-scrolling: touch;">
                 <button
-                    class="tab-btn active whitespace-nowrap px-6 py-4 font-space text-[10px] md:text-sm tracking-widest uppercase text-slate-500 dark:text-slate-400 relative pointer-events-auto"
+                    class="tab-btn active whitespace-nowrap shrink-0 px-6 py-4 font-space text-[10px] md:text-sm tracking-widest uppercase text-slate-500 dark:text-slate-400 relative pointer-events-auto"
                     data-tab="gallery">Galeri Project</button>
                 <button
-                    class="tab-btn whitespace-nowrap px-6 py-4 font-space text-[10px] md:text-sm tracking-widest uppercase text-slate-500 dark:text-slate-400 relative pointer-events-auto"
+                    class="tab-btn whitespace-nowrap shrink-0 px-6 py-4 font-space text-[10px] md:text-sm tracking-widest uppercase text-slate-500 dark:text-slate-400 relative pointer-events-auto"
                     data-tab="360view">360 View</button>
                 <button
-                    class="tab-btn whitespace-nowrap px-6 py-4 font-space text-[10px] md:text-sm tracking-widest uppercase text-slate-500 dark:text-slate-400 relative pointer-events-auto"
+                    class="tab-btn whitespace-nowrap shrink-0 px-6 py-4 font-space text-[10px] md:text-sm tracking-widest uppercase text-slate-500 dark:text-slate-400 relative pointer-events-auto"
                     data-tab="beforeafter">Before / After</button>
             </div>
 
