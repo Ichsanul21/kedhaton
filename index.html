@@ -1567,7 +1567,7 @@
             <div id="cinematic-wrapper" class="relative w-full h-[800svh] transition-colors duration-700">
                 <!-- Removed bg color, now global grid shines through -->
 
-                <div id="cinematic-master" class="sticky top-0 w-full h-[100dvh] overflow-hidden perspective-[1200px]">
+                <div id="cinematic-master" class="sticky top-0 w-full h-[100vh] overflow-hidden perspective-[1200px]">
                     <!-- SCENE 1: HERO -->
                     <div class="c-layer" id="scene-hero">
                         <div class="blueprint-grid" id="bp-grid"></div>
@@ -2501,17 +2501,10 @@
         }
 
         // VARIABLE CACHE UNTUK MENGHINDARI LOMPAT/GLITCH SAAT SCROLL DI MOBILE
+        // VARIABLE CACHE UNTUK MENGHINDARI LOMPAT/GLITCH SAAT SCROLL DI MOBILE
+        // Note: Resize event listener relocated to bottom to cover cinematicMaster
         let winHeight = window.innerHeight;
         let winWidth = window.innerWidth;
-        window.addEventListener('resize', () => {
-            // Hanya update jika perubahannya signifikan pada lebar layar (orientasi layar)
-            // untuk mengabaikan address bar mobile yang hilang/muncul (sebabkan flicker)
-            if (window.innerWidth !== winWidth) {
-                winWidth = window.innerWidth;
-                winHeight = window.innerHeight;
-                updateImmersiveTimeline({ scroll: window.scrollY });
-            }
-        });
 
         // =========================================================
         // PORTFOLIO POPUP MODAL & TABS LOGIC
@@ -2868,6 +2861,23 @@
         }
 
         // Jalankan timeline function saat Lenis scroll aktif
+        const cinematicMaster = document.getElementById('cinematic-master');
+        
+        // Initial setup for iOS Safari
+        if(cinematicMaster) {
+            cinematicMaster.style.height = `${window.innerHeight}px`;
+        }
+
+        window.addEventListener('resize', () => {
+            // Only update on width change (orientation change) to avoid address bar glitches
+            if (window.innerWidth !== winWidth) {
+                winWidth = window.innerWidth;
+                winHeight = window.innerHeight;
+                if(cinematicMaster) cinematicMaster.style.height = `${winHeight}px`;
+                updateImmersiveTimeline({ scroll: window.scrollY });
+            }
+        });
+
         lenis.on('scroll', updateImmersiveTimeline);
         updateImmersiveTimeline({ scroll: window.scrollY }); // init pertama
 
