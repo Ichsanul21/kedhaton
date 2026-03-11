@@ -116,6 +116,15 @@
             backdrop-filter: blur(2px);
         }
 
+        @media (max-width: 768px) {
+            .cursor-dot, .cursor-ring {
+                display: none !important;
+            }
+            * {
+                cursor: auto !important;
+            }
+        }
+
         /* TEXT UTILS */
         .text-outline {
             color: transparent;
@@ -500,6 +509,7 @@
             justify-content: center;
             opacity: 0;
             visibility: hidden;
+            pointer-events: none;
             transition: 0.4s;
         }
 
@@ -510,6 +520,7 @@
         .port-modal.active {
             opacity: 1;
             visibility: visible;
+            pointer-events: auto;
         }
 
         .modal-content {
@@ -568,6 +579,7 @@
             display: none;
             height: 100%;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tab-pane.active {

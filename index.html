@@ -1560,7 +1560,7 @@
             <!-- ==========================================================
                  WRAPPER IMMERSIVE DENGAN NATIVE STICKY
                  ========================================================== -->
-            <div id="cinematic-wrapper" class="relative w-full h-[600vh] transition-colors duration-700">
+            <div id="cinematic-wrapper" class="relative w-full h-[600dvh] transition-colors duration-700">
                 <!-- Removed bg color, now global grid shines through -->
 
                 <div id="cinematic-master" class="sticky top-0 w-full h-[100dvh] overflow-hidden perspective-[1200px]">
@@ -2497,11 +2497,14 @@
 
         // VARIABLE CACHE UNTUK MENGHINDARI LOMPAT/GLITCH SAAT SCROLL DI MOBILE
         let winHeight = window.innerHeight;
+        let winWidth = window.innerWidth;
         window.addEventListener('resize', () => {
-            // Hanya update jika perubahannya signifikan (misal ganti orientasi layar)
-            // untuk mengabaikan address bar yang hilang/muncul
-            if (Math.abs(window.innerHeight - winHeight) > 100) {
+            // Hanya update jika perubahannya signifikan pada lebar layar (orientasi layar)
+            // untuk mengabaikan address bar mobile yang hilang/muncul (sebabkan flicker)
+            if (window.innerWidth !== winWidth) {
+                winWidth = window.innerWidth;
                 winHeight = window.innerHeight;
+                updateImmersiveTimeline({ scroll: window.scrollY });
             }
         });
 
