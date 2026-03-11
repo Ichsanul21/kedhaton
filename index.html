@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
 
 <head>
@@ -1564,7 +1564,7 @@
             <!-- ==========================================================
                  WRAPPER IMMERSIVE DENGAN NATIVE STICKY
                  ========================================================== -->
-            <div id="cinematic-wrapper" class="relative w-full h-[600dvh] transition-colors duration-700">
+            <div id="cinematic-wrapper" class="relative w-full h-[500svh] transition-colors duration-700">
                 <!-- Removed bg color, now global grid shines through -->
 
                 <div id="cinematic-master" class="sticky top-0 w-full h-[100dvh] overflow-hidden perspective-[1200px]">
@@ -1750,7 +1750,7 @@
 
                 <!-- COMPRO HERO (PARALLAX SCRUB) -->
                 <section class="relative h-[100dvh] flex items-center justify-center px-6 overflow-hidden" id="beranda">
-                    <div class="hero-compro-bg absolute inset-0 -top-[20%] h-[140%] w-full">
+                    <div class="hero-compro-bg absolute inset-0 -top-[20%] h-[140%] w-full" style="will-change: transform; transform: translateZ(0);">
                         <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=70&w=800&auto=format&fit=crop"
                             class="w-full h-full object-cover filter grayscale opacity-[0.05] dark:opacity-10"
                             alt="Construction background">
@@ -2765,7 +2765,7 @@
             const maxScroll = DOM.wrapper.offsetHeight - winHeight;
             let p = (-rect.top) / maxScroll;
             p = Math.max(0, Math.min(1, p)); // Clamp progress 0 to 1
-            let t = p * 10; // Rentangkan range dari 0 sampai 10 agar mudah di-mapping
+            let t = p * 9; // Set timeline max to 9 to match 500svh without blank scroll trap
             const isDark = document.documentElement.classList.contains('dark');
 
             // ANIMASI HERO LAYER
